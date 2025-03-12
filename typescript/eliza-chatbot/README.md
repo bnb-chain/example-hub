@@ -14,8 +14,6 @@ This example demonstrates an agent setup as a terminal style chatbot with access
 - pnpm
 - Git
 - Code editor (VS Code recommended)
-- BSC account address
-- BNB tokens for gas fee
 
 ## Installation
 
