@@ -30,9 +30,9 @@ pnpm intall
 - Ensure the following ENV Vars are set:
   - OPENAI_API_KEY
   - BNB_PRIVATE_KEY
-  - BNB_PUBLIC_KEY
-  - BSC_PROVIDER_URL
-  - OPBNB_PROVIDER_URL
+  - BNB_PUBLIC_KEY (optional)
+  - BSC_PROVIDER_URL (optional)
+  - OPBNB_PROVIDER_URL (optional)
 
 ```bash
 pnpm start
