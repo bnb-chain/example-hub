@@ -1,0 +1,32 @@
+{
+  "name": "eliza-chatbot",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts",
+    "start": "tsc && node --loader ts-node/esm src/index.ts",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+  },
+  "dependencies": {
+    "@elizaos/adapter-sqlite": "0.1.9",
+    "@elizaos/client-direct": "0.1.9",
+    "@elizaos/core": "0.1.9",
+    "@elizaos/plugin-bnb": "0.1.9",
+    "@elizaos/plugin-node": "0.1.9",
+    "better-sqlite3": "11.5.0"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "pnpm": {
+    "overrides": {
+      "onnxruntime-node": "1.20.0"
+    }
+  },
+  "devDependencies": {
+    "prettier": "^3.5.3",
+    "ts-node": "10.9.2",
+    "tsup": "8.3.5",
+    "typescript": "5.8.2"
+  }
+}
