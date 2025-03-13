@@ -55,7 +55,7 @@ jobs:
         working-directory: packages/${{ github.event.inputs.project }}
         uses: cycjimmy/semantic-release-action@v4
         with:
-          config_file: ".releaserc.js"
+          config_file: .releaserc.js
           package: ${{ github.event.inputs.project }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
