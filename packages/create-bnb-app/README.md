@@ -1,21 +1,21 @@
-# create-bnb
+# create-bnb-app
 
 ## Overview
 
-`create-bnb` is a command-line tool that allows developers to quickly create BNB Chain project templates. Users can either specify an example name from the official `bnb-chain/example-hub` repository or provide a GitHub URL to clone a specific template.
+`create-bnb-app` is a command-line tool that allows developers to quickly create BNB Chain project templates. Users can either specify an example name from the official `bnb-chain/example-hub` repository or provide a GitHub URL to clone a specific template.
 
 ## Installation
 
-To use `create-bnb`, simply run the following command:
+To use `create-bnb-app`, simply run the following command:
 
 ```sh
-npx create-bnb@latest --example <example-name>
+npx create-bnb-app@latest --example <example-name>
 ```
 
 or with a GitHub URL:
 
 ```sh
-npx create-bnb@latest --example <github-url>
+npx create-bnb-app@latest --example <github-url>
 ```
 
 > **Note:** If you don't have `npx` installed, please install Node.js (which includes `npx`) from [nodejs.org](https://nodejs.org/).
@@ -27,7 +27,7 @@ npx create-bnb@latest --example <github-url>
 If you provide an example name, the tool will fetch the corresponding template from the official [`bnb-chain/example-hub`](https://github.com/bnb-chain/example-hub#example-list) repository.
 
 ```sh
-npx create-bnb@latest --example python/langchain-bot
+npx create-bnb-app@latest --example python/langchain-bot
 ```
 
 This will clone the `python/langchain-bot` example from the `bnb-chain/example-hub` repository.
@@ -37,7 +37,7 @@ This will clone the `python/langchain-bot` example from the `bnb-chain/example-h
 If you provide a GitHub URL, the tool will directly clone the specified public repository as a template.
 
 ```sh
-npx create-bnb@latest --example https://github.com/user/your_repo
+npx create-bnb-app@latest --example https://github.com/user/your_repo
 ```
 
 ### 3. Post-Clone Instructions

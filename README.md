@@ -7,7 +7,7 @@ A hub of frontend, agent kits, and smart contract examples for BNB Chain develop
 If you want to quickly create a template, you can use our tool:
 
 ```sh
-npx create-bnb@latest --example [example-name]
+npx create-bnb-app@latest --example [example-name]
 ```
 
 All available example names are listed in the [Example List](#example-list) table below.

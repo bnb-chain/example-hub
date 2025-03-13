@@ -11,7 +11,7 @@ const program = new Command();
 
 // Template command
 program
-  .name("create-bnb")
+  .name("create-bnb-app")
   .description("CLI to create a BNB Chain example template")
   .option(
     "-e, --example <name|github-url>",

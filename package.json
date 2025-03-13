@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "prepare": "husky",
-    "dry-release": "semantic-release -d -e ./packages/.releaserc.js --package=create-bnb"
+    "dry-release": "semantic-release -d -e ./packages/.releaserc.js --package=create-bnb-app-app"
   },
   "author": "BNBChain",
   "license": "GPL-3.0-only",

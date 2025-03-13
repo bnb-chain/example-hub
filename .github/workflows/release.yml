@@ -4,8 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       project:
-        description: "The package folder name under packages/ to release (e.g. my-package)"
+        description: "The package folder name under packages/ to release (e.g. create-bnb-app)"
         required: true
+        default: create-bnb-app
+        type: choice
+        options:
+          - create-bnb-app
 
 jobs:
   release:
