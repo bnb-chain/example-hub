@@ -11,7 +11,7 @@
     },
     "guide": "",
     "otherLink": "https://www.bnbchain.org/en/solutions/ai-agent",
-    "thumbnail": "https://cms-static.bnbchain.org/dcms/static/f86875e8-3679-44db-afb7-e3ff1bd705c1.png"
+    "imgUrl": "https://cms-static.bnbchain.org/dcms/static/f86875e8-3679-44db-afb7-e3ff1bd705c1.png"
   },
   {
     "caseTitle": "BNB Chain LangChain AgentKit",
@@ -22,6 +22,6 @@
     "video": {},
     "guide": "",
     "otherLink": "https://www.bnbchain.org/en/solutions/ai-agent",
-    "thumbnail": "https://cms-static.bnbchain.org/dcms/static/48d2b530-ec55-4ece-b57a-132ad9c5058e.png"
+    "imgUrl": "https://cms-static.bnbchain.org/dcms/static/48d2b530-ec55-4ece-b57a-132ad9c5058e.png"
   }
 ]
