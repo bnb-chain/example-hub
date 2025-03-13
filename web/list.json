@@ -1,0 +1,27 @@
+[
+  {
+    "caseTitle": "BNB Chain Eliza AgentKit",
+    "caseDesc": "Create an AI Agent using the BNB Chain Plugin for Eliza AI",
+    "tags": ["BSC", "opBNB", "AI"],
+    "github": "https://github.com/bnb-chain/example-hub/tree/main/typescript/eliza-chatbot",
+    "replit": "",
+    "video": {
+      "type": "youtube",
+      "link": "https://www.youtube.com/watch?v=3hSgd-qS8DE"
+    },
+    "guide": "",
+    "otherLink": "https://www.bnbchain.org/en/solutions/ai-agent",
+    "thumbnail": "https://cms-static.bnbchain.org/dcms/static/f86875e8-3679-44db-afb7-e3ff1bd705c1.png"
+  },
+  {
+    "caseTitle": "BNB Chain LangChain AgentKit",
+    "caseDesc": "Create an AI Agent using the BNB Chain Plugin for LangChain AI",
+    "tags": ["BSC", "opBNB", "AI"],
+    "github": "https://github.com/bnb-chain/example-hub/tree/main/python/langchain-chatbot",
+    "replit": "",
+    "video": {},
+    "guide": "",
+    "otherLink": "https://www.bnbchain.org/en/solutions/ai-agent",
+    "thumbnail": "https://cms-static.bnbchain.org/dcms/static/48d2b530-ec55-4ece-b57a-132ad9c5058e.png"
+  }
+]

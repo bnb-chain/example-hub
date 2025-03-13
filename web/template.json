@@ -1,0 +1,13 @@
+{
+  "title": "Example",
+  "description": "A brief description of what this example does.",
+  "github": "GitHub repository link",
+  "replit": "Replit repository link",
+  "video": {
+    "type": "youtube",
+    "link": "https://www.youtube.com/watch?v="
+  },
+  "guide": "",
+  "otherLink": "",
+  "thumbnail": ""
+}
