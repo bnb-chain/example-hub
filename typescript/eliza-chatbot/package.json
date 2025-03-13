@@ -20,7 +20,11 @@
   },
   "pnpm": {
     "overrides": {
-      "onnxruntime-node": "1.20.0"
+      "onnxruntime-node": "1.20.0",
+      "vitest": "2.1.9",
+      "ws": "8.17.1",
+      "path-to-regexp": "0.1.12",
+      "axios": "1.8.2"
     }
   },
   "devDependencies": {

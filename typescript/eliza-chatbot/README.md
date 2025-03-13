@@ -10,7 +10,7 @@ This example demonstrates an agent setup as a terminal style chatbot with access
 - "Deploy an BEP-20 token with total supply 1 billion"
 
 ## Requirements
-- Node.js (Node.js 23+)
+- Node.js (Node.js 22+)
 - pnpm
 - Git
 - Code editor (VS Code recommended)
