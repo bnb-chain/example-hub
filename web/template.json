@@ -1,14 +1,84 @@
 {
-  "caseTitle": "Example",
-  "caseDesc": "A brief description of what this example demonstrates.",
-  "tags": ["BSC", "opBNB"],
-  "github": "GitHub repository link for this example.",
-  "replit": "Replit repository link for this example.",
-  "video": {
-    "type": "ype of video source (e.g., youtube, file).",
-    "link": "URL link to the video."
-  },
-  "guide": "Additional guide document link.",
-  "otherLink": "Link to related resource or external page.",
-  "imgUrl": "URL of the thumbnail image."
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Example Meta Schema",
+  "description": "A JSON Schema for validating an array of example metadata objects.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "caseTitle": {
+        "type": "string",
+        "description": "The title of the case/example."
+      },
+      "caseDesc": {
+        "type": "string",
+        "description": "A brief description of the case/example."
+      },
+      "tags": {
+        "type": "array",
+        "description": "An array of tags associated with the case.",
+        "items": {
+          "type": "string"
+        }
+      },
+      "github": {
+        "type": "string",
+        "description": "GitHub repository link for the example."
+      },
+      "replit": {
+        "type": "string",
+        "description": "Replit repository link for the example."
+      },
+      "video": {
+        "type": "object",
+        "description": "Video metadata can be empty or if used must include both 'type' and 'link'.",
+        "anyOf": [
+          {
+            "maxProperties": 0
+          },
+          {
+            "required": [
+              "type",
+              "link"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "The video source type (e.g., youtube, file)."
+              },
+              "link": {
+                "type": "string",
+                "description": "The URL link to the video."
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "guide": {
+        "type": "string",
+        "description": "Link to additional guide resources."
+      },
+      "otherLink": {
+        "type": "string",
+        "description": "Link to a related resource or external page."
+      },
+      "imgUrl": {
+        "type": "string",
+        "description": "URL of the thumbnail image."
+      }
+    },
+    "required": [
+      "caseTitle",
+      "caseDesc",
+      "tags",
+      "github",
+      "replit",
+      "video",
+      "guide",
+      "otherLink",
+      "imgUrl"
+    ],
+    "additionalProperties": false
+  }
 }

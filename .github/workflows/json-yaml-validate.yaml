@@ -1,0 +1,26 @@
+name: JSON YAML Validate
+
+on:
+  pull_request:
+    paths:
+      - 'web/list.json'
+      - 'web/template.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  json-yaml-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: validate example meta
+        uses: GrantBirki/json-yaml-validate@v3.2.1
+        with:
+          comment: 'true'
+          files:
+            ./web/list.json
+          json_schema: ./web/template.json
