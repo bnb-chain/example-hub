@@ -4,7 +4,7 @@
     "caseDesc": "Create an AI Agent using the BNB Chain Plugin for Eliza AI",
     "tags": ["BSC", "opBNB", "AI"],
     "github": "https://github.com/bnb-chain/example-hub/tree/main/typescript/eliza-chatbot",
-    "replit": "https://replit.com/@BNBChainDev/eliza?embed=true",
+    "replit": "https://replit.com/@BNBChainDev/BNBChain-Eliza-AgentKit-TypeScript?embed=true#README.md",
     "video": {
       "type": "youtube",
       "link": "https://www.youtube.com/watch?v=3hSgd-qS8DE"
