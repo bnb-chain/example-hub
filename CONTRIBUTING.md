@@ -5,7 +5,7 @@ Thank you for contributing to this project! Please follow the guidelines below t
 ## Repository Structure
 
 - **packages**: Contains all the tools.
-- **portal**: Contains a list of example metadata displayed on the BNB Chain Developer Portal.
+- **web**: Contains a list of example metadata displayed on the BNB Chain site.
 - **python**: Contains Python version examples.
 - **typescript**: Contains TypeScript version examples.
 
