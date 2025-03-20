@@ -1,0 +1,20 @@
+sequenceDiagram
+    participant Bob
+    participant Joe
+    participant Router as Router Contract
+    participant WBNB
+    participant USDT
+    Note over Bob: Bob only has WBNB, no BNB
+    Bob->>Bob: Sign EIP7702 authorization for Router
+    Bob-->>Joe: Share signed authorization
+    
+    Joe->>+Router: Submit EIP7702 transaction with Bob's authorization
+    Note over Bob,Router: Bob's account now contains Router code
+    Router-->>-Joe: Transaction confirmed
+    
+    Joe->>+Router: Execute swap (WBNB to USDT) on Bob's behalf
+    Router->>WBNB: Transfer WBNB from Bob's account
+    Router->>USDT: Receive USDT to Bob's account
+    Router-->>-Joe: Swap completed
+    
+    Note over Bob,USDT: Bob received USDT tokens<br/>without paying gas or sending transactions
