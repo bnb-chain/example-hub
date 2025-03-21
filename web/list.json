@@ -26,5 +26,16 @@
     "guide": "",
     "otherLink": "https://www.bnbchain.org/en/solutions/ai-agent",
     "imgUrl": "https://cms-static.bnbchain.org/dcms/static/48d2b530-ec55-4ece-b57a-132ad9c5058e.png"
+  },
+  {
+    "caseTitle": "EIP 7702 - Demo",
+    "caseDesc": "This project demonstrates the implementation of EIP7702 (Account Abstraction via Authorized Operations) on BNB Smart Chain (BSC)",
+    "tags": ["BSC"],
+    "github": "https://github.com/bnb-chain/example-hub/tree/main/go/eip7702-demo",
+    "replit": "https://replit.com/@BNBChainDev/EIP-7702-Demo?embed=true",
+    "video": {},
+    "guide": "",
+    "otherLink": "https://www.bnbchain.org/en/blog/bnb-chain-announces-pascal-hard-fork",
+    "imgUrl": "https://cms-static.bnbchain.org/dcms/static/303d0c6a-af8f-4098-a2d0-a5b96ef964ba.png"
   }
 ]
