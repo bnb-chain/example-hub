@@ -1,4 +1,4 @@
-<img width="351" alt="image" src="https://github.com/user-attachments/assets/74d52832-3c65-449c-a271-11cdedb41e2c" /># Example Hub
+# Example Hub
 
 A hub of frontend, agent kits, and smart contract examples for BNB Chain developers. Build and innovate with
 ready-to-use resources.
