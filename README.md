@@ -66,7 +66,7 @@ To maintain code consistency, install these VS Code extensions before you begin:
    Prettier for TypeScript).
 5. **Provide Documentation**: Include a `README.md` in your example’s folder with clear setup and usage instructions.
 6. **Update `web/list.json`**: Add your example's [metadata](./web/README.md) to
-   `web/list.json`. Here’s a sample entry:
+   `web/list.json`. This is the metadata list for each example, used for frontend display. Here’s a sample entry:
     ```json
     {
       "caseTitle": "Example",
