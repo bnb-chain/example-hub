@@ -75,7 +75,7 @@ To maintain code consistency, install these VS Code extensions before you begin:
       "github": "GitHub repository link for this example.",
       "replit": "Replit repository link for this example.",
       "video": {
-        "type": "ype of video source (e.g., youtube, file).",
+        "type": "Type of video source (e.g., youtube, file).",
         "link": "URL link to the video."
       },
       "guide": "Additional guide document link.",
