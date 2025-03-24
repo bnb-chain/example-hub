@@ -48,19 +48,19 @@ your submission is seamless and aligns with the repository’s standards.
 To maintain code consistency, install these VS Code extensions before you begin:
 
 - **Python Development**: We use **Black** for Python code formatting. Install
-  the [Black Formatter](https://marketplace.visualstudio.com/items?itemName=ms-python.black-formatter).
+  the <a href="https://marketplace.visualstudio.com/items?itemName=ms-python.black-formatter" target="_blank">Black Formatter</a>..
 - **TypeScript Development**: We use **Prettier** for formatting TypeScript code.
-  Install [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode).
+  Install <a href="https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode" target="_blank">Prettier</a>.
 
 ### Steps to Add a New Example
 
 1. **Fork the Repository**: Fork the repository to your GitHub account.
 2. **Create a Feature Branch**: Use a descriptive name (e.g., `feature/new-example`).
-3. **Choose the Appropriate Directory**:
+3. **Choose the Appropriate Directory & Create your App Folder**:
 
-    * Python: `./python/your-example-name`
-    * TypeScript: `./typescript/your-example-name`
-    * Other languages: `./newLanguage/examples`
+    * Python: `./python/your-example-name/.`
+    * TypeScript: `./typescript/your-example-name/.`
+    * Other languages: `./newLanguage/examples/.`
 
 4. **Develop Your Example**: Build your example in the chosen folder, adhering to coding standards (Black for Python,
    Prettier for TypeScript).
