@@ -1,0 +1,136 @@
+<!--
+  index.html - BNB Testnet Swap UI
+  ---------------------------------
+  This is a simple frontend interface that allows users to swap tBNB (testnet BNB)
+  for other BEP-20 tokens like tCAKE and tUSDC on the BNB Smart Chain Testnet.
+  
+  It uses:
+  - ethers.js to interact with the PancakeSwap testnet router contract
+  - MetaMask or Trust Wallet to sign and send the transaction
+  - WBNB routing path for the swap
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>BNB Swap</title>
+
+    <!-- Basic styling for form layout -->
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 2rem;
+        }
+
+        input,
+        select,
+        button {
+            margin: 10px 0;
+            padding: 8px;
+        }
+    </style>
+
+    <!-- Load ethers.js for wallet and smart contract interaction -->
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+
+    <script>
+        let signer; // Wallet signer used for sending transactions
+
+        // Connects to MetaMask or Trust Wallet
+        async function connectWallet() {
+            if (!window.ethereum) {
+                alert("MetaMask not detected.");
+                return;
+            }
+
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            await provider.send("eth_requestAccounts", []); // Prompt wallet connect
+            signer = provider.getSigner(); // Set signer for transaction signing
+
+            const address = await signer.getAddress();
+            document.getElementById("connect_wallet_button").innerText = "Connected wallet: " + address;
+        }
+
+        // Executes the swap using PancakeSwap router
+        async function swap() {
+            if (!signer) {
+                alert("Please connect your wallet first.");
+                return;
+            }
+
+            const tokenOut = document.getElementById("token_out").value;
+            const amountBNB = document.getElementById("amount_bnb").value;
+
+            // PancakeSwap V2 Router (BNB Smart Chain Testnet)
+            const routerAddress = "0x9ac64cc6e4415144c455bd8e4837fea55603e5c3";
+
+            // Minimal ABI to call swapExactETHForTokens
+            const routerAbi = [
+                "function swapExactETHForTokens(uint amountOutMin, address[] calldata path, address to, uint deadline) payable returns (uint[] memory amounts)"
+            ];
+
+            // Instantiate contract
+            const router = new ethers.Contract(routerAddress, routerAbi, signer);
+
+            // Define the swap path: WBNB → tokenOut
+            const path = [
+                "0xae13d989dac2f0debff460ac112a837c89baa7cd", // WBNB testnet
+                tokenOut
+            ];
+
+            try {
+                const tx = await router.swapExactETHForTokens(
+                    0,                        // Minimum amount out (no slippage protection here)
+                    path,                     // Swap path
+                    await signer.getAddress(), // Recipient wallet
+                    Math.floor(Date.now() / 1000) + 600, // 10-minute deadline
+                    {
+                        value: ethers.utils.parseEther(amountBNB), // tBNB value
+                        gasLimit: 250000                           // Estimated gas
+                    }
+                );
+
+                // Display link to transaction on BscScan
+                document.getElementById("result").innerHTML = `
+          Transaction submitted: 
+          <a href="https://testnet.bscscan.com/tx/${tx.hash}" target="_blank">${tx.hash}</a>
+        `;
+            } catch (err) {
+                console.error(err);
+                document.getElementById("result").innerText = "Error: " + (err.data?.message || err.message);
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <button id="connect_wallet_button" onclick="connectWallet()">Connect Wallet</button>
+    <h1>BNB to Token Swap</h1>
+    <small>(Make sure your TrustWallet is connected to the testnet environment. All contract addresses in this code are
+        testnet addresses.</small><br>
+
+    <!-- Token selection dropdown -->
+    <label>Token to Buy:</label>
+    <select id="token_out">
+        <option value="0xFa60D973F7642B748046464e165A65B7323b0DEE">tCAKE</option>
+        <option value="0x64544969ed7ebf5f083679233325356ebe738930">tUSDC</option>
+    </select><br>
+
+    <!-- Input field for amount of tBNB to swap -->
+    <label>Amount in tBNB:</label>
+    <input type="number" id="amount_bnb" step="0.001" value="0.01" /><br>
+
+    <!-- Input for slippage (not used in this basic version) -->
+    <label>Slippage (%):</label>
+    <input type="number" id="slippage" step="0.1" value="1" /><br>
+
+    <button onclick="swap()">Swap</button>
+
+    <!-- Output result or error messages -->
+    <p id="result"></p>
+    <p id="wallet-address" style="color: gray;"></p>
+</body>
+
+</html>

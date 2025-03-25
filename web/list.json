@@ -2,7 +2,11 @@
   {
     "caseTitle": "BNB Chain Eliza AgentKit",
     "caseDesc": "Create an AI Agent using the BNB Chain Plugin for Eliza AI",
-    "tags": ["BSC", "opBNB", "AI"],
+    "tags": [
+      "BSC",
+      "opBNB",
+      "AI"
+    ],
     "github": "https://github.com/bnb-chain/example-hub/tree/main/typescript/eliza-chatbot",
     "replit": "https://replit.com/@BNBChainDev/BNBChain-Eliza-AgentKit-TypeScript?embed=true#README.md",
     "video": {
@@ -16,7 +20,11 @@
   {
     "caseTitle": "BNB Chain LangChain AgentKit",
     "caseDesc": "Create an AI Agent using the BNB Chain Plugin for LangChain AI",
-    "tags": ["BSC", "opBNB", "AI"],
+    "tags": [
+      "BSC",
+      "opBNB",
+      "AI"
+    ],
     "github": "https://github.com/bnb-chain/example-hub/tree/main/python/langchain-chatbot",
     "replit": "https://replit.com/@BNBChainDev/BNBChain-LangChain-AgentKit-Python-Version?embed=true#chatbot.py",
     "video": {
@@ -30,12 +38,36 @@
   {
     "caseTitle": "EIP 7702 - Demo",
     "caseDesc": "This project demonstrates the implementation of EIP7702 (Account Abstraction via Authorized Operations) on BNB Smart Chain (BSC)",
-    "tags": ["BSC"],
+    "tags": [
+      "BSC"
+    ],
     "github": "https://github.com/bnb-chain/example-hub/tree/main/go/eip7702-demo",
     "replit": "https://replit.com/@BNBChainDev/EIP-7702-Demo?embed=true",
     "video": {},
     "guide": "",
     "otherLink": "https://www.bnbchain.org/en/blog/bnb-chain-announces-pascal-hard-fork",
     "imgUrl": "https://cms-static.bnbchain.org/dcms/static/303d0c6a-af8f-4098-a2d0-a5b96ef964ba.png"
+  },
+  {
+    "caseTitle": "PancakeSwap Python Frontend + API Swap Example",
+    "caseDesc": "A complete example to swap tBNB to tokens or BEP-20 to BEP-20 using Flask API and a frontend Trust Wallet-enabled UI on the BNB Testnet.",
+    "tags": [
+      "BSC",
+      "opBNB",
+      "Web3",
+      "Python",
+      "Flask",
+      "PancakeSwap",
+      "TrustWallet"
+    ],
+    "github": "https://github.com/bnb-chain/example-hub/tree/main/python/pancake-swap-example", // <-- Replace with actual
+    "replit": "https://replit.com/@0x11a0/pancake-swap-example",
+    "video": {
+      "type": "youtube",
+      "link": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    },
+    "guide": "https://github.com/bnb-chain/example-hub/blob/main/python/pancake-swap-example/README.md",
+    "otherLink": "",
+    "imgUrl": "https://dex-bin.bnbstatic.com/static/dapp-uploads/O6j-gZp80QCa524NkHfpf"
   }
 ]
