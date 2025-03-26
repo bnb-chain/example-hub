@@ -60,7 +60,7 @@
       "PancakeSwap",
       "TrustWallet"
     ],
-    "github": "https://github.com/bnb-chain/example-hub/tree/main/python/pancake-swap-example", // <-- Replace with actual
+    "github": "https://github.com/bnb-chain/example-hub/tree/main/python/pancake-swap-example",
     "replit": "https://replit.com/@0x11a0/pancake-swap-example",
     "video": {
       "type": "youtube",
