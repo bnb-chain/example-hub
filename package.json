@@ -12,7 +12,8 @@
   ],
   "scripts": {
     "prepare": "husky",
-    "dry-release": "semantic-release -d -e ./packages/.releaserc.js --package=create-bnb-app"
+    "dry-release": "semantic-release -d -e ./packages/.releaserc.js --package=create-bnb-app",
+    "generate:new-example": "tsx ./packages/new-example/index.ts"
   },
   "author": "BNBChain",
   "license": "GPL-3.0-only",
@@ -21,6 +22,8 @@
     "@commitlint/config-conventional": "^19.8.0",
     "@semantic-release/git": "^10.0.1",
     "husky": "^9.1.7",
-    "semantic-release": "^24.2.3"
+    "semantic-release": "^24.2.3",
+    "@types/node": "^22.13.14",
+    "tsx": "^4.19.3"
   }
 }

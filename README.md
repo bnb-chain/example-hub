@@ -54,37 +54,11 @@ To maintain code consistency, install these VS Code extensions before you begin:
 
 ### Steps to Add a New Example
 
-1. **Fork the Repository**: Fork the repository to your GitHub account.
-2. **Create a Feature Branch**: Use a descriptive name (e.g., `feature/new-example`).
-3. **Choose the Appropriate Directory & Create your App Folder**:
-
-    * Python: `./python/your-example-name/.`
-    * TypeScript: `./typescript/your-example-name/.`
-    * Other languages: `./newLanguage/examples/.`
-
-4. **Develop Your Example**: Build your example in the chosen folder, adhering to coding standards (Black for Python,
-   Prettier for TypeScript).
-5. **Provide Documentation**: Include a `README.md` in your example’s folder with clear setup and usage instructions.
-6. **Update `web/list.json`**: Add your example's [metadata](./web/README.md) to
-   `web/list.json`. This is the metadata list for each example, used for frontend display. Here’s a sample entry:
-    ```json
-    {
-      "caseTitle": "Example",
-      "caseDesc": "A brief description of what this example demonstrates.",
-      "tags": ["BSC", "opBNB"],
-      "github": "GitHub repository link for this example.",
-      "replit": "Replit repository link for this example.",
-      "video": {
-        "type": "Type of video source (e.g., youtube, file).",
-        "link": "URL link to the video."
-      },
-      "guide": "Additional guide document link.",
-      "otherLink": "Link to related resource or external page.",
-      "imgUrl": "URL of the thumbnail image."
-    }
-   ```
-7. **Update the Main README**: Add your new example to the [Example List](#example-list).
-8. **Submit a Pull Request**: Submit your changes for review once everything is complete.
+1. Fork the repository to your GitHub account..
+2. Create a feature branch with a descriptive name (e.g., `feature/new-example`).
+3. Run `npm run generate:new-example` to automatically create the required files and folder structure.
+4. Develop and test your example to ensure it functions as intended.
+5. Submit a pull request for review once all changes are finalized.
 
 ### Additional Notes
 
