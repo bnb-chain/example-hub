@@ -27,10 +27,7 @@
     ],
     "github": "https://github.com/bnb-chain/example-hub/tree/main/python/langchain-chatbot",
     "replit": "https://replit.com/@BNBChainDev/BNBChain-LangChain-AgentKit-Python-Version?embed=true#chatbot.py",
-    "video": {
-      "type": "youtube",
-      "link": "https://www.youtube.com/watch?v=lerwxCsPZeU"
-    },
+    "video": {},
     "guide": "",
     "otherLink": "https://www.bnbchain.org/en/solutions/ai-agent",
     "imgUrl": "https://cms-static.bnbchain.org/dcms/static/48d2b530-ec55-4ece-b57a-132ad9c5058e.png"
