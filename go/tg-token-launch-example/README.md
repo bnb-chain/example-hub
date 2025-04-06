@@ -1,78 +1,82 @@
-# BNB Chain Telegram Token Faucet Demo
+# 🧪 BNB Chain Telegram Token Launch & Faucet Demo
 
 ## Introduction
 
-This project is a hands-on, full-stack demonstration of how users can **deploy their own BEP20 tokens**, interact with them via a **Telegram bot**, and access basic token utilities like **faucets** and **balance checks**. Built using **Golang** and deployed on **BNB Chain Testnet**, this example bridges smart contracts, blockchain interaction, and Telegram bot integration.
+This project is a complete hands-on demo for creating and interacting with your own BEP20 token on **BNB Chain Testnet**, using a **Telegram bot interface** and a backend written in **Go**.
 
-Whether you're a developer exploring smart contract automation, a builder prototyping token tools, or just curious about how to hook blockchain into a Telegram experience — this project is for you.
-
----
-
-## What You Will Be Building
-
-By the end of this project, you'll have:
-
-- A **Solidity factory contract** deployed on BNB Chain testnet.
-- A **Telegram bot** written in Go that can:
-  - Deploy a custom BEP20 token for each user
-  - Provide a **faucet** for the user’s own token
-  - Allow balance queries for any wallet address
-- A running backend that uses `go-ethereum` to interact with smart contracts in real-time.
+It showcases how to:
+- Deploy BEP20 tokens via a **Solidity Factory contract**
+- Interact with contracts using **Golang and go-ethereum**
+- Let users manage tokens via a **Telegram Bot**
 
 ---
 
-## Key Learning Points
+## 🔧 What You Will Be Building
 
-- How to create and interact with a **factory smart contract** for BEP20 token deployment
-- How to use **Golang** to:
-  - Send transactions
-  - Call contract methods
-  - Parse event logs
-- How to integrate a **Telegram bot** for blockchain interaction
-- How to manage user token data and provide tailored faucet services
-
----
-
-## Getting Started
-
-### Prerequisites
-
-Make sure you have the following installed:
-
-- Go 1.20+
-- Git
-- Telegram account (to create and use the bot)
-- BNB Chain testnet wallet (with test BNB)
+- A **Solidity factory contract** that deploys ERC20-compatible tokens
+- A **Telegram bot** that lets each user:
+  - Deploy their own token
+  - Use a faucet to send that token
+  - Check token balances
+- A **Golang backend** that listens to the Telegram bot and interacts with contracts in real time
 
 ---
 
-### 1. Clone the Repository
+## 🚀 Getting Started
+
+### ✅ 1. Create Your Wallet (Trust Wallet or MetaMask)
+
+Create a new wallet and switch to **BNB Chain Testnet**.  
+Then grab some test BNB from the official [BNB Faucet](https://testnet.bnbchain.org/faucet-smart).
+
+---
+
+### ✅ 2. Create a Telegram Bot
+
+Use [@BotFather](https://t.me/BotFather) to create a new Telegram bot.
+
+- Run `/newbot` and follow the instructions
+- Save the API token it gives you — you'll need it for `.env`
+
+---
+
+### ✅ 3. Deploy the Factory Contract
+
+You can:
+- Use our deployed example on testnet:  
+  `0xeCb781015873dc48a4c0BCdf3ba74dF9269061C3`
+
+**OR**
+
+- Deploy `Factory.sol` using **Hardhat**, **Foundry**, or **Remix**
+
+---
+
+### ✅ 4. Clone the Repository
 
 ```bash
-git clone https://github.com/bnb-chain/example-hub.git
-cd example-hub/go/bnb-faucet-demo
+git clone https://github.com/your-org/example-hub.git
+cd example-hub/go/tg-token-launch-example
 ```
 
 ---
 
-### 2. Create a `.env` File
+### ✅ 5. Configure Environment Variables
 
-Create a `.env` file in the root of `bnb-faucet-demo`:
+Create a `.env` file:
 
 ```env
-PRIVATE_KEY=your_faucet_wallet_private_key_without_0x
+MNEMONIC=your_mnemonic_phrase_without_quotes
 RPC_URL=https://data-seed-prebsc-1-s1.binance.org:8545/
-CHAIN_ID=97
-TOKEN_FACTORY_ADDRESS=0xYourDeployedFactoryContract
+TOKEN_FACTORY_ADDRESS=0xeCb781015873dc48a4c0BCdf3ba74dF9269061C3
 TG_BOT_TOKEN=your_telegram_bot_api_token
-PORT=8080
 ```
-
-> Make sure your wallet has testnet BNB and the factory contract is deployed to the testnet.
 
 ---
 
-### 3. Install Dependencies
+### ✅ 6. Install Go Dependencies
+
+Make sure you're using **Go 1.20+**:
 
 ```bash
 go mod tidy
@@ -80,89 +84,100 @@ go mod tidy
 
 ---
 
-### 4. Run the Project
+### ✅ 7. Run the Bot
 
 ```bash
-go run main.go
+go run .
 ```
 
-This will start the Telegram bot and the backend faucet logic.
+If everything is set up, you'll see logs showing that the Telegram bot is running.
 
 ---
 
-## How to Use the Telegram Bot
+## 🤖 Telegram Bot Commands
 
-After running the project, talk to your Telegram bot (the one associated with `TG_BOT_TOKEN`) and use these commands:
+After starting your bot, go chat with it on Telegram.
 
-### `/deploy <TokenName> <Symbol>`
+### `/deploy <Name> <Symbol>`
 
-Example:
+Deploys a new BEP20 token for your user.
+
 ```bash
-/deploy MemeToken MEME
+/deploy TestCoin TST
 ```
-
-- Deploys a new BEP20 token for **you** via the factory contract
-- The bot will mint the tokens to the faucet wallet
 
 ---
 
 ### `/faucet <address>`
 
-Example:
-```bash
-/faucet 0xAbC123...456
-```
+Sends 10 tokens of the user’s token to the given wallet address.
 
-- Sends 10 tokens of **your token** to the given address
+```bash
+/faucet 0xYourFriendWallet
+```
 
 ---
 
 ### `/balance <address>`
 
-Example:
+Checks the token balance for the given wallet address.
+
 ```bash
-/balance 0xAbC123...456
+/balance 0xYourWallet
 ```
-
-- Checks the BEP20 balance of the given address **for your token**
 
 ---
 
-## Example Flow
+## ✅ Example User Flow
 
-1. User sends `/deploy TestCoin TST`
-2. Bot responds with deployed token address
-3. User sends `/faucet 0x123...abc`
-4. Bot sends 10 TST to that address
-5. User sends `/balance 0x123...abc`
-6. Bot responds with the token balance for that wallet
+1. User sends `/deploy Meme MEME`
+2. Bot responds: `✅ Token deployed: 0x...`
+3. User sends `/faucet 0xabc...`
+4. Bot sends 10 MEME tokens
+5. User sends `/balance 0xabc...`
+6. Bot replies with token balance
 
 ---
 
-## Project Structure
+## 🗂 Project Structure
 
 ```
-go/bnb-faucet-demo/
+tg-token-launch-example/
+├── Factory.sol          # Solidity factory contract
 ├── main.go              # Entry point
 ├── bot.go               # Telegram bot logic
-├── faucet.go            # Token sending logic
-├── balance.go           # Balance query logic
+├── faucet.go            # Send tokens
+├── balance.go           # Check balances
+├── factory.go           # Deploy tokens via contract
 ├── utils/
-│   └── env.go           # Loads environment variables
-├── .env                 # Your config (not committed)
-├── go.mod
+│   └── env.go           # Loads .env + key derivation
+├── go.mod / go.sum      # Go module dependencies
+├── .env                 # Your local config (not committed)
 └── README.md
 ```
 
 ---
 
-## License
+## 🧠 Learning Points
 
-MIT License
+- Deriving Ethereum wallets from mnemonic phrases (BIP-44)
+- Sending transactions and reading logs using go-ethereum
+- Interacting with deployed smart contracts
+- Parsing custom events in Go
+- Building bots with Telegram Bot API
 
 ---
 
-## Contributions
+## 🪪 License
 
-Pull requests, ideas, and issues are welcome! This is a learning-focused example — feel free to extend it or build your own launchpad product from it.
+MIT — use this as a base to build your own launchpad, faucet, or dev tool.
 
+---
+
+## 🙌 Contributing
+
+PRs and ideas are welcome! This is built for developers looking to quickly bootstrap real-world BNBChain projects.
+
+---
+
+### 🌐 Built with 💛 by the BNB Chain Dev Community

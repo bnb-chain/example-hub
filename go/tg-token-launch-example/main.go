@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bnb-faucet-demo/utils"
+	"tg-token-launch-example/utils"
 )
 
 func main() {

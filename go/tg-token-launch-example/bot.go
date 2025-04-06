@@ -42,7 +42,7 @@ func StartTelegramBot() {
 			if err != nil {
 				bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "Error deploying token: "+err.Error()))
 			} else {
-				userTokens[userID] = tokenAddress
+				userTokens[int64(userID)] = tokenAddress
 				bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "✅ Token deployed: "+tokenAddress))
 			}
 
@@ -51,7 +51,7 @@ func StartTelegramBot() {
 				bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "Usage: /faucet <address>"))
 				continue
 			}
-			tokenAddr := userTokens[userID]
+			tokenAddr := userTokens[int64(userID)]
 			if tokenAddr == "" {
 				bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "❌ You need to /deploy a token first"))
 				continue
@@ -68,7 +68,7 @@ func StartTelegramBot() {
 				bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "Usage: /balance <address>"))
 				continue
 			}
-			tokenAddr := userTokens[userID]
+			tokenAddr := userTokens[int64(userID)]
 			if tokenAddr == "" {
 				bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "❌ You need to /deploy a token first"))
 				continue

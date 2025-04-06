@@ -10,6 +10,8 @@ import (
 	"os"
 	"strings"
 
+	"tg-token-launch-example/utils"
+
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
@@ -26,16 +28,12 @@ func SendToken(tokenAddress string, to string) (string, error) {
 	}
 	defer client.Close()
 
-	privateKeyBytes, err := hex.DecodeString(strings.TrimPrefix(os.Getenv("PRIVATE_KEY"), "0x"))
-	if err != nil {
-		return "", fmt.Errorf("invalid private key: %v", err)
-	}
-	privateKey, err := crypto.ToECDSA(privateKeyBytes)
+	privateKey, err := getPrivateKey()
 	if err != nil {
 		return "", err
 	}
 
-	fromAddress := crypto.PubkeyToAddress(privateKey.Public().(*ecdsa.PublicKey))
+	fromAddress := crypto.PubkeyToAddress(*privateKey.Public().(*ecdsa.PublicKey))
 	nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
 	if err != nil {
 		return "", err
@@ -82,4 +80,28 @@ func SendToken(tokenAddress string, to string) (string, error) {
 
 	log.Printf("✅ Sent tokens to %s, tx: %s", to, signedTx.Hash().Hex())
 	return signedTx.Hash().Hex(), nil
+}
+
+// getPrivateKey retrieves the private key from mnemonic or env
+func getPrivateKey() (*ecdsa.PrivateKey, error) {
+	mnemonic := os.Getenv("MNEMONIC")
+	if mnemonic != "" {
+		privateKey, err := utils.DerivePrivateKeyFromMnemonic(mnemonic)
+		if err != nil {
+			return nil, fmt.Errorf("failed to derive private key from mnemonic: %v", err)
+		}
+		return privateKey, nil
+	}
+
+	rawKey := os.Getenv("PRIVATE_KEY")
+	if rawKey == "" {
+		return nil, fmt.Errorf("neither MNEMONIC nor PRIVATE_KEY is set")
+	}
+
+	privateKeyBytes, err := hex.DecodeString(strings.TrimPrefix(rawKey, "0x"))
+	if err != nil {
+		return nil, fmt.Errorf("invalid PRIVATE_KEY: %v", err)
+	}
+
+	return crypto.ToECDSA(privateKeyBytes)
 }
