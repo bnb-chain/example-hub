@@ -45,7 +45,7 @@ Elevate user engagement by offering meaningful, AI-driven insights into their on
 -   **BNB Chain Wallet:** e.g., MetaMask.
 -   **Testnet BNB:** Required in the deployer/minter wallet (see Step 5) for gas fees. Get from [BNB Chain Testnet Faucet](https://www.bnbchain.org/en/testnet-faucet).
 -   **LLM API Key:** An API key for your chosen LLM service provider (e.g., OpenRouter, OpenAI, Anthropic).
-    *   The default configuration uses OpenRouter. See Step 5 and `env.example` for details on how to configure this and adapt the code if you use a different provider.
+    *   The default configuration uses OpenRouter. See Step 5 and `.env.example` for details on how to configure this and adapt the code if you use a different provider.
 -   **Core Libraries:** `Flask`, `web3.py`, `python-dotenv`, `requests`, `openai` (installed via `requirements.txt`).
 
 ### 2. Clone Repository
@@ -76,11 +76,7 @@ pip install -r requirements.txt
 
 ### 4. Set Up Smart Contract (`ReputationBadge.sol`)
 
-Choose one option:
-
-**Option A: Deploy Your Own Contract (Recommended)**
-
-Follow these steps using Remix IDE to deploy the contract to a BNB Chain Testnet:
+Deploy your own contract. Follow these steps using Remix IDE to deploy the contract to a BNB Chain Testnet:
 
 1.  Open Remix: [https://remix.ethereum.org/](https://remix.ethereum.org/)
 2.  Load Contract: Create `ReputationBadge.sol` in Remix, paste code from the local `contracts/ReputationBadge.sol` file.
@@ -88,35 +84,23 @@ Follow these steps using Remix IDE to deploy the contract to a BNB Chain Testnet
 4.  Deploy Contract: Connect wallet (on Testnet), select `ReputationBadge` contract, deploy, confirm transaction.
 5.  Copy Contract Address: Get the newly deployed contract address from Remix's "Deployed Contracts" section. You will use this in Step 5 (Configure Environment Variables).
 
-**Option B: Use the Pre-Deployed Contract**
-
-A contract has been pre-deployed by the author on the **BSC Testnet** for convenience.
-
-1.  Refer to the `env.example` file in the project root.
-2.  You will find commented-out lines under `--- Option B: Use Pre-Deployed Contract ---` containing the pre-deployed `CONTRACT_ADDRESS` (`0xbcb...`) and the corresponding `RPC_URL` and `TESTNET_SCAN_URL` for BSC Testnet.
-3.  To use this option, edit your actual `.env` file (see Step 5):
-    *   Comment out the `RPC_URL` and `CONTRACT_ADDRESS` lines under `--- Option A ---`.
-    *   Uncomment the `RPC_URL` and `CONTRACT_ADDRESS` lines under `--- Option B ---`.
-    *   Ensure the `TESTNET_SCAN_URL` line corresponding to BSC Testnet is uncommented.
-4.  **Important Note on Minting:** The `PRIVATE_KEY` you set in your `.env` file (see Step 5) must belong to the wallet that owns this pre-deployed contract for the backend minting feature to work directly. If you use a different private key, you can analyze reputations but will not be able to mint via the web UI without modifying the backend code (`src/contract_interaction.py`).
-
 ### 5. Configure Environment Variables
 
 1.  **Create `.env` file (if it doesn't exist):**
     ```bash
-    cp env.example .env
+    cp .env.example .env
     ```
-2.  **Edit `.env`:** Open your `.env` file and configure the settings based on the instructions and examples in `env.example`. Make sure to:
-    *   Choose either **Option A** (your deployed contract) or **Option B** (pre-deployed contract) by commenting/uncommenting the relevant `RPC_URL`, `CONTRACT_ADDRESS`, and `TESTNET_SCAN_URL` lines, as described in `env.example`.
-    *   Set your `PRIVATE_KEY` (ensure it corresponds to the owner of the chosen `CONTRACT_ADDRESS` if you want backend minting).
-    *   Set your `OPENROUTER_API_KEY` (or configure for a different LLM provider as per comments in `env.example`).
+2.  **Edit `.env`:** Open your `.env` file and configure the settings based on the instructions and examples in `.env.example`. Make sure to:
+    *   Set your `RPC_URL`, `CONTRACT_ADDRESS` (from deploying your own contract), and `TESTNET_SCAN_URL`.
+    *   Set your `PRIVATE_KEY` (ensure it corresponds to the owner of the chosen `CONTRACT_ADDRESS` for backend minting).
+    *   Set your `OPENROUTER_API_KEY` (or configure for a different LLM provider as per comments in `.env.example`).
     *   Adjust optional thresholds if desired.
 
     **CRITICAL:** Secure your `PRIVATE_KEY` and LLM `API_KEY`. **Never commit your `.env` file.** Ensure the `PRIVATE_KEY` wallet has Testnet BNB.
 
 ### 6. Update Contract ABI (If You Modified and Deployed Your Own Contract)
 
-If you edited `ReputationBadge.sol` and deployed it yourself (Option A), you MUST copy the new ABI from Remix and paste it into `contracts/ReputationBadge.abi.json`, replacing the old content.
+If you edited `ReputationBadge.sol` and deployed it yourself, you MUST copy the new ABI from Remix and paste it into `contracts/ReputationBadge.abi.json`, replacing the old content.
 
 ## Running the Application
 
