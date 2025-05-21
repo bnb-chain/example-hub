@@ -1,0 +1,28 @@
+{
+  "name": "bnbchain-mcp-with-anthropic",
+  "version": "1.0.0",
+  "description": "An AI-powered blockchain assistant that combines BNBChain MCP with Anthropic's Claude for natural language blockchain interactions",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsx src/index.ts"
+  },
+  "keywords": [
+    "BNBChain",
+    "MCP",
+    "Model Context Protocol"
+  ],
+  "author": "BNBChain",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.40.0",
+    "@bnb-chain/mcp": "^1.3.0",
+    "@modelcontextprotocol/sdk": "^1.10.2",
+    "chalk": "^5.4.1",
+    "dotenv": "^16.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.2",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  }
+}
