@@ -79,5 +79,22 @@
     "guide": "https://github.com/bnb-chain/example-hub/blob/main/go/tg-token-launch-example/README.md",
     "otherLink": "",
     "imgUrl": "https://cms-static.bnbchain.org/dcms/static/303d0c6a-af8f-4098-a2d0-a5b96ef964ba.png"
+  },
+   {
+    "caseTitle": "BNBChain MCP - AI-Powered Blockchain Assistant",
+    "caseDesc": "A ready-to-use template that combines BNB Chain’s MCP with Claude AI, enabling natural language interaction with BNB Smart Chain and Greenfield.",
+    "tags": [
+      "BSC",
+      "Greenfield",
+      "AI",
+      "MCP",
+      "Typescript"
+    ],
+    "github": "https://github.com/bnb-chain/example-hub/tree/main/typescript/bnbchain-mcp",
+    "replit": "https://replit.com/@BNBChainDev/BNBChain-MCP-With-Anthropic??embed=true",
+    "video": {},
+    "guide": "https://github.com/bnb-chain/example-hub/blob/main/typescript/bnbchain-mcp/README.md",
+    "otherLink": "",
+    "imgUrl": "https://cms-static.bnbchain.org/dcms/static/91af5e6c-4ad5-42e2-92fb-4d29920d2963.png"
   }
 ]
