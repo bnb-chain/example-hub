@@ -39,7 +39,7 @@ language, description, and tags to help you find what you need quickly.
 | [python/pancacke-swap](./python/pancake-swap-example)  | Python     | PancakeSwap integration example              | DeFi, DEX, BSC      |
 | [typescript/bnbchain-mcp](./typescript/bnbchain-mcp)   | TypeScript | AI-powered blockchain assistant using Claude | AI, BSC, MCP        |
 | [typescript/eliza-chatbot](./typescript/eliza-chatbot) | TypeScript | A chatbot example using Eliza plugin-bnb     | AI, BSC, opBNB      |
-
+| [n8n/ai-smart-contract-analyzer-bot](./n8n/ai-smart-contract-analyzer-bot) | N8n | A Telegram bot that uses AI to analyze and summarize BNB Chain smart contracts. | AI |
 More examples are coming soon—stay tuned for updates!
 
 ## How to Add a New Example

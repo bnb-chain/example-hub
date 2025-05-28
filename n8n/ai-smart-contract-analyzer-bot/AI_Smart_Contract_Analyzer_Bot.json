@@ -1,0 +1,346 @@
+{
+  "name": "AI Smart Contract Analyzer Bot",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        0
+      ],
+      "id": "d198a89d-11b5-4333-abf8-de99a65402fe",
+      "name": "Telegram Trigger",
+      "webhookId": "9225adb8-de46-4441-9f6c-5cfb4281549e",
+      "credentials": {
+        "telegramApi": {
+          "id": "UJVh87PzOZdX6yVt",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a smart contract analyst AI assistant.\n\nYou will receive a variable called {{ $json.output.contractaddress }}. Your behavior depends on whether the address is valid:\n\n1. If `contractaddress` is **valid** (starts with `0x` and has exactly 42 characters):\n   - You **must** use the tool named `contractanalyzer`.\n   - Pass the contract address to the tool in the following format:\n     ```json\n     {\n       \"contractaddress\": \"<valid_contract_address>\"\n     }\n     ```\n   - The tool will return information about the contract's ABI.\n   - Based on that, output a **very short and simple** explanation of what the smart contract does — no more than 3-4 sentences.\n   - Avoid technical jargon. Write for beginners.\n  - Also include a clear statement on **whether the contract seems potentially risky or safe**, based on the presence of functions like `mint`, `burn`, `owner`, `transferOwnership`, `approve`, or unrestricted access.\n  - Check if the contract **belongs to a well-known and trusted project** such as: USDT (Tether), USDC (Circle), WETH, DAI, BUSD, etc. You may identify this based on typical function names, structure, and common patterns in well-known tokens.\n\n\n2. If `contractaddress` is **empty or invalid**, do **not use the tool**.\n   - Instead, respond to the user's message in a helpful and polite manner.\n   - You may answer general questions, respond to greetings, or have a natural conversation.\n\nAlways remain polite, user-focused, and easy to understand.\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        760,
+        0
+      ],
+      "id": "1ed7969c-1f0f-4cec-b966-1276f77d8488",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        700,
+        220
+      ],
+      "id": "e1b8450c-5f69-44f8-bb2b-831864706fa3",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "M2tZ5jYnuSSkgjjq",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.bscscan.com/api",
+        "sendQuery": true,
+        "specifyQuery": "json",
+        "jsonQuery": "={\n  \"module\": \"contract\",\n  \"action\": \"getabi\",\n  \"address\": \"{{ $json.output.contractaddress }}\",\n  \"apikey\": \"KF3XP7TKZJX3TNA9QBIW98NDKGX1XJ4QSP\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        1020,
+        220
+      ],
+      "id": "b36ce355-0f8c-4c7e-9807-c2874a027fba",
+      "name": "contractanalyzer"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"contractaddress\": {\n\t\t\t\"type\": \"string\"\n\t\t}\n\t}\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        500,
+        220
+      ],
+      "id": "78dab7e9-293c-4c1e-b178-8bbb0e1d3391",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.message.chat.id }}",
+        "contextWindowLength": 12
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        340,
+        240
+      ],
+      "id": "225897a2-2c5f-4d03-ab40-1c1c30f8606a",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        160,
+        220
+      ],
+      "id": "7b767afc-f320-4072-a5bd-dd7274fe51fe",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "M2tZ5jYnuSSkgjjq",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are a helpful and polite AI assistant connected to a Telegram bot.\n\nYour tasks:\n\n1. The user has sent a message: `{{ $json.message.text }}`\n\n2. Check whether the message contains a valid Ethereum-compatible smart contract address.\n   - A valid address starts with `0x` and has exactly 42 characters.\n   - Example: `0x55d398326f99059fF775485246999027B3197955`\n\n3. If a valid smart contract address is found:\n   - Return the following JSON object as output:\n     ```json\n     {\n       \"contractaddress\": \"<detected_contract_address>\"\n     }\n     ```\n\n4. If **no valid address** is found:\n   - Return the following JSON:\n     ```json\n     {\n       \"contractaddress\": \"\"\n     }\n     ```\n\n⚠️ Do not respond to the user directly. Only return structured output for the next node to process."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        320,
+        0
+      ],
+      "id": "6f45a163-6ecf-47dd-a806-936a3d3adaa3",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1120,
+        0
+      ],
+      "id": "a027844d-7230-48a6-97a6-8574aa35fe9e",
+      "name": "Telegram",
+      "webhookId": "51b93e28-cf2a-4df8-92ad-bca4c50e82e8",
+      "credentials": {
+        "telegramApi": {
+          "id": "UJVh87PzOZdX6yVt",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3c7e4e5a-7657-4212-be99-777b11c83ca7",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "/start",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        40,
+        0
+      ],
+      "id": "1c5753f5-8975-4b2f-b7e7-9d0cdddb0aab",
+      "name": "If"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        260,
+        -200
+      ],
+      "id": "29c42370-d602-44d2-8b35-ea25d63c91c6",
+      "name": "No Operation, do nothing"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "contractanalyzer": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f6f1a7bb-33be-4407-9bf5-3633ff0588f1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "020f6dfeb5d2331e877e3f378c9020007c4f3f34c5da54e853ad6f87912f28d2"
+  },
+  "id": "PKUBrXuSkwx3bSEb",
+  "tags": []
+}
