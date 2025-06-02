@@ -8,9 +8,9 @@ ready-to-use resources.
 - [Quick Start](#quick-start)
 - [Example List](#example-list)
 - [How to Add a New Example](#how-to-add-a-new-example)
-    - [Development Setup](#development-setup)
-    - [Steps to Add a New Example](#steps-to-add-a-new-example)
-    - [Additional Notes](#additional-notes)
+  - [Development Setup](#development-setup)
+  - [Steps to Add a New Example](#steps-to-add-a-new-example)
+  - [Additional Notes](#additional-notes)
 - [Feedback](#feedback)
 
 ## Quick Start
@@ -31,11 +31,15 @@ After setup, navigate to the project directory and follow the example's `README.
 Explore a variety of examples for different implementations below. The table includes each example's name, programming
 language, description, and tags to help you find what you need quickly.
 
-| Name                                                   | Language   | Description                              | Tags           |
-|--------------------------------------------------------|------------|------------------------------------------|----------------|
-| [python/langchain-chatbot](./python/langchain-chatbot) | Python     | A chatbot example using LangChain        | AI, BSC, opBNB |
-| [typescript/eliza-chatbot](./typescript/eliza-chatbot) | TypeScript | A chatbot example using Eliza plugin-bnb | AI, BSC, opBNB |
-| [python/ai-wallet-reputation-nft](./python/ai-wallet-reputation-nft) | Python | Wallet reputation system with NFT badges based on on-chain activity | AI, NFT, BSC, Smart Contract |
+| Name                                                   | Language   | Description                                  | Tags                |
+| ------------------------------------------------------ | ---------- | -------------------------------------------- | ------------------- |
+| [go/eip7702](./go/eip7702-demo)                        | Go         | EIP-7702 implementation for BNB Chain        | Smart Contract, EIP |
+| [go/tg-token-launch](./go/tg-token-launch-example)     | Go         | Telegram bot for token launch automation     | Bot, Token Launch   |
+| [python/langchain-chatbot](./python/langchain-chatbot) | Python     | A chatbot example using LangChain            | AI, BSC, opBNB      |
+| [python/pancacke-swap](./python/pancake-swap-example)  | Python     | PancakeSwap integration example              | DeFi, DEX, BSC      |
+| [typescript/bnbchain-mcp](./typescript/bnbchain-mcp)   | TypeScript | AI-powered blockchain assistant using Claude | AI, BSC, MCP        |
+| [typescript/eliza-chatbot](./typescript/eliza-chatbot) | TypeScript | A chatbot example using Eliza plugin-bnb     | AI, BSC, opBNB      |
+| [python/ai-wallet-reputation-nft](./python/ai-wallet-reputation-nft) | Python | Wallet reputation system with NFT badges based on on-chain data | AI, BSC, opBNB |
 
 More examples are coming soon—stay tuned for updates!
 
@@ -55,7 +59,7 @@ To maintain code consistency, install these VS Code extensions before you begin:
 
 ### Steps to Add a New Example
 
-1. Fork the repository to your GitHub account..
+1. Fork the repository to your GitHub account.
 2. Create a feature branch with a descriptive name (e.g., `feature/new-example`).
 3. Run `npm run generate:new-example` to automatically create the required files and folder structure.
 4. Develop and test your example to ensure it functions as intended.
@@ -63,12 +67,11 @@ To maintain code consistency, install these VS Code extensions before you begin:
 
 ### Additional Notes
 
-* Ensure your example works fully and is well-documented for ease of use.
-* Stick to the coding standards to keep the repository consistent.
-* For questions or support, open an issue or reach out to the maintainers.
+- Ensure your example works fully and is well-documented for ease of use.
+- Stick to the coding standards to keep the repository consistent.
+- For questions or support, open an issue or reach out to the maintainers.
 
 ## Feedback
 
 Have ideas to improve this hub or run into any issues? We'd love to hear from you! Please share your thoughts via [GitHub
-Issues](https://github.com/your-repo/issues). Your feedback helps us enhance this resource for all developers.
-
+Issues](https://github.com/bnb-chain/example-hub/issues). Your feedback helps us enhance this resource for all developers.
