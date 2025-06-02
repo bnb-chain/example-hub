@@ -39,7 +39,6 @@ language, description, and tags to help you find what you need quickly.
 | [python/pancacke-swap](./python/pancake-swap-example)  | Python     | PancakeSwap integration example              | DeFi, DEX, BSC      |
 | [typescript/bnbchain-mcp](./typescript/bnbchain-mcp)   | TypeScript | AI-powered blockchain assistant using Claude | AI, BSC, MCP        |
 | [typescript/eliza-chatbot](./typescript/eliza-chatbot) | TypeScript | A chatbot example using Eliza plugin-bnb     | AI, BSC, opBNB      |
-| [python/ai-wallet-reputation-nft](./python/ai-wallet-reputation-nft) | Python | Wallet reputation system with NFT badges based on on-chain data | AI, BSC, opBNB |
 
 More examples are coming soon—stay tuned for updates!
 
