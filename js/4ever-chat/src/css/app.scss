@@ -1,0 +1,80 @@
+@import "flex";
+@import "pos";
+@import "box";
+@import "color";
+@import "text";
+@import "hljs";
+@import "anim";
+
+body {
+  // min-height: 100vh;
+  background: #eceff7;
+  background: linear-gradient(135deg, #fbf6fe, #fff, #c6cedc);
+}
+.safe-btm {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+a {
+  color: #006eff;
+  text-decoration: none;
+}
+a.plain {
+  color: inherit;
+}
+
+.max-wrap {
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.absolute-full {
+  & > .scroll,
+  .q-layout,
+  .q-page-container {
+    height: 100%;
+  }
+}
+
+.hover-1 {
+  cursor: pointer;
+  &:hover {
+    opacity: 0.7;
+  }
+  &:active {
+    opacity: 0.85;
+  }
+}
+.hover-show,
+.hover-show1 {
+  visibility: hidden;
+}
+.hover-wrap:hover .hover-show,
+.hover-wrap1:hover .hover-show1 {
+  visibility: visible;
+}
+
+.s-mb-2 {
+  margin-bottom: 2px;
+}
+
+.label-0 {
+  color: #475569;
+}
+.label-1 {
+  margin-bottom: 4px;
+  font-size: 13px;
+  color: #475569;
+}
+.label-2 {
+  color: #0f172a;
+}
+
+@media screen and (min-width: 600px) {
+  $msg_gap: 38px;
+  .msg-item {
+    padding-right: $msg_gap;
+  }
+  .msg-sent {
+    padding-left: $msg_gap;
+  }
+}

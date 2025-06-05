@@ -1,0 +1,69 @@
+.d-flex,
+.h-flex,
+.al-c {
+  display: flex;
+}
+.d-i-flex {
+  display: inline-flex;
+}
+.d-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.h-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.flex-1 {
+  flex: 1;
+}
+.flex-2 {
+  flex: 2;
+}
+.shrink-0 {
+  flex-shrink: 0;
+}
+.shrink-1 {
+  flex-shrink: 1;
+}
+.flex-wrap,
+.f-wrap {
+  flex-wrap: wrap;
+}
+.flex-col,
+.h-flex {
+  flex-direction: column;
+}
+
+.f-center {
+  justify-content: center;
+}
+.space-btw {
+  justify-content: space-between;
+}
+.space-around {
+  justify-content: space-around;
+}
+.f-end {
+  justify-content: end;
+  justify-content: flex-end;
+}
+
+.al-start {
+  align-items: flex-start;
+}
+.al-self-start {
+  align-self: flex-start;
+}
+.al-self-end {
+  align-self: flex-end;
+}
+.al-c {
+  align-items: center;
+}
+.al-end {
+  align-items: flex-end;
+}

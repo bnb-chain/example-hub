@@ -1,0 +1,103 @@
+body {
+  .d-n {
+    display: none;
+  }
+  .d-b {
+    display: block;
+  }
+  .d-ib {
+    display: inline-block;
+  }
+}
+.m-auto {
+  margin: auto;
+}
+.ml-auto {
+  margin-left: auto;
+}
+.mr-auto {
+  margin-right: auto;
+}
+.mt-auto {
+  margin-top: auto;
+}
+
+.hide {
+  visibility: hidden;
+}
+
+.w100p,
+.wh100p {
+  width: 100%;
+}
+.h100p,
+.wh100p {
+  height: 100%;
+}
+.vh100 {
+  height: 100vh;
+}
+.vw100 {
+  width: 100vw;
+}
+
+@for $i from 9 through 0 {
+  .bdrs-#{$i} {
+    border-radius: #{$i}px;
+  }
+  .op-#{$i} {
+    opacity: #{$i * 0.1};
+  }
+  .pa-#{$i} {
+    padding: #{$i * 4}px;
+  }
+  .px-#{$i} {
+    padding-left: #{$i * 4}px;
+    padding-right: #{$i * 4}px;
+  }
+  .py-#{$i} {
+    padding-top: #{$i * 4}px;
+    padding-bottom: #{$i * 4}px;
+  }
+  .mx-#{$i} {
+    margin-left: #{$i * 4}px;
+    margin-right: #{$i * 4}px;
+  }
+  .my-#{$i} {
+    margin-top: #{$i * 4}px;
+    margin-bottom: #{$i * 4}px;
+  }
+  .m-#{$i} {
+    margin: #{$i * 4}px;
+  }
+}
+@for $i from 9 through 0 {
+  .pt-#{$i} {
+    padding-top: #{$i * 4}px;
+  }
+  .pl-#{$i} {
+    padding-left: #{$i * 4}px;
+  }
+  .pr-#{$i} {
+    padding-right: #{$i * 4}px;
+  }
+  .pb-#{$i} {
+    padding-bottom: #{$i * 4}px;
+  }
+  .mt-#{$i} {
+    margin-top: #{$i * 4}px;
+  }
+  .ml-#{$i} {
+    margin-left: #{$i * 4}px;
+  }
+  .mr-#{$i} {
+    margin-right: #{$i * 4}px;
+  }
+  .mb-#{$i} {
+    margin-bottom: #{$i * 4}px;
+  }
+}
+
+.px-2p {
+  padding: 0 1px;
+}

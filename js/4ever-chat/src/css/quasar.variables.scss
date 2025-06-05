@@ -1,0 +1,93 @@
+// Quasar SCSS (& Sass) Variables
+// --------------------------------------------------
+// To customize the look and feel of this app, you can override
+// the Sass/SCSS variables found in Quasar's source Sass/SCSS files.
+
+// Check documentation for full list of Quasar variables
+
+// Your own variables (that are declared here) and Quasar's own
+// ones will be available out of the box in your .vue/.scss/.sass files
+
+// It's highly recommended to change the default colors
+// to match your app's branding.
+// Tip: Use the "Theme Builder" on Quasar's documentation website.
+
+$primary: #775da6;
+$secondary: #26a69a;
+$accent: #9c27b0;
+
+$dark: #1d1d1d;
+$dark-page: #121212;
+
+$positive: #21ba45;
+$negative: #c10015;
+$info: #94a3b8;
+$warning: #f2c037;
+
+.q-drawer__opener {
+  display: none;
+}
+
+.bd-primary .q-field__control:before {
+  border-color: $primary;
+}
+
+.q-notification {
+  transition: all ease 0.3s;
+}
+
+.q-btn {
+  text-transform: none;
+  img {
+    pointer-events: none;
+  }
+  &.disable {
+    pointer-events: none;
+    .q-btn__content {
+      opacity: 0.2;
+    }
+  }
+}
+.q-btn--dense {
+  padding: 6px;
+  // border-radius: 4px;
+}
+
+.q-field--outlined.q-field--highlighted .q-field__control:after {
+  border-width: 1px;
+}
+.tiny-input {
+  .q-field__control {
+    height: 30px;
+  }
+}
+.no-bd {
+  .q-field--outlined .q-field__control:before {
+    border: none;
+  }
+}
+.q-input.ta-r {
+  input {
+    text-align: right;
+  }
+}
+
+.q-tooltip--style {
+  background: #000;
+  color: #fff;
+  width: auto;
+}
+
+.q-scrollarea.w100p .q-scrollarea__content {
+  width: 100%;
+}
+
+.color-1 {
+  color: $primary;
+}
+
+.q-expansion-item {
+  .q-item__label {
+    color: #475569;
+  }
+}

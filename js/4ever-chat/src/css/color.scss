@@ -1,0 +1,163 @@
+.black {
+  color: #000;
+}
+.gray-3 {
+  color: #333;
+}
+.gray-5 {
+  color: #54576a;
+}
+.gray-6 {
+  color: #6c7789;
+}
+.gray-8 {
+  color: #888;
+}
+.gray {
+  color: #64748b;
+}
+.gray-a {
+  color: #aaa;
+}
+.gray-b {
+  color: #bbb;
+}
+.gray-c0 {
+  color: #c0c4cc;
+}
+
+.orange {
+  color: #ff9800;
+}
+
+.black-6 {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.white {
+  color: #fff;
+}
+.white-5 {
+  color: rgba(255, 255, 255, 0.5);
+}
+.white-6 {
+  color: rgba(255, 255, 255, 0.6);
+}
+.white-8 {
+  color: rgba(255, 255, 255, 0.8);
+}
+.white-9 {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.bg-black-8 {
+  background: rgba(0, 0, 0, 0.8);
+}
+.bg-black-7 {
+  background: rgba(0, 0, 0, 0.7);
+}
+.bg-black-5 {
+  background: rgba(0, 0, 0, 0.5);
+}
+.bg-black-3 {
+  background: rgba(0, 0, 0, 0.3);
+}
+.bg-black-2 {
+  background: rgba(0, 0, 0, 0.18);
+}
+.bg-black-1 {
+  background: rgba(0, 0, 0, 0.04);
+}
+.bg-black {
+  background: #000;
+}
+.bg-gray-3 {
+  background: #333;
+}
+.bg-gray {
+  background: #949fba;
+}
+.bg-f2 {
+  background: #f2f5f9;
+}
+.bg-fff {
+  background: #fff;
+}
+.bg-white-5 {
+  background: rgba(255, 255, 255, 0.5);
+}
+.bg-white-9 {
+  background: rgba(255, 255, 255, 0.9);
+}
+.bg-n {
+  background: none;
+}
+.bg-f9 {
+  background: #f9fbfc;
+}
+.bg-f8 {
+  background: #f8f8f8;
+}
+.bg-f6 {
+  background: #f6f5f8;
+}
+.bg-f7 {
+  background: #f7f9fb;
+}
+.bg-f5 {
+  background: #f5f5f5;
+}
+.bg-f1 {
+  background: #f1f5f9;
+}
+.bg-d0 {
+  background: #d0dae9;
+}
+.bg-80 {
+  background: #808080;
+}
+
+$bdc: #cbd5e1;
+
+.bg-bd {
+  background: $bdc;
+}
+
+.bd-1 {
+  border: 1px solid $bdc;
+}
+.bdl-1 {
+  border-left: 1px solid $bdc;
+}
+.bdr-1,
+.q-drawer--left.q-drawer--bordered {
+  border-right: 1px solid $bdc;
+}
+.bdb-1 {
+  border-bottom: 1px solid $bdc;
+}
+.bdc-f8 {
+  border-color: #f8fafc;
+}
+
+.bg-left {
+  background: #f8fafc;
+}
+.bg-btn-1 {
+  background: #f1f5f9;
+  cursor: pointer;
+}
+.bg-hover-1,
+.bg-hover-2 {
+  cursor: pointer;
+}
+.bg-btn-1:hover,
+.bg-hover-1:hover {
+  background: #e9eff5;
+}
+.bg-hover-2:hover {
+  background: #e6e9ec;
+}
+.bg-btn-on {
+  background: #eaeff4;
+}
