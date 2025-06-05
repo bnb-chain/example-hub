@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BNB Chain AI Reputation Badge Demo</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; padding: 20px; max-width: 700px; margin: auto; background-color: #f4f4f4; color: #333; }
+        .container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #0b79a3; text-align: center; margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; }
+        input[type="text"] { width: calc(100% - 22px); padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px; }
+        button { background-color: #0b79a3; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; transition: background-color 0.3s ease; margin-top: 10px; }
+        button:hover { background-color: #085f80; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        .result { margin-top: 25px; padding: 20px; background: #e9f7fd; border-left: 5px solid #0b79a3; border-radius: 4px; display: none; }
+        .result h2 { margin-top: 0; color: #085f80; font-size: 1.3em; border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 15px; }
+        .result p { margin-bottom: 10px; }
+        .result strong { color: #333; }
+        .result pre { background: #eee; padding: 10px; border-radius: 4px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; font-size: 0.9em; }
+        .error { color: #d9534f; font-weight: bold; margin-top: 15px; }
+        .success { color: #5cb85c; font-weight: bold; }
+        .info { color: #5bc0de; font-weight: bold; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #0b79a3; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; margin: 15px 0; display: none; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        code { background-color: #e9ecef; padding: 0.2em 0.4em; border-radius: 3px; font-size: 0.9em; }
+        ol { padding-left: 20px; margin-top: 0.5rem; }
+        li { margin-bottom: 0.3rem; }
+        /* Add style for preview container */
+        #badgePreview { 
+            margin-top: 15px; 
+            margin-bottom: 15px; 
+            max-width: 150px; 
+            margin-left: auto; /* Center block */
+            margin-right: auto; /* Center block */
+        }
+        #badgePreview svg { display: block; width: 100%; height: auto; } 
+
+        /* Score Bar Styles */
+        .score-visualization { margin-bottom: 15px; }
+        .score-label { font-size: 0.9em; color: #555; margin-bottom: 3px; }
+        .score-bar-container { 
+            width: 100%; 
+            background-color: #e0e0e0; 
+            border-radius: 5px; 
+            overflow: hidden; /* Keep inner bar rounded */
+            height: 18px; 
+        }
+        .score-bar { 
+            height: 100%; 
+            width: 0%; /* Start at 0, JS will set width */
+            background-color: #ccc; /* Default/Error */
+            border-radius: 5px; 
+            transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out; 
+            text-align: center; /* Center score text inside bar */
+            color: white;
+            font-size: 0.8em;
+            line-height: 18px; /* Vertically center text */
+            font-weight: bold;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+        }
+        /* Category Colors */
+        .score-bar.newcomer { background-color: #607D8B; } /* Grey */
+        .score-bar.explorer { background-color: #A1887F; } /* Brown */
+        .score-bar.contributor { background-color: #4CAF50; } /* Green */
+        .score-bar.veteran { background-color: #3F51B5; } /* Indigo */
+        .score-bar.legend { background-color: #FFC107; } /* Amber */
+
+        /* Center Analyze Button */
+        .analyze-button-container { text-align: center; margin-bottom: 20px; } 
+        label { /* ... existing styles ... */ }
+        input[type="text"] { /* ... existing styles ... */ }
+        button { /* ... existing styles ... */ }
+        /* Adjust button margin since container handles spacing */
+        .analyze-button-container button { margin-top: 0; } 
+
+        /* Style for Rationale */
+        #resultRationale { 
+            background-color: #d1ecf1; /* Lighter blue */
+            border: 1px solid #bee5eb;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            font-style: italic;
+            color: #0c5460; /* Darker blue text */
+        }
+        #resultRationale strong { 
+            font-style: normal; 
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>BNB Chain AI Reputation Badge Demo</h1>
+        
+        <label for="walletAddress">Enter BNB Chain Wallet Address (Testnet):</label>
+        <input type="text" id="walletAddress" name="walletAddress" placeholder="e.g., 0xD81c6e09664D35f97F53A6E9732dae09CfB958a6">
+        
+        <div class="analyze-button-container">
+            <button id="analyzeButton">Analyze Reputation</button>
+        </div>
+        <div id="loader" class="loader"></div>
+
+        <div id="resultArea" class="result">
+            <h2>Reputation Analysis</h2>
+            <!-- SVG Preview -->
+            <div id="badgePreview"></div> 
+
+            <!-- Score Visualization -->
+            <div class="score-visualization">
+                <div class="score-label">Reputation Score: <span id="resultScoreValue">0</span>/100</div>
+                <div class="score-bar-container">
+                    <div id="scoreBar" class="score-bar"></div>
+                </div>
+            </div>
+
+            <p><strong>Address:</strong> <span id="resultAddress"></span></p>
+            <p><strong>Category:</strong> <span id="resultCategory"></span></p>
+            
+            <!-- Added AI Rationale Section -->
+            <div id="resultRationale"><p><strong>AI Rationale:</strong> <span id="rationaleText">Generating...</span></p></div>
+
+            <p><strong>Details (Raw):</strong></p>
+            <pre id="resultDetails"></pre>
+
+            <div id="mintSection" style="margin-top: 20px;">
+                <hr>
+                <p id="badgeStatus"></p>
+                <button id="mintButton" style="display: none;">Mint This Badge</button> 
+                <p id="mintResult"></p>
+                 <div id="metamaskInstructions" style="display: none; margin-top: 1rem; font-size: 0.9em;">
+                    <h6>How to Add NFT to MetaMask:</h6>
+                    <ol>
+                        <li>Open MetaMask and ensure you're on <strong>BSC Testnet</strong>.</li>
+                        <li>Go to the <strong>NFTs</strong> tab.</li>
+                        <li>Click <strong>Import NFTs</strong>.</li>
+                        <li>Enter Contract Address: <code id="mmContract"></code></li>
+                        <li>Enter Token ID: <code id="mmTokenId"></code></li>
+                        <li>Click <strong>Import</strong>.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <p id="errorArea" class="error" style="display: none;"></p>
+    </div>
+
+    <script>
+        const analyzeButton = document.getElementById('analyzeButton');
+        const mintButton = document.getElementById('mintButton');
+        const walletAddressInput = document.getElementById('walletAddress');
+        const resultArea = document.getElementById('resultArea');
+        const errorArea = document.getElementById('errorArea');
+        const badgeStatus = document.getElementById('badgeStatus');
+        const mintResult = document.getElementById('mintResult');
+        const metamaskInstructions = document.getElementById('metamaskInstructions');
+        const loader = document.getElementById('loader');
+        const badgePreviewDiv = document.getElementById('badgePreview'); 
+        const scoreBar = document.getElementById('scoreBar'); // Get score bar element
+        const scoreValueSpan = document.getElementById('resultScoreValue'); // Get score value span
+        const resultAddressSpan = document.getElementById('resultAddress');
+        const resultCategorySpan = document.getElementById('resultCategory');
+        const resultDetailsPre = document.getElementById('resultDetails');
+        const rationaleTextSpan = document.getElementById('rationaleText'); // Added
+        
+        // Constants passed from Flask template rendering
+        const contractAddress = "{{ contract_address }}"; 
+        const bscScanUrl = "{{ bsc_scan_url }}"; 
+
+        let currentAnalyzedAddress = null;
+        let currentReputationData = null;
+
+        /**
+         * Shows or hides the loading indicator and disables/enables buttons.
+         * @param {boolean} show - True to show loader, false to hide.
+         */
+        function showLoader(show) {
+            loader.style.display = show ? 'block' : 'none';
+            analyzeButton.disabled = show;
+            if (mintButton) mintButton.disabled = show;
+        }
+
+        /**
+         * Displays an error message in the designated error area.
+         * @param {string} message - The error message to display.
+         */
+        function showError(message) {
+            errorArea.textContent = message;
+            errorArea.style.display = 'block';
+            resultArea.style.display = 'none'; // Hide result area when showing error
+        }
+
+        /**
+         * Hides the error message area.
+         */
+        function hideError() {
+            errorArea.style.display = 'none';
+        }
+
+        /**
+         * Resets the UI elements related to analysis and minting results.
+         */
+        function resetResultUI() {
+            resultArea.style.display = 'none';
+            mintButton.style.display = 'none';
+            badgeStatus.textContent = '';
+            mintResult.innerHTML = '';
+            metamaskInstructions.style.display = 'none';
+            badgePreviewDiv.innerHTML = ''; 
+            scoreBar.style.width = '0%'; 
+            scoreBar.textContent = ''; 
+            scoreBar.className = 'score-bar'; 
+            scoreValueSpan.textContent = '0'; 
+            rationaleTextSpan.textContent = 'Generating...'; // Reset rationale
+            // Clear other spans if needed
+            resultAddressSpan.textContent = '';
+            resultCategorySpan.textContent = '';
+            resultDetailsPre.textContent = '';
+        }
+
+        /**
+         * Updates the UI elements with the analysis results.
+         * @param {object} data - The analysis data object from the backend.
+         */
+        function displayAnalysisResults(data) {
+            const actualAddress = data.details?.address; // Use optional chaining
+            if (!actualAddress) {
+                console.error("Address missing in details object from /analyze response:", data);
+                showError('Analysis response malformed (missing address).');
+                return false; // Indicate failure
+            }
+            currentAnalyzedAddress = actualAddress; // Store the validated address
+            
+            // Display basic info
+            resultAddressSpan.textContent = actualAddress;
+            resultCategorySpan.textContent = data.category || 'N/A'; // Handle missing category
+            scoreValueSpan.textContent = data.score !== undefined ? data.score : 'N/A'; // Handle missing score
+            resultDetailsPre.textContent = JSON.stringify(data.details || {}, null, 2);
+            rationaleTextSpan.textContent = data.rationale || 'N/A'; // Display the rationale
+            
+            // Display SVG Preview
+            if (data.badge_svg_preview) {
+                badgePreviewDiv.innerHTML = data.badge_svg_preview; 
+            } else {
+                badgePreviewDiv.innerHTML = '<p class="info">No badge preview available.</p>'; // Use info class
+            }
+            
+            // Update Score Bar
+            const score = parseInt(data.score, 10) || 0;
+            const categoryClass = data.category ? data.category.toLowerCase().replace(' ', '-') : 'unknown';
+            scoreBar.style.width = `${score}%`;
+            scoreBar.textContent = `${score}%`; 
+            scoreBar.className = `score-bar ${categoryClass}`; 
+
+            resultArea.style.display = 'block'; // Show the results section
+            return true; // Indicate success
+        }
+
+        /**
+         * Checks the badge holding status for a given address and updates the UI.
+         * @param {string} address - The wallet address to check.
+         */
+        async function checkBadgeStatus(address) {
+            if (!address) {
+                console.error("checkBadgeStatus called with invalid address:", address);
+                badgeStatus.innerHTML = '<span class="error">Internal error: Invalid address for badge check.</span>';
+                return;
+            }
+            
+            badgeStatus.textContent = 'Checking badge status...';
+            mintButton.style.display = 'none'; // Hide button while checking
+            mintResult.innerHTML = ''; // Clear previous mint result
+            metamaskInstructions.style.display = 'none'; // Hide instructions
+
+            const requestBody = { address: address };
+
+            try {
+                const response = await fetch('/check_badge', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+                const result = await response.json();
+                
+                if (response.ok) {
+                    if (result.has_badge) {
+                        // Address already has a badge
+                        badgeStatus.innerHTML = `
+                            <span class="info">This address already holds a reputation badge.</span><br>
+                            <span style="font-size: 0.9em;">View the 
+                            <a href="${bscScanUrl}/token/${contractAddress}?a=${address}" target="_blank" rel="noopener noreferrer">contract on BscScan</a> 
+                            or add it to your wallet.</span>`;
+                        mintButton.style.display = 'none';
+                    } else if (currentReputationData) { 
+                        // Eligible to mint (any category, as long as analysis ran and no badge exists)
+                        badgeStatus.textContent = 'Eligible for minting.';
+                        mintButton.textContent = `Mint '${currentReputationData.category}' Badge`;
+                        mintButton.style.display = 'inline-block';
+                        mintButton.disabled = false; // Ensure button is enabled
+                    } else {
+                        // Not eligible - provide specific reason
+                        // This block should now rarely be hit if analysis succeeded, 
+                        // but kept as a fallback.
+                        if (!currentReputationData) {
+                             badgeStatus.innerHTML = '<span class="error">Not eligible: Analysis data seems to be missing. Please try analyzing again.</span>';
+                        } else {
+                             // Fallback for any other unexpected case
+                             badgeStatus.innerHTML = '<span class="info">Not eligible for minting at this time.</span>';
+                        }
+                        mintButton.style.display = 'none';
+                    }
+                } else {
+                    console.error('/check_badge request failed. Status:', response.status, 'Result:', result);
+                    badgeStatus.innerHTML = `<span class="error">Could not check badge status: ${result.error || 'Unknown error'}.</span>`;
+                }
+            } catch (error) {
+                console.error('Fetch error in checkBadgeStatus:', error);
+                badgeStatus.innerHTML = `<span class="error">Network error checking badge status: ${error}</span>`;
+            }
+        }
+
+        /**
+         * Updates the UI after a successful mint operation.
+         * @param {object} result - The success data from the /mint endpoint.
+         */
+        function handleMintSuccess(result) {
+            const txUrl = `${bscScanUrl}/tx/0x${result.tx_hash}`; 
+            mintResult.innerHTML = `<span class="success">Badge minted successfully! Tx: <a href="${txUrl}" target="_blank" rel="noopener noreferrer">View on BscScan</a> (Token ID: ${result.tokenId})</span>`;
+            
+            // Directly update badge status to "already holds"
+            badgeStatus.innerHTML = `
+                <span class="info">This address now holds a reputation badge.</span><br>
+                <span style="font-size: 0.9em;">View the 
+                <a href="${bscScanUrl}/token/${contractAddress}?a=${currentAnalyzedAddress}" target="_blank" rel="noopener noreferrer">contract on BscScan</a> 
+                or add it to your wallet.</span>`;
+            
+            // Hide the mint button permanently for this session/analysis
+            mintButton.style.display = 'none'; 
+            
+            // Show MetaMask instructions
+            document.getElementById('mmContract').textContent = contractAddress;
+            document.getElementById('mmTokenId').textContent = result.tokenId;
+            metamaskInstructions.style.display = 'block';
+        }
+
+        /**
+         * Updates the UI after a failed mint operation.
+         * @param {object} result - The failure data from the /mint endpoint.
+         */
+        function handleMintFailure(result) {
+            const txHashPart = result.tx_hash ? ` (Tx Attempt: 0x${result.tx_hash})` : ''; 
+            mintResult.innerHTML = `<span class="error">Minting failed: ${result.message || 'Unknown error'}${txHashPart}</span>`;
+            // Re-check status in case user wants to retry after fixing issue (e.g., funding minter)
+            checkBadgeStatus(currentAnalyzedAddress); 
+        }
+
+
+        // --- Event Listeners ---
+
+        analyzeButton.addEventListener('click', async () => {
+            const address = walletAddressInput.value.trim();
+            
+            // --- Frontend Address Validation ---
+            hideError(); // Clear previous errors first
+            const addressPattern = /^0x[a-fA-F0-9]{40}$/;
+            if (!address) {
+                showError('Please enter a wallet address.');
+                return;
+            }
+            if (!addressPattern.test(address)) {
+                showError('Invalid address format. Must be 42 hex characters starting with 0x.');
+                return;
+            }
+            // --- End Validation ---
+            
+            currentAnalyzedAddress = null; // Clear previous address until validated by backend
+            currentReputationData = null; // Clear previous data
+            resetResultUI(); // Reset UI elements
+            showLoader(true);
+            rationaleTextSpan.textContent = 'Generating...'; // Set rationale to loading state
+
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ address: address })
+                });
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    currentReputationData = result.data; // Store the full data object
+                    const displaySuccess = displayAnalysisResults(result.data);
+                    if (displaySuccess) {
+                        // Now, only check if the category is NOT "Error". 
+                        // If analysis was successful (any category, including Newcomer), check badge status.
+                        if (result.data.category !== "Error") {
+                           await checkBadgeStatus(currentAnalyzedAddress); 
+                        } else {
+                            // This case handles if analyze_address_reputation itself returned category "Error"
+                            badgeStatus.textContent = 'Analysis resulted in an error, minting not possible.';
+                            mintButton.style.display = 'none';
+                        }
+                    }
+                } else {
+                    console.error("Analysis request failed. Status:", response.status, "Result:", result);
+                    showError(result.error || 'Analysis failed.');
+                    rationaleTextSpan.textContent = result.data?.rationale || 'Analysis failed.'; 
+                }
+            } catch (error) {
+                console.error("Error during analysis fetch:", error);
+                showError('Network error during analysis: ' + error);
+                rationaleTextSpan.textContent = 'Error during analysis.';
+            } finally {
+                showLoader(false);
+            }
+        });
+
+
+        mintButton.addEventListener('click', async () => {
+            if (!currentAnalyzedAddress || !currentReputationData) {
+                showError("Cannot mint: Analysis data is missing or invalid. Please analyze first.");
+                return;
+            }
+
+            hideError();
+            badgeStatus.textContent = ''; // Clear eligibility message
+            mintResult.textContent = 'Minting in progress... please wait.';
+            metamaskInstructions.style.display = 'none';
+            showLoader(true);
+            mintButton.style.display = 'none'; // Hide during minting
+
+            const requestBody = {
+                address: currentAnalyzedAddress, 
+                reputation_data: currentReputationData 
+            };
+
+            try {
+                const response = await fetch('/mint', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    handleMintSuccess(result);
+                } else {
+                    handleMintFailure(result);
+                }
+            } catch (error) {
+                 console.error("Error during /mint fetch:", error);
+                 mintResult.innerHTML = `<span class="error">Network error during minting: ${error}</span>`;
+                 // Also re-check status on general fetch errors
+                 checkBadgeStatus(currentAnalyzedAddress); 
+            } finally {
+                showLoader(false);
+                // Mint button display is handled within success/failure handlers
+            }
+        });
+
+    </script>
+</body>
+</html> 
