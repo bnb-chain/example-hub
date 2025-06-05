@@ -1,0 +1,50 @@
+{
+  "name": "chat-ai",
+  "version": "0.0.1",
+  "description": "A Quasar Project",
+  "productName": "chat",
+  "author": "4everland",
+  "private": true,
+  "scripts": {
+    "dev": "quasar dev",
+    "b": "quasar build",
+    "p": "npm run b && 4ever-hosting deploy",
+    "p1": "4ever-hosting deploy",
+    "lint": "eslint --ext .js,.vue ./",
+    "format": "prettier --write \"**/*.{js,vue,scss,html,md,json}\" --ignore-path .gitignore",
+    "test": "echo \"No test specified\" && exit 0"
+  },
+  "dependencies": {
+    "@quasar/extras": "^1.0.0",
+    "axios": "^0.21.1",
+    "compressorjs": "^1.2.1",
+    "jazzicon": "^1.5.0",
+    "js-audio-recorder": "^1.0.7",
+    "markdown-it": "^13.0.1",
+    "markdown-it-highlightjs": "^4.0.1",
+    "md5": "^2.3.0",
+    "quasar": "^2.6.0",
+    "sse": "https://github.com/mpetazzoni/sse.js",
+    "vue": "^3.0.0",
+    "vue-i18n": "^9.0.0",
+    "vue-router": "^4.0.0",
+    "vuex": "^4.0.1"
+  },
+  "devDependencies": {
+    "@intlify/vite-plugin-vue-i18n": "^3.3.1",
+    "@quasar/app-vite": "^1.0.0",
+    "autoprefixer": "^10.4.2",
+    "eslint": "^8.10.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-vue": "^9.0.0",
+    "postcss": "^8.4.14",
+    "prettier": "^2.5.1"
+  },
+  "engines": {
+    "node": "^18 || ^16 || ^14.19",
+    "npm": ">= 6.13.4",
+    "yarn": ">= 1.21.1"
+  },
+  "main": ".eslintrc.js",
+  "license": "ISC"
+}

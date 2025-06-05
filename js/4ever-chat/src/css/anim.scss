@@ -1,0 +1,38 @@
+.trans-100 {
+  transition: all ease 100ms;
+}
+.trans-200 {
+  transition: all ease 200ms;
+}
+.trans-300 {
+  transition: all ease 300ms;
+}
+.up-down {
+  transform: rotate(180deg);
+}
+
+.scale-9 {
+  transform: scale(0.9);
+}
+.scale-16 {
+  transform: scale(1.6);
+}
+
+.anim_show {
+  animation: anim_show 2s ease infinite;
+}
+@keyframes anim_show {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
