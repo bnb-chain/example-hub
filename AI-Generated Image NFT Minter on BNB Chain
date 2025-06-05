@@ -1,0 +1,63 @@
+// AI NFT Minter on BNB Chain
+
+// Smart Contract: contracts/BNBAIImageNFT.sol
+pragma solidity ^0.8.17;
+
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract BNBAIImageNFT is ERC721URIStorage, Ownable {
+    uint256 public tokenCounter;
+
+    constructor() ERC721("AI Image NFT", "AINFT") {
+        tokenCounter = 0;
+    }
+
+    function mintNFT(address to, string memory tokenURI) public onlyOwner returns (uint256) {
+        uint256 newTokenId = tokenCounter;
+        _safeMint(to, newTokenId);
+        _setTokenURI(newTokenId, tokenURI);
+        tokenCounter++;
+        return newTokenId;
+    }
+}
+
+// React Frontend Snippet: src/components/Minter.js
+import { useState } from 'react';
+import { ethers } from 'ethers';
+import ABI from '../abi/BNBAIImageNFT.json';
+
+const CONTRACT_ADDRESS = "YOUR_DEPLOYED_CONTRACT_ADDRESS";
+
+function Minter() {
+  const [prompt, setPrompt] = useState('');
+  const [image, setImage] = useState(null);
+
+  const generateImage = async () => {
+    const response = await fetch('/api/generate', {
+      method: 'POST',
+      body: JSON.stringify({ prompt }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const data = await response.json();
+    setImage(data.imageUrl);
+  };
+
+  const mintNFT = async () => {
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+
+    const metadata = {
+      name: prompt,
+      description: `AI generated image for prompt: ${prompt}`,
+      image: image,
+    };
+
+    const res = await fetch('https://api.pinata.cloud/pinning/pinJSONToIPFS', {
+      method: 'POST',
+      body: JSON.stringify(metadata),
+      headers: {
+        'Content-Type': 'application/json',
+        'pinata_api_key': 'YOUR_API_KEY',
+        'pinata_secret_api
