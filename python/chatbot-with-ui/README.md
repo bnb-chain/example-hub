@@ -38,12 +38,12 @@ uv sync
 ### Set ENV Vars
 
 - Ensure the following ENV Vars are set:
-  - PRIVATE_KEY
-  - BSC_PROVIDER_URL
-  - OPBNB_PROVIDER_URL
-  - OPENAI_API_KEY
+  - BSC_PROVIDER_URL (optional)
+  - OPBNB_PROVIDER_URL (optional)
   - BSCSCAN_API_KEY (optional)
+  - PRIVATE_KEY (required)
+  - OPENAI_API_KEY (required)
 
 ```bash
-uv run chatbot.py
+fastapi dev api-wrapper.py
 ```
