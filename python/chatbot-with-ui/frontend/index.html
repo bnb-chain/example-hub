@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BNB Chain Chatbot</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bnb-yellow: #f3ba2f;
+        --bnb-black: #1c1c1c;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #0a0a0a;
+      }
+      .gradient-text {
+        background: linear-gradient(90deg, var(--bnb-yellow) 0%, #f3ba2f 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .message-bubble {
+        backdrop-filter: blur(10px);
+      }
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: #1c1c1c;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: var(--bnb-yellow);
+        border-radius: 3px;
+      }
+      /* Markdown styling */
+      .markdown-content h1,
+      .markdown-content h2,
+      .markdown-content h3 {
+        color: var(--bnb-yellow);
+        margin-top: 1.5em;
+        margin-bottom: 0.5em;
+        font-weight: 600;
+      }
+      .markdown-content h1 {
+        font-size: 1.5em;
+      }
+      .markdown-content h2 {
+        font-size: 1.3em;
+      }
+      .markdown-content h3 {
+        font-size: 1.1em;
+      }
+      .markdown-content ul,
+      .markdown-content ol {
+        margin-left: 1.5em;
+        margin-bottom: 1em;
+      }
+      .markdown-content li {
+        margin-bottom: 0.5em;
+      }
+      .markdown-content code {
+        background-color: rgba(243, 186, 47, 0.1);
+        padding: 0.2em 0.4em;
+        border-radius: 0.3em;
+        font-family: monospace;
+      }
+      .markdown-content pre {
+        background-color: #1c1c1c;
+        padding: 1em;
+        border-radius: 0.5em;
+        overflow-x: auto;
+        margin: 1em 0;
+      }
+      .markdown-content pre code {
+        background-color: transparent;
+        padding: 0;
+      }
+      .markdown-content blockquote {
+        border-left: 4px solid var(--bnb-yellow);
+        margin: 1em 0;
+        padding-left: 1em;
+        color: #888;
+      }
+      .markdown-content a {
+        color: var(--bnb-yellow);
+        text-decoration: underline;
+      }
+      .markdown-content table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 1em 0;
+      }
+      .markdown-content th,
+      .markdown-content td {
+        border: 1px solid #2a2a2a;
+        padding: 0.5em;
+        text-align: left;
+      }
+      .markdown-content th {
+        background-color: #1c1c1c;
+      }
+    </style>
+  </head>
+  <body class="bg-[#0A0A0A] text-white">
+    <div id="root"></div>
+    <script type="text/babel" src="app.js"></script>
+  </body>
+</html>
