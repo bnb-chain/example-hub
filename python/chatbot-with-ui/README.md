@@ -23,6 +23,8 @@ The chatbot can assist with various BNB Chain operations provided by the agent k
 - Transaction details and history
 - Market information
 
+![Screenshot of UI](./ui_screenshot.png)
+
 ## Prerequisites
 
 - Python 3.12+
