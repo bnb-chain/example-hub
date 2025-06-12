@@ -1,0 +1,50 @@
+{
+  "name": "@4everland/hosting-mcp",
+  "version": "0.1.1",
+  "description": "4EVERLAND Hosting MCP Server Tool",
+  "scripts": {
+    "build": "tsc",
+    "serve": "node build/server.js",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "4ever",
+    "4everhosting",
+    "4everland",
+    "mcpserver",
+    "hosting"
+  ],
+  "author": "4EVERLAND",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.12.2"
+  },
+  "type": "module",
+  "bin": {
+    "4everhosting-mcpserver": "build/server.js"
+  },
+  "files": [
+    "build"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/4everland/4everland-hosting-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/4everland/4everland-hosting-mcp/issues"
+  },
+  "homepage": "https://github.com/4everland/4everland-hosting-mcp#readme",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "archiver": "^7.0.1",
+    "axios": "^1.9.0",
+    "commander": "^14.0.0",
+    "form-data": "^4.0.3",
+    "zod": "^3.25.57"
+  },
+  "devDependencies": {
+    "@types/archiver": "^6.0.3",
+    "@types/node": "^24.0.0",
+    "typescript": "^5.2.2"
+  }
+}
