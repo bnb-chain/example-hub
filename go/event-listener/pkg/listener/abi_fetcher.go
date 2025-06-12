@@ -12,7 +12,10 @@ func FetchABIFromBscScan(address string, apiKey string) (string, error) {
 	if apiKey != "" {
 		url += fmt.Sprintf("&apikey=%s", apiKey)
 	}
+	return fetchABIFromURL(url)
+}
 
+func fetchABIFromURL(url string) (string, error) {
 	resp, err := http.Get(url)
 	if err != nil {
 		return "", fmt.Errorf("failed to fetch ABI from BscScan: %w", err)
