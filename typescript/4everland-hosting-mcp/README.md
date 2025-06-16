@@ -6,7 +6,7 @@
 
 ---
 
-A Model Context Protocol (MCP) server implementation for [4EVERLAND Hosting](https://docs.4everland.org/hosting/what-is-hosting) that enables instant deployment of AI-generated code to decentralized storage networks including Greenfield, IPFS, and Arweave.
+A Model Context Protocol (MCP) server implementation for [4EVERLAND Hosting](https://docs.4everland.org/hosting/what-is-hosting).You can deploy your dApp to decentralized networks like Greenfield, IPFS and Arweave with simple AI Chat interface and instantly get an accessible domain. Enjoy the ease, speed, and global reach—zero tech hassle! Let me know if you need adjustments!
 
 ## Usage
 
