@@ -3,6 +3,7 @@ import json
 import logging
 import base64 # Needed for SVG encoding
 import math # Needed for radiating lines calculation
+import requests # For IPFS pinning
 from web3 import Web3
 from web3.middleware.proof_of_authority import ExtraDataToPOAMiddleware # Correct import for v6+
 from dotenv import load_dotenv
@@ -20,8 +21,18 @@ PRIVATE_KEY = os.getenv("PRIVATE_KEY")
 CONTRACT_ADDRESS = os.getenv("CONTRACT_ADDRESS")
 ABI_PATH = os.path.join(os.path.dirname(__file__), '..', 'contracts', 'ReputationBadge.abi.json')
 
+# --- New: Pinata Configuration for IPFS ---
+PINATA_JWT = os.getenv("PINATA_JWT")
+# Use the pinFileToIPFS endpoint, which is recommended for JWT authentication
+PINATA_API_URL = "https://api.pinata.cloud/pinning/pinFileToIPFS"
+
 if not RPC_URL or not PRIVATE_KEY or not CONTRACT_ADDRESS:
     raise ValueError("Missing required environment variables: RPC_URL, PRIVATE_KEY, CONTRACT_ADDRESS")
+
+if not PINATA_JWT:
+    logger.warning("PINATA_JWT is not set. Minting will fail. Please add it to your .env file.")
+    # We don't raise an error here to allow other parts of the app to run,
+    # but minting will be disabled.
 
 # --- Web3 Setup ---
 w3 = Web3(Web3.HTTPProvider(RPC_URL))
@@ -156,43 +167,98 @@ def check_if_has_badge(recipient_address: str) -> bool:
         # Default to assuming they might have one to prevent accidental mints on error
         return True
 
-def generate_token_uri(recipient_address: str, reputation_data: dict) -> str:
+def _pin_json_to_ipfs(json_content: dict, pinata_metadata: dict, recipient_address: str) -> str | None:
     """
-    Generates a token URI containing inline SVG metadata.
+    Uploads a JSON payload by treating it as a file to Pinata and returns the IPFS hash (CID).
+    This method aligns with the JWT-based authentication which uses multipart/form-data.
+    """
+    if not PINATA_JWT:
+        logger.error("Cannot upload to IPFS: PINATA_JWT is not configured.")
+        return None
+        
+    headers = {
+        "Authorization": f"Bearer {PINATA_JWT}",
+    }
+    
+    # The file content for the multipart request. The filename is arbitrary.
+    files = {
+        'file': (f'{recipient_address}.json', json.dumps(json_content), 'application/json')
+    }
+
+    # The metadata for the pin itself, sent as a separate form field.
+    form_data = {
+        'pinataMetadata': json.dumps(pinata_metadata)
+    }
+
+    try:
+        response = requests.post(
+            PINATA_API_URL, 
+            files=files, 
+            data=form_data, 
+            headers=headers, 
+            timeout=10
+        )
+        response.raise_for_status()  # Raise an exception for bad status codes (like 403)
+        result = response.json()
+        ipfs_hash = result.get("IpfsHash")
+        logger.info(f"Successfully pinned JSON as file to IPFS. CID: {ipfs_hash}")
+        return ipfs_hash
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error uploading file to Pinata IPFS: {e}")
+        if e.response is not None:
+            logger.error(f"Pinata API response text: {e.response.text}")
+        return None
+
+def _generate_and_upload_metadata_to_ipfs(recipient_address: str, reputation_data: dict) -> str | None:
+    """
+    Generates SVG and metadata, then uploads the metadata JSON as a file to IPFS.
     """
     category = reputation_data.get('category', 'Unknown')
 
     # 1. Generate the SVG image string
     svg_string = generate_badge_svg(category)
-
-    # 2. Base64 encode the SVG string
+    
+    # For simplicity here, we'll embed it in the final JSON, but pinning separately is best practice
     svg_base64 = base64.b64encode(svg_string.encode('utf-8')).decode('utf-8')
-
-    # 3. Create the image data URI
     image_data_uri = f"data:image/svg+xml;base64,{svg_base64}"
 
-    # 4. Define the rest of the metadata
-    metadata = {
+    # 3. Define the NFT metadata content
+    nft_metadata = {
         "name": f"BNB Reputation Badge - {category}",
         "description": f"A soulbound reputation badge for {recipient_address} on BNB Chain, representing the {category} category.",
-        "image": image_data_uri, # Use the generated SVG data URI
+        "image": image_data_uri, # Using data URI for image as per original. For lower costs, upload SVG separately and use an ipfs:// link.
         "attributes": [
             {"trait_type": "Category", "value": category},
             {"trait_type": "Score", "value": reputation_data.get('score', 0)},
             {"trait_type": "Transactions", "value": reputation_data.get('details', {}).get('transaction_count', 0)}
-            # Add more attributes as needed
         ]
     }
 
-    # 5. Create the final Token URI (base64 encoded JSON metadata)
-    metadata_json_string = json.dumps(metadata)
-    metadata_base64 = base64.b64encode(metadata_json_string.encode('utf-8')).decode('utf-8')
-    token_uri = f"data:application/json;base64,{metadata_base64}"
-    logger.info(f"Generated Token URI for {recipient_address} (contains inline SVG)")
+    # 4. Define the metadata for the pin itself
+    pin_metadata = {
+        "name": f"Reputation Badge Metadata: {recipient_address}",
+        "keyvalues": {
+            "address": recipient_address,
+            "category": category
+        }
+    }
+    
+    # 5. Pin the final metadata JSON to IPFS by uploading it as a file.
+    ipfs_hash = _pin_json_to_ipfs(nft_metadata, pin_metadata, recipient_address)
+
+    if not ipfs_hash:
+        return None
+
+    # 6. Return the standard IPFS URI
+    token_uri = f"ipfs://{ipfs_hash}"
+    logger.info(f"Generated IPFS Token URI for {recipient_address}: {token_uri}")
     return token_uri
 
 def mint_reputation_badge(recipient_address: str, reputation_data: dict):
-    """Mints a new reputation badge NFT to the recipient."""
+    """Mints a new reputation badge NFT to the recipient using off-chain IPFS metadata."""
+    if not PINATA_JWT:
+        return {"success": False, "message": "IPFS service is not configured. Cannot mint.", "tx_hash": None}
+        
     try:
         checksum_recipient = Web3.to_checksum_address(recipient_address)
 
@@ -201,29 +267,37 @@ def mint_reputation_badge(recipient_address: str, reputation_data: dict):
             logger.warning(f"Recipient {recipient_address} already has a badge. Minting aborted.")
             return {"success": False, "message": "Recipient already has a badge.", "tx_hash": None}
 
-        # 2. Generate Token URI (Metadata)
-        token_uri = generate_token_uri(checksum_recipient, reputation_data)
+        # 2. Generate and upload metadata to get the IPFS Token URI
+        logger.info(f"Generating and uploading metadata to IPFS for {recipient_address}...")
+        token_uri = _generate_and_upload_metadata_to_ipfs(checksum_recipient, reputation_data)
+
+        if not token_uri:
+            logger.error(f"Failed to generate or upload metadata for {recipient_address}. Minting aborted.")
+            return {"success": False, "message": "Failed to upload metadata to IPFS.", "tx_hash": None}
 
         # 3. Prepare the transaction
-        logger.info(f"Preparing mint transaction for {recipient_address}...")
+        logger.info(f"Preparing mint transaction for {recipient_address} with Token URI: {token_uri}...")
         nonce = w3.eth.get_transaction_count(minter_address)
-        
-        # --- Force a fixed high gas limit --- 
-        # Bypass gas estimation as it seems problematic for certain URIs
-        # Increase limit further due to "out of gas" error
-        gas_limit = 15000000 
-        logger.info(f"Using fixed gas limit: {gas_limit}")
-        # --- End forcing gas limit ---
-        
 
-        # Build transaction - contract uses internal _nextTokenId
-        txn = contract.functions.safeMint(checksum_recipient, token_uri).build_transaction({
+        # Build transaction - gas will now be estimated automatically and be much lower.
+        # The hardcoded gas limit is no longer needed.
+        txn_params = {
             'chainId': w3.eth.chain_id,
-            'gas': gas_limit, # Use fixed gas limit
-            'gasPrice': w3.eth.gas_price, # Or set manually for networks like opBNB
+            'gasPrice': w3.eth.gas_price,
             'nonce': nonce,
-            'from': minter_address # Ensure this matches the sender
-        })
+            'from': minter_address
+        }
+        
+        # Estimate gas for the transaction
+        try:
+            gas_estimate = contract.functions.safeMint(checksum_recipient, token_uri).estimate_gas({'from': minter_address})
+            txn_params['gas'] = gas_estimate
+            logger.info(f"Gas estimated successfully: {gas_estimate}")
+        except ContractLogicError as e:
+             logger.error(f"Gas estimation failed: {e}. This could be a contract issue. Falling back to a reasonable default.")
+             txn_params['gas'] = 300000 # Fallback gas limit
+        
+        txn = contract.functions.safeMint(checksum_recipient, token_uri).build_transaction(txn_params)
 
         # 4. Sign the transaction
         signed_txn = minter_account.sign_transaction(txn)
