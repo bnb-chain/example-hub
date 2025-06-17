@@ -2,6 +2,25 @@
 
 [Chat with AI](https://chat.4everland.org/)
 
+### Install the dependencies
+
+```bash
+# npm install -g yarn
+yarn
+```
+
+### Start the app in development mode (hot-code reloading, error reporting, etc.)
+
+```bash
+yarn dev
+```
+
+### Build the app for production
+
+```bash
+npm run build
+```
+
 The Next-Generation AI Development Platform with Unified Interface for 300+ Models, API Key Management-Free, and Multi-Chain Payment Support
 
 In the fast-paced world of AI model iterations, developers often find themselves locked into a single vendor's API, grappling with complex key management, service throttling, and fluctuating costs. Our solution, 4EVERChat, built on 4EVER AI RPC, offers:
@@ -30,22 +49,4 @@ Technical architecture：
 
 ![architecture](md/intro.png)
 
-### Install the dependencies
 
-```bash
-yarn
-# or
-npm install
-```
-
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
-
-```bash
-quasar dev
-```
-
-### Build the app for production
-
-```bash
-quasar build
-```
