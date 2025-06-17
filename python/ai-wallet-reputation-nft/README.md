@@ -1,6 +1,6 @@
 # AI-Powered Reputation NFT Badges on BNB Chain
 
-Forge unique, soulbound ERC-721 NFT reputation badges on the BNB Chain! This project demonstrates a powerful fusion of onchain data analysis with generative AI (LLMs) to assess wallet activity, provide insightful explanations, and mint personalized, non-transferable NFT credentials.
+Forge unique, soulbound ERC-721 NFT reputation badges on the BNB Chain! This project demonstrates a powerful fusion of onchain data analysis with generative AI (LLMs) to assess wallet activity, provide insightful explanations, and mint personalized, non-transferable NFT credentials. **Metadata is stored off-chain on IPFS for maximum efficiency and low gas costs.**
 
 Elevate user engagement by offering meaningful, AI-driven insights into their onchain identity, captured forever as a unique digital asset.
 
@@ -9,10 +9,11 @@ Elevate user engagement by offering meaningful, AI-driven insights into their on
 *   Applies customizable scoring logic to categorize wallet reputation.
 *   Leverages **LLM integration** (easily adaptable for different providers like OpenAI, Anthropic, OpenRouter, Gemini) to generate unique, natural language explanations for each reputation level.
 *   Mints a soulbound (non-transferable) **ERC-721** NFT badge representing the user's reputation.
+*   **Stores NFT metadata off-chain on IPFS** via Pinata, ensuring low gas fees for minting.
 *   Features a clean web interface (Flask) for analysis and minting.
 *   Built with Python, Solidity, `web3.py`, and the `openai` library client.
 
-**Core Concept:** While the current scoring logic is rule-based for simplicity, the project showcases the powerful pattern of combining blockchain data, adaptable analysis logic, AI-generated insights, and NFT minting. This foundation is ready for expansion with more sophisticated data sources and scoring models (like Machine Learning).
+**Core Concept:** The project showcases the powerful pattern of combining blockchain data, adaptable analysis logic, AI-generated insights, and NFT minting with decentralized off-chain storage. This foundation is ready for expansion with more sophisticated data sources and scoring models.
 
 ## Author
 
@@ -33,6 +34,7 @@ Elevate user engagement by offering meaningful, AI-driven insights into their on
 -   **LLM Integration:** Configurable LLM API call using the `openai` library client (Adaptable to providers like OpenAI, Anthropic, OpenRouter, etc.)
 -   **Blockchain Interaction:** `web3.py`
 -   **Smart Contract:** Solidity (OpenZeppelin ERC-721 standard)
+-   **Decentralized Storage:** IPFS via Pinata for NFT metadata.
 -   **Blockchain:** BNB Smart Chain / opBNB (Testnet recommended)
 -   **Dependencies:** `pip` / `uv`, `python-dotenv`
 
@@ -45,7 +47,9 @@ Elevate user engagement by offering meaningful, AI-driven insights into their on
 -   **BNB Chain Wallet:** e.g., MetaMask.
 -   **Testnet BNB:** Required in the deployer/minter wallet (see Step 5) for gas fees. Get from [BNB Chain Testnet Faucet](https://www.bnbchain.org/en/testnet-faucet).
 -   **LLM API Key:** An API key for your chosen LLM service provider (e.g., OpenRouter, OpenAI, Anthropic).
-    *   The default configuration uses OpenRouter. See Step 5 and `.env.example` for details on how to configure this and adapt the code if you use a different provider.
+    *   The default configuration uses OpenRouter. See Step 5 and `.env.example` for details.
+-   **Pinata JWT Key:** An API key from [Pinata](https://pinata.cloud) to store NFT metadata on IPFS.
+    *   Go to the [Pinata Keys page](https://app.pinata.cloud/keys), create a new key, and ensure it has permission for `pinFileToIPFS`. Copy the JWT (JSON Web Token) provided.
 -   **Core Libraries:** `Flask`, `web3.py`, `python-dotenv`, `requests`, `openai` (installed via `requirements.txt`).
 
 ### 2. Clone Repository
@@ -93,10 +97,11 @@ Deploy your own contract. Follow these steps using Remix IDE to deploy the contr
 2.  **Edit `.env`:** Open your `.env` file and configure the settings based on the instructions and examples in `.env.example`. Make sure to:
     *   Set your `RPC_URL`, `CONTRACT_ADDRESS` (from deploying your own contract), and `TESTNET_SCAN_URL`.
     *   Set your `PRIVATE_KEY` (ensure it corresponds to the owner of the chosen `CONTRACT_ADDRESS` for backend minting).
-    *   Set your `OPENROUTER_API_KEY` (or configure for a different LLM provider as per comments in `.env.example`).
+    *   Set your `OPENROUTER_API_KEY`.
+    *   Set your `PINATA_JWT` with the key you generated from Pinata.
     *   Adjust optional thresholds if desired.
 
-    **CRITICAL:** Secure your `PRIVATE_KEY` and LLM `API_KEY`. **Never commit your `.env` file.** Ensure the `PRIVATE_KEY` wallet has Testnet BNB.
+    **CRITICAL:** Secure your `PRIVATE_KEY` and API keys. **Never commit your `.env` file.** Ensure the `PRIVATE_KEY` wallet has Testnet BNB.
 
 ### 6. Update Contract ABI (If You Modified and Deployed Your Own Contract)
 
@@ -117,7 +122,9 @@ If you edited `ReputationBadge.sol` and deployed it yourself, you MUST copy the 
 5.  **Response to Frontend:** Backend sends the full analysis back to the UI.
 6.  **UI Update:** JavaScript displays the results, including the AI-generated rationale.
 7.  **Badge Eligibility Check:** If analysis succeeded, the frontend calls `/check_badge` to check the smart contract.
-8.  **Minting:** If eligible, the user clicks "Mint". The backend (`/mint`) triggers `contract_interaction.py` to build, sign (using `PRIVATE_KEY`), and send the `safeMint` transaction.
+8.  **Minting:** If eligible, the user clicks "Mint". The backend (`/mint`) triggers `contract_interaction.py`.
+    *   The backend generates the metadata and uploads it to **IPFS via Pinata**.
+    *   It then builds, signs (using `PRIVATE_KEY`), and sends the `safeMint` transaction containing the lightweight **IPFS URI**.
 9.  **Result Display:** UI shows mint success or failure.
 
 ## Customization
