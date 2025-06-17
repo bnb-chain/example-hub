@@ -1,0 +1,30 @@
+[project]
+name = "ai-reputation-badge-demo"
+version = "0.1.0"
+description = "BNB Chain demo for AI-powered onchain reputation badges (NFTs)."
+authors = [
+    {name = "Vamshi Paili"}
+]
+requires-python = ">=3.10,<3.13" # Aligning with langchain-chatbot example range
+
+
+[tool.uv.sources]
+ai-reputation-badge-demo = { path = "." }
+
+
+[tool.uv.dependencies]
+flask = "^3.0.0"
+web3 = "^6.15.1" # Use a stable version of web3.py
+python-dotenv = "^1.0.1"
+requests = "^2.31.0" # Often needed for API calls
+openai = ">=1.0.0" # For LLM API interaction (OpenAI library, configured for OpenRouter)
+
+# Add any other specific dependencies here
+
+
+[tool.uv.scripts]
+run_app = "flask --app src.app:app run"
+
+[build-system]
+requires = ["uv>=0.1.17"]
+build-backend = "uv._build:build"
