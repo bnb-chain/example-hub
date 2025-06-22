@@ -1,0 +1,26 @@
+{
+  "name": "bsc-wallet-info",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.10.0",
+    "discord.js": "^14.20.0",
+    "dotenv": "^16.5.0",
+    "web3": "^1.10.4"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.9.36",
+    "@types/dotenv": "^6.1.1",
+    "@types/node": "^24.0.3",
+    "@types/ws": "^8.18.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
