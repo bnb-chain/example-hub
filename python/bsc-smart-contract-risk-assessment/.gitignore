@@ -1,0 +1,11 @@
+# Python
+venv/
+__pycache__/
+
+# Node
+node_modules/
+dist/
+.env
+
+# Others
+*.log
