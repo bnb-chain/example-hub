@@ -133,4 +133,4 @@ Explore the full project and all AI-generated code here!
 
 ---
 
-Enjoy building your AI-powered Web3 dApp on ChainIDE!
+Enjoy building your AI-powered Web3 dApp on ChainIDE for BNB Chain!
