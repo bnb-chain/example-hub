@@ -80,7 +80,7 @@
     "otherLink": "",
     "imgUrl": "https://cms-static.bnbchain.org/dcms/static/303d0c6a-af8f-4098-a2d0-a5b96ef964ba.png"
   },
-   {
+  {
     "caseTitle": "BNBChain MCP - AI-Powered Blockchain Assistant",
     "caseDesc": "A ready-to-use template that combines BNB Chain’s MCP with Claude AI, enabling natural language interaction with BNB Smart Chain and Greenfield.",
     "tags": [
@@ -96,5 +96,23 @@
     "guide": "https://github.com/bnb-chain/example-hub/blob/main/typescript/bnbchain-mcp/README.md",
     "otherLink": "",
     "imgUrl": "https://cms-static.bnbchain.org/dcms/static/91af5e6c-4ad5-42e2-92fb-4d29920d2963.png"
+  },
+  {
+    "caseTitle": "Full-stack & AI-Driven dApp Development with ChainIDE",
+    "caseDesc": "This tutorial guides you through building a full-stack NFT dApp on BNB Chain using the ChainIDE Code Sage feature.",
+    "tags": [
+      "BSC",
+      "AI",
+      "NFT"
+    ],
+    "github": "https://github.com/bnb-chain/example-hub/tree/main/javascript/ai-nft-dapp",
+    "replit": "",
+    "video": {
+      "type": "youtube",
+      "link": "https://www.youtube.com/watch?v=5dt1ypn_lwo"
+    },
+    "guide": "",
+    "otherLink": "https://www.bnbchain.org/en/solutions",
+    "imgUrl": "https://i.imgur.com/vTLnmvW.png"
   }
 ]

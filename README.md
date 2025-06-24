@@ -39,7 +39,7 @@ language, description, and tags to help you find what you need quickly.
 | [python/pancacke-swap](./python/pancake-swap-example)  | Python     | PancakeSwap integration example              | DeFi, DEX, BSC      |
 | [typescript/bnbchain-mcp](./typescript/bnbchain-mcp)   | TypeScript | AI-powered blockchain assistant using Claude | AI, BSC, MCP        |
 | [typescript/eliza-chatbot](./typescript/eliza-chatbot) | TypeScript | A chatbot example using Eliza plugin-bnb     | AI, BSC, opBNB      |
-
+| [javascript/ai-nft-dapp](./javascript/ai-nft-dapp) | Javascript | This tutorial guides you through building a full-stack NFT dApp on BNB Chain using the ChainIDE Code Sage feature. | BSC, AI, NFT |
 More examples are coming soon—stay tuned for updates!
 
 ## How to Add a New Example
