@@ -38,5 +38,4 @@ async function checkTransactions() {
   }
 }
 
-// Check mỗi 10 giây
 setInterval(checkTransactions, 10000);
