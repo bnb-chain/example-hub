@@ -1,4 +1,4 @@
-# 🤖 BSC Smart Contract Risk Agent
+# BSC Smart Contract Risk Agent
 
 This project is an AI-powered agent that analyzes smart contract ABIs for potential risks using:
 
