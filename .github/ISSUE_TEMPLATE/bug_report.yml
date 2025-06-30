@@ -1,0 +1,48 @@
+name: 🕷️ Bug report
+description: Create a report to help us improve
+labels:
+  - bug
+body:
+  - type: checkboxes
+    attributes:
+      label: Self Check
+      description: Please check these items before submitting
+      options:
+        - label: This is only for bug report, if you would like to ask a question, please head to [Discussions](https://github.com/bnb-chain/example-hub/discussions/categories/general).
+          required: true
+        - label: I have searched for existing issues [search for existing issues](https://github.com/bnb-chain/example-hub/issues), including closed ones.
+          required: true
+        - label: I will use English to describe the bug
+          required: true
+  - type: textarea
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+      placeholder: Please describe the bug in detail
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: Please provide detailed steps to reproduce the issue
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+      placeholder: Please describe what you expected to happen
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem here.(e.g. screenshot, operating system, browser, version, etc.)
+      placeholder: Add any other context about the problem here.
+    validations:
+      required: false
