@@ -13,7 +13,7 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.once("ready", () => {
   console.log(`✅ Bot is ready as ${client.user?.tag}`);
-  setInterval(checkTransactions, 10000); // Kiểm tra mỗi 10 giây
+  setInterval(checkTransactions, 10000);
 });
 
 async function checkTransactions() {
