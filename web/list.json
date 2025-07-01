@@ -96,5 +96,38 @@
     "guide": "https://github.com/bnb-chain/example-hub/blob/main/typescript/bnbchain-mcp/README.md",
     "otherLink": "",
     "imgUrl": "https://cms-static.bnbchain.org/dcms/static/91af5e6c-4ad5-42e2-92fb-4d29920d2963.png"
+  },
+  {
+    "caseTitle": "Chainsub – Minimal Smart Contract Event Listener (CLI & Go Package)",
+    "caseDesc": "Chainsub is a lightweight and easy-to-use CLI and Go library designed to subscribe and monitor smart contract events on any EVM-compatible blockchain such as BNB Chain, Ethereum, Polygon, Avalanche, and more.",
+    "tags": [
+      "BSC",
+      "Smart Contract Event Listener",
+      "CLI",
+      "GO"
+    ],
+    "github": "https://github.com/bnb-chain/example-hub/tree/main/go/event-listener",
+    "replit": "",
+    "video": {},
+    "guide": "https://github.com/bnb-chain/example-hub/tree/main/go/event-listener",
+    "otherLink": "",
+    "imgUrl": "https://cms-static.bnbchain.org/dcms/static/303d0c6a-af8f-4098-a2d0-a5b96ef964ba.png"
+  },
+  {
+    "caseTitle": "BNB Chain Chatbot with UI (Python)",
+    "caseDesc": "This project demonstrates how to create a web interface for the BNB Chain LangChain AgentKit Python chatbot, showcasing how to integrate AI agents into decentralized applications (dApps) through API wrappers.",
+    "tags": [
+      "BSC",
+      "opBNB",
+      "AI",
+      "ChatBot",
+      "Python",
+    ],
+    "github": "https://github.com/bnb-chain/example-hub/tree/main/python/chatbot-with-ui",
+    "replit": "",
+    "video": {},
+    "guide": "https://github.com/bnb-chain/example-hub/tree/main/python/chatbot-with-ui",
+    "otherLink": "",
+    "imgUrl": "https://cms-static.bnbchain.org/dcms/static/303d0c6a-af8f-4098-a2d0-a5b96ef964ba.png"
   }
 ]
