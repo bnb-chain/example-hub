@@ -80,7 +80,7 @@
     "otherLink": "",
     "imgUrl": "https://cms-static.bnbchain.org/dcms/static/303d0c6a-af8f-4098-a2d0-a5b96ef964ba.png"
   },
-   {
+  {
     "caseTitle": "BNBChain MCP - AI-Powered Blockchain Assistant",
     "caseDesc": "A ready-to-use template that combines BNB Chain’s MCP with Claude AI, enabling natural language interaction with BNB Smart Chain and Greenfield.",
     "tags": [
@@ -128,6 +128,22 @@
     "video": {},
     "guide": "https://github.com/bnb-chain/example-hub/tree/main/python/chatbot-with-ui",
     "otherLink": "",
+    "imgUrl": "https://cms-static.bnbchain.org/dcms/static/303d0c6a-af8f-4098-a2d0-a5b96ef964ba.png"
+  },
+  {
+    "caseTitle": "Safucard",
+    "caseDesc": "Safucard is a React-based decentralized application (dApp) that allows users to input their wallet address and receive a customized visual \"SafuCard\" scorecard based on their bep-20 token interactions and other metrics. Users can optionally mint their SafuCard as an NFT to commemorate or showcase their on-chain profile.",
+    "tags": [
+      "BSC"
+    ],
+    "github": "https://github.com/Domistro16/SafuCard",
+    "replit": "",
+    "video": {
+      "type": "youtube",
+      "link": "https://youtu.be/wsSTTIMe4jI"
+    },
+    "guide": "",
+    "otherLink": "https://www.bnbchain.org/en/solutions",
     "imgUrl": "https://cms-static.bnbchain.org/dcms/static/303d0c6a-af8f-4098-a2d0-a5b96ef964ba.png"
   }
 ]
