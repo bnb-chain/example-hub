@@ -10,18 +10,12 @@ contract PingPong {
     Ping,
     Pong
   }
-  LastMove public lastMove;
+  LastMove public lastMove = LastMove.None;
 
   event Pinged(address indexed sender, uint256 pingCount, uint256 timestamp);
   event Ponged(address indexed sender, uint256 pongCount, uint256 timestamp);
 
   error InvalidMove(string reason);
-
-  constructor() {
-    pingCount = 0;
-    pongCount = 0;
-    lastMove = LastMove.None;
-  }
 
   function ping() external {
     if (lastMove == LastMove.Ping)
