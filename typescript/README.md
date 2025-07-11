@@ -2,6 +2,16 @@
 
 A modern web faucet for the BNB Smart Chain testnet, built with Next.js (App Router, TypeScript), Supabase, ethers.js, and Tailwind CSS.
 
+🌐 Live Demo
+You can try the faucet live here:
+👉 https://bnb-faucet.netlify.app/
+
+Built with Next.js, Tailwind CSS, and Supabase.
+
+Deployed on Netlify for fast global delivery.
+
+Sends 0.001 BNB on BNB Testnet (1 claim per address per 24h).
+
 ---
 
 ## 🚀 Features
