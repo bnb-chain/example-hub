@@ -4,6 +4,6 @@
     "editor.defaultFormatter": "ms-python.black-formatter"
   },
   "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "vscode.typescript-language-features"
   }
 }
