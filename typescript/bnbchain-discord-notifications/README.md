@@ -1,4 +1,4 @@
-# 🔁 Moralis → Discord PingPong Stream
+# 🔁 BNB Chain → Discord PingPong Stream
 
 This Firebase Functions project listens for `Pinged` and `Ponged` events from a smart contract via Moralis Streams, decodes logs using the ABI, and forwards only confirmed events to a Discord Webhook.
 
@@ -98,10 +98,9 @@ npm install
    if (!DISCORD_WEBHOOK_URL) throw new Error("Missing config.discord.webhook_url");
    ```
 
-### 3. Build & Deploy
+### 3. Deploy
 
 ```bash
-npm run build
 firebase deploy --only functions
 ```
 
