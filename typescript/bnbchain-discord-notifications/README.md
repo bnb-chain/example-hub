@@ -98,10 +98,9 @@ npm install
    if (!DISCORD_WEBHOOK_URL) throw new Error("Missing config.discord.webhook_url");
    ```
 
-### 3. Build & Deploy
+### 3. Deploy
 
 ```bash
-npm run build
 firebase deploy --only functions
 ```
 
