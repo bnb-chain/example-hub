@@ -83,8 +83,45 @@ interface PongedEvent {
   timestamp: BigNumber;
 }
 
+/**
+ * Sends a POST request to a Discord webhook with retry logic and backoff.
+ *
+ * @param {string} url - The Discord webhook URL to post the message to.
+ * @param {object} message - The JSON payload to send to the webhook.
+ * @param {number} [maxRetries=3] - Maximum number of retry attempts.
+ * @param {number} [delayMs=1000] - Delay in ms between retries (multiplied by attempt count).
+ * @return {Promise<void>} - Resolves on success or throws after all retries fail.
+ */
+async function postToDiscordWithRetry(
+  url: string,
+  message: object,
+  // eslint-disable-next-line @typescript-eslint/no-inferrable-types
+  maxRetries: number = 3,
+  // eslint-disable-next-line @typescript-eslint/no-inferrable-types
+  delayMs: number = 1000
+): Promise<void> {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      await axios.post(url, message);
+      return;
+    } catch (err) {
+      if (attempt < maxRetries) {
+        // Wait before next attempt (delay increases with each retry)
+        await new Promise((r) => setTimeout(r, delayMs * attempt));
+      } else {
+        logger.error("Discord webhook failed after retries", {
+          error: err instanceof Error ? err.message : err,
+          message,
+        });
+        throw err;
+      }
+    }
+  }
+}
+
+
 // --- Pinged Stream ---
-export const pingedStream = onRequest(async (req, res) => {
+export const pingedStream = onRequest({timeoutSeconds: 72}, async (req, res) => {
   try {
     const logs = Moralis.Streams.parsedLogs<PingedEvent>({
       ...req.body,
@@ -111,7 +148,7 @@ export const pingedStream = onRequest(async (req, res) => {
           `🕒 Time: <t:${log.timestamp.toString()}>`,
       };
 
-      await axios.post(DISCORD_WEBHOOK_URL, message);
+      await postToDiscordWithRetry(DISCORD_WEBHOOK_URL, message, 10);
     }
 
     logger.info("Pinged events sent", {count: logs.length});
@@ -123,7 +160,7 @@ export const pingedStream = onRequest(async (req, res) => {
 });
 
 // --- Ponged Stream ---
-export const pongedStream = onRequest(async (req, res) => {
+export const pongedStream = onRequest({timeoutSeconds: 72}, async (req, res) => {
   try {
     const logs = Moralis.Streams.parsedLogs<PongedEvent>({
       ...req.body,
@@ -150,7 +187,7 @@ export const pongedStream = onRequest(async (req, res) => {
           `🕒 Time: <t:${log.timestamp.toString()}>`,
       };
 
-      await axios.post(DISCORD_WEBHOOK_URL, message);
+      await postToDiscordWithRetry(DISCORD_WEBHOOK_URL, message, 10);
     }
 
     logger.info("Ponged events sent", {count: logs.length});
