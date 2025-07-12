@@ -10,6 +10,10 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [cooldown, setCooldown] = useState<number | null>(null);
   const [nextClaim, setNextClaim] = useState<string | null>(null);
+  const [faucetDetails, setFaucetDetails] = useState<{
+    currentBalance?: string;
+    required?: string;
+  } | null>(null);
 
   const handleFaucet = async () => {
     setLoading(true);
@@ -17,6 +21,8 @@ export default function Home() {
     setTxHash(null);
     setCooldown(null);
     setNextClaim(null);
+    setFaucetDetails(null);
+
     try {
       const res = await fetch("/api/faucet", {
         method: "POST",
@@ -24,6 +30,7 @@ export default function Home() {
         body: JSON.stringify({ address }),
       });
       const data = await res.json();
+
       if (res.ok) {
         setTxHash(data.txHash);
       } else if (data.error === "Cooldown active") {
@@ -34,13 +41,20 @@ export default function Home() {
         setError(
           `Not eligible: Address already has ≥ ${data.required} BNB on mainnet (current: ${data.mainnetBalance}).`
         );
+      } else if (data.error === "Faucet depleted") {
+        setError(data.message || "Faucet wallet is empty. Please contact the maintainer or try again later.");
+        setFaucetDetails({
+          currentBalance: data.currentBalance,
+          required: data.required,
+        });
       } else if (data.error) {
         setError(data.error + (data.details ? `: ${data.details}` : ""));
       }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
-      setError("Something went wrong.");
+      setError("Something went wrong. Please try again later.");
     }
+
     setLoading(false);
   };
 
@@ -68,7 +82,7 @@ export default function Home() {
           {loading ? "Requesting..." : "Request Faucet"}
         </button>
 
-        {/* Result UI */}
+        {/* ✅ Success */}
         {txHash && (
           <div className="w-full mt-4 rounded bg-green-100 text-green-900 px-3 py-2">
             ✅ Success! <br />
@@ -83,6 +97,8 @@ export default function Home() {
             </a>
           </div>
         )}
+
+        {/* ❌ Error or Depleted */}
         {error && (
           <div className="w-full mt-4 rounded bg-red-100 text-red-900 px-3 py-2">
             ❌ {error}
@@ -92,9 +108,16 @@ export default function Home() {
                 {new Date(nextClaim).toLocaleString()})
               </div>
             )}
+            {faucetDetails?.currentBalance && (
+              <div className="text-xs mt-2">
+                Faucet balance: {faucetDetails.currentBalance} BNB<br />
+                Required: {faucetDetails.required} BNB
+              </div>
+            )}
           </div>
         )}
       </main>
+
       <footer className="row-start-3 text-xs text-zinc-400 text-center">
         Powered by BNB Chain Testnet &bull; Demo Faucet
       </footer>
