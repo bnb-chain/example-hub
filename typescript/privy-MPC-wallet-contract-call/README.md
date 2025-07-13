@@ -88,7 +88,7 @@ function nextMove() view returns (string);
 ## 🧪 BNB Testnet Faucet
 
 Get testnet BNB from:  
-👉 [https://testnet.bnbchain.org/faucet-smart](https://testnet.bnbchain.org/faucet-smart)
+👉 [https://bnb-faucet.netlify.app/](https://bnb-faucet.netlify.app/)
 
 ## 📁 .env.example
 
