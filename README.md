@@ -40,7 +40,8 @@ language, description, and tags to help you find what you need quickly.
 | [python/ai-wallet-reputation-nft](./python/ai-wallet-reputation-nft) | Python     | AI-generated, soulbound reputation NFTs on BNB Chain | AI, NFT, Reputation |
 | [typescript/bnbchain-mcp](./typescript/bnbchain-mcp)   | TypeScript | AI-powered blockchain assistant using Claude | AI, BSC, MCP        |
 | [typescript/eliza-chatbot](./typescript/eliza-chatbot) | TypeScript | A chatbot example using Eliza plugin-bnb     | AI, BSC, opBNB      |
-
+| [typescript/safucard](./typescript/safucard) | Typescript | Safucard is a React-based decentralized application (dApp) that allows users to input their wallet address and receive a customized visual "SafuCard" scorecard based on their bep-20 token interactions. Users can optionally mint their SafuCard as an NFT to commemorate or showcase their on-chain profile. | BSC |
+| [typescript/safucard](./typescript/safucard) | Typescript | Safucard is a React-based decentralized application (dApp) that allows users to input their wallet address and receive a customized visual "SafuCard" scorecard based on their bep-20 token interactions and other metrics. Users can optionally mint their SafuCard as an NFT to commemorate or showcase their on-chain profile. | BSC |
 More examples are coming soon—stay tuned for updates!
 
 ## How to Add a New Example
