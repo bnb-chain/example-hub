@@ -41,16 +41,16 @@ PORT=3001
 
 ### 🎯 演示地址信息
 
-**🌍 在线演示**: [https://你的演示地址.vercel.app](https://你的演示地址.vercel.app)
+**🌍 在线演示**: http://207.180.254.119:3000/
 
 **📱 移动端适配**: 完全支持移动端访问
 
-**🔗 后端API**: https://你的后端.railway.app
+**🔗 后端API**: http://207.180.254.119:3001
 
 **⛓️ 智能合约**: 
 - 合约地址: `0x你的合约地址`
 - 网络: BNB Smart Chain 测试网
-- 浏览器: https://testnet.bscscan.com/address/0x你的合约地址
+- 浏览器: https://testnet.bscscan.com/address/0xFd4CC80fA342512c69bF18355fD3386c5978244b
 
 ### 🎮 演示使用指南
 
@@ -109,20 +109,6 @@ PORT=3001
 - 从AI生成到NFT铸造的完整流程
 - 包含市场浏览功能
 - 移动端完整适配
-
-### 🎥 演示视频
-
-**📹 功能演示视频**: [YouTube链接](https://youtube.com/watch?v=你的视频ID)
-
-**⏱️ 视频时长**: 5分钟
-
-**🎬 演示内容**:
-1. 项目介绍 (30秒)
-2. 钱包连接 (30秒)
-3. AI图像生成 (2分钟)
-4. NFT铸造过程 (1分钟)
-5. 市场浏览 (1分钟)
-6. 技术架构说明 (30秒)
 
 ### 📊 性能指标
 
@@ -190,6 +176,6 @@ A: 确保钱包有足够的测试BNB，并检查网络连接。
 
 ---
 
-**🎉 立即体验**: [https://你的演示地址.vercel.app](https://你的演示地址.vercel.app)
+**🎉 立即体验**: http://207.180.254.119:3000/
 
 **⭐ 项目仓库**: https://github.com/tuofangzhe/bnb-nft-ai-minter
