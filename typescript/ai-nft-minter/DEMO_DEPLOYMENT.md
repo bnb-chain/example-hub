@@ -1,180 +1,180 @@
-# 🌐 演示部署指南
+# 🌐 Demo Deployment Guide
 
-## 📋 演示地址配置
+## 📋 Demo Configuration
 
-### 推荐部署平台
+### Recommended Deployment Platforms
 
-#### 1. **前端部署** (Vercel - 推荐)
+#### 1. **Frontend Deployment** (Vercel - Recommended)
 ```bash
-# 1. 连接GitHub仓库到Vercel
-# 2. 自动部署前端到: https://your-project.vercel.app
+# 1. Connect GitHub repository to Vercel
+# 2. Auto-deploy frontend to: https://your-project.vercel.app
 
-# 环境变量配置
+# Environment Variables
 NEXT_PUBLIC_BACKEND_URL=https://your-backend.railway.app
-NEXT_PUBLIC_CONTRACT_ADDRESS=0x你的合约地址
+NEXT_PUBLIC_CONTRACT_ADDRESS=0xYourContractAddress
 ```
 
-#### 2. **后端部署** (Railway - 推荐)
+#### 2. **Backend Deployment** (Railway - Recommended)
 ```bash
-# 1. 连接GitHub仓库到Railway
-# 2. 自动部署后端API到: https://your-project.railway.app
+# 1. Connect GitHub repository to Railway
+# 2. Auto-deploy backend API to: https://your-project.railway.app
 
-# 环境变量配置
-STABILITY_API_KEY=你的真实API密钥
-PINATA_API_KEY=你的真实API密钥
-PINATA_SECRET_KEY=你的真实Secret密钥
-MINTER_PRIVATE_KEY=你的钱包私钥
+# Environment Variables
+STABILITY_API_KEY=YourRealAPIKey
+PINATA_API_KEY=YourRealAPIKey
+PINATA_SECRET_KEY=YourRealSecretKey
+MINTER_PRIVATE_KEY=YourWalletPrivateKey
 BSC_TESTNET_RPC_URL=https://data-seed-prebsc-1-s1.binance.org:8545/
-CONTRACT_ADDRESS=0x你的合约地址
+CONTRACT_ADDRESS=0xYourContractAddress
 PORT=3001
 ```
 
-### 🚀 一键部署方案
+### 🚀 One-Click Deployment
 
-#### Vercel 部署 (前端)
+#### Vercel Deploy (Frontend)
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/tuofangzhe/bnb-nft-ai-minter&project-name=bnb-ai-nft-minter&repository-name=bnb-ai-nft-minter)
 
-#### Railway 部署 (后端)
+#### Railway Deploy (Backend)
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template/your-template-id)
 
-## 📝 演示说明文档
+## 📝 Demo Documentation
 
-### 🎯 演示地址信息
+### 🎯 Demo Information
 
-**🌍 在线演示**: http://207.180.254.119:3000/
+**🌍 Live Demo**: http://207.180.254.119:3000/
 
-**📱 移动端适配**: 完全支持移动端访问
+**📱 Mobile Support**: Fully responsive design
 
-**🔗 后端API**: http://207.180.254.119:3001
+**🔗 Backend API**: http://207.180.254.119:3001
 
-**⛓️ 智能合约**: 
-- 网络: BNB Smart Chain 测试网
-- 浏览器: https://testnet.bscscan.com/address/0xFd4CC80fA342512c69bF18355fD3386c5978244b
+**⛓️ Smart Contract**: 
+- Network: BNB Smart Chain Testnet
+- Explorer: https://testnet.bscscan.com/address/0xFd4CC80fA342512c69bF18355fD3386c5978244b
 
-### 🎮 演示使用指南
+### 🎮 Usage Guide
 
-#### 第一步：连接钱包
-1. 点击"Connect Wallet"按钮
-2. 选择MetaMask或其他Web3钱包
-3. 切换到BNB Smart Chain测试网
-4. 确保有足够的测试BNB (从 https://testnet.binance.org/faucet-smart 获取)
+#### Step 1: Connect Wallet
+1. Click "Connect Wallet" button
+2. Choose MetaMask or other Web3 wallet
+3. Switch to BNB Smart Chain Testnet
+4. Ensure sufficient test BNB (get from https://testnet.binance.org/faucet-smart)
 
-#### 第二步：AI图像生成与NFT铸造
-1. 在文本框中输入英文提示词，例如：
+#### Step 2: AI Image Generation & NFT Minting
+1. Enter English prompt in text field, for example:
    - "a beautiful sunset over mountains"
    - "a futuristic cyberpunk city"
    - "an abstract colorful painting"
-2. 点击"Generate & Mint NFT"
-3. 等待AI生成图像 (~15秒)
-4. 确认钱包交易
-5. 等待NFT铸造完成 (~30秒)
+2. Click "Generate & Mint NFT"
+3. Wait for AI image generation (~15 seconds)
+4. Confirm wallet transaction
+5. Wait for NFT minting completion (~30 seconds)
 
-#### 第三步：查看NFT市场
-1. 点击"Marketplace"导航
-2. 浏览所有已铸造的NFT
-3. 查看NFT详情和元数据
-4. 点击"View on BSCScan"查看区块链交易
+#### Step 3: Browse NFT Marketplace
+1. Click "Marketplace" navigation
+2. Browse all minted NFTs
+3. View NFT details and metadata
+4. Click "View on BSCScan" to see blockchain transaction
 
-### 🔧 测试功能清单
+### 🔧 Testing Checklist
 
-#### 核心功能测试
-- [ ] 钱包连接 (MetaMask/WalletConnect)
-- [ ] AI图像生成 (Stability AI)
-- [ ] IPFS上传 (Pinata)
-- [ ] NFT铸造 (智能合约)
-- [ ] 市场浏览 (分页加载)
-- [ ] 响应式设计 (移动端)
+#### Core Features
+- [ ] Wallet Connection (MetaMask/WalletConnect)
+- [ ] AI Image Generation (Stability AI)
+- [ ] IPFS Upload (Pinata)
+- [ ] NFT Minting (Smart Contract)
+- [ ] Marketplace Browsing (Pagination)
+- [ ] Responsive Design (Mobile)
 
-#### 高级功能测试
-- [ ] 错误处理 (网络异常)
-- [ ] 加载状态显示
-- [ ] 交易状态跟踪
-- [ ] IPFS图像显示
-- [ ] 元数据完整性
+#### Advanced Features
+- [ ] Error Handling (Network Issues)
+- [ ] Loading States
+- [ ] Transaction Tracking
+- [ ] IPFS Image Display
+- [ ] Metadata Integrity
 
-### 💡 演示亮点
+### 💡 Demo Highlights
 
-#### 1. **无需配置**
-- 评审人员无需获取API密钥
-- 无需本地环境搭建
-- 直接在线体验完整功能
+#### 1. **Zero Configuration**
+- No API keys needed for reviewers
+- No local setup required
+- Direct online full feature experience
 
-#### 2. **真实环境**
-- 部署在生产环境
-- 真实的AI API调用
-- 真实的区块链交互
+#### 2. **Production Environment**
+- Deployed in production
+- Real AI API calls
+- Real blockchain interactions
 
-#### 3. **完整体验**
-- 从AI生成到NFT铸造的完整流程
-- 包含市场浏览功能
-- 移动端完整适配
+#### 3. **Complete Experience**
+- Full flow from AI generation to NFT minting
+- Marketplace browsing included
+- Mobile-friendly interface
 
-### 📊 性能指标
+### 📊 Performance Metrics
 
-#### 用户体验指标
-- 页面加载时间: <2秒
-- AI图像生成: 10-15秒
-- NFT铸造时间: 20-30秒
-- 移动端适配: 100%
+#### User Experience Metrics
+- Page Load Time: <2 seconds
+- AI Image Generation: 10-15 seconds
+- NFT Minting Time: 20-30 seconds
+- Mobile Compatibility: 100%
 
-#### 技术指标
-- 前端性能分数: 95+
-- 响应式设计: 完全支持
-- 跨浏览器兼容: Chrome/Firefox/Safari/Edge
-- 网络容错: 自动重试和错误处理
+#### Technical Metrics
+- Frontend Performance Score: 95+
+- Responsive Design: Fully supported
+- Cross-browser: Chrome/Firefox/Safari/Edge
+- Network Resilience: Auto-retry and error handling
 
-### 🔐 安全说明
+### 🔐 Security Notes
 
-#### 演示环境安全措施
-- 使用测试网络 (无真实价值)
-- API密钥限制使用量
-- 钱包私钥仅用于演示
-- 所有数据公开透明
+#### Demo Environment Security
+- Using testnet (no real value)
+- API keys with usage limits
+- Demo wallet private key only
+- All data publicly transparent
 
-#### 生产环境部署
-- 环境变量加密存储
-- API密钥定期轮换
-- 智能合约安全审计
-- 前端代码混淆
+#### Production Deployment
+- Encrypted environment variables
+- Regular API key rotation
+- Smart contract security audit
+- Frontend code obfuscation
 
-### 📞 技术支持
+### 📞 Technical Support
 
-#### 演示问题反馈
+#### Issue Reporting
 - **GitHub Issues**: https://github.com/tuofangzhe/bnb-nft-ai-minter/issues
-- **问题类型**: 演示功能、技术问题、用户体验
+- **Issue Types**: Demo functionality, technical issues, user experience
 
-#### 常见问题解答
-**Q: 演示地址访问不了？**
-A: 检查网络连接，或稍后重试。如持续问题请提交Issue。
+#### FAQ
+**Q: Can't access demo site?**
+A: Check network connection or try again later. Submit issue if problem persists.
 
-**Q: 钱包连接失败？**
-A: 确保使用支持的钱包，并切换到BSC测试网。
+**Q: Wallet connection failed?**
+A: Ensure using supported wallet and switched to BSC Testnet.
 
-**Q: AI生成时间过长？**
-A: 正常情况下10-15秒，如超过30秒请刷新页面重试。
+**Q: AI generation taking too long?**
+A: Normal time is 10-15 seconds. Refresh page if exceeds 30 seconds.
 
-**Q: NFT铸造失败？**
-A: 确保钱包有足够的测试BNB，并检查网络连接。
+**Q: NFT minting failed?**
+A: Ensure sufficient test BNB in wallet and check network connection.
 
-### 🎯 评审重点
+### 🎯 Review Focus
 
-#### 技术实现
-- 完整的全栈架构
-- AI与区块链的无缝集成
-- 现代化技术栈应用
+#### Technical Implementation
+- Complete full-stack architecture
+- Seamless AI and blockchain integration
+- Modern technology stack
 
-#### 用户体验
-- 直观的操作流程
-- 流畅的交互体验
-- 完善的错误处理
+#### User Experience
+- Intuitive user flow
+- Smooth interactions
+- Comprehensive error handling
 
-#### 商业价值
-- 实际可用的产品
-- 完整的功能闭环
-- 可扩展的架构设计
+#### Business Value
+- Production-ready product
+- Complete feature loop
+- Scalable architecture design
 
 ---
 
-**🎉 立即体验**: http://207.180.254.119:3000/
+**🎉 Try Now**: http://207.180.254.119:3000/
 
-**⭐ 项目仓库**: https://github.com/tuofangzhe/bnb-nft-ai-minter
+**⭐ Project Repository**: https://github.com/tuofangzhe/bnb-nft-ai-minter
