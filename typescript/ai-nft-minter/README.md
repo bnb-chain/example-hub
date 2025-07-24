@@ -75,7 +75,7 @@ A complete DApp that combines AI image generation with Web3 technology to mint N
    
    **Frontend (.env.local):**
    ```env
-   NEXT_PUBLIC_BACKEND_URL=http://localhost:3001
+   NEXT_PUBLIC_BACKEND_URL=http://localhost:3000
    NEXT_PUBLIC_CONTRACT_ADDRESS=your_deployed_contract_address
    ```
 
