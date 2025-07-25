@@ -1,0 +1,3 @@
+git add .
+git commit -m "Ajout de l'exemple BNB-Tips"
+git push origin main
