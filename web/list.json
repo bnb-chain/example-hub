@@ -132,7 +132,7 @@
   },
   {
     "caseTitle": "Safucard",
-    "caseDesc": "Safucard is a React-based decentralized application (dApp) that allows users to input their wallet address and receive a customized visual \"SafuCard\" scorecard based on their bep-20 token interactions and other metrics. Users can optionally mint their SafuCard as an NFT to commemorate or showcase their on-chain profile.",
+    "caseDesc": "This is a dApp project that showcases how to integrate Alchemy’s APIs to retrieve a wallet’s BEP-20 token data which includes the whale status, the first and most recent tokens held, and address age based on its first transaction which could be minted as an NFT.",
     "tags": [
       "BSC"
     ],

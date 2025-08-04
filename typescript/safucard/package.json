@@ -1,0 +1,12 @@
+{
+  "name": "safucard",
+  "version": "1.0.0",
+  "description": "Safucard is a React-based decentralized application (dApp) that allows users to input their wallet address and receive a customized visual \"SafuCard\" scorecard based on their bep-20 token interactions and other metrics. Users can optionally mint their SafuCard as an NFT to commemorate or showcase their on-chain profile.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
