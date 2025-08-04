@@ -1,0 +1,39 @@
+{
+  "name": "hardhat-project",
+  "version": "1.2.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "local:start": "hardhat node",
+    "local:deploy": "hardhat run scripts/deploy.js --network local",
+    "local:sign": "hardhat run scripts/sign.js --network local",
+    "create-relayer": "node scripts/createRelayer.js",
+    "deploy": "node scripts/deploy.js",
+    "sign": "hardhat run scripts/sign.js --network sepolia",
+    "events": "hardhat run scripts/events.js --network sepolia",
+    "verify": "hardhat run scripts/verify.js --network sepolia",
+    "build": "rollup -c",
+    "invoke": "bash ./scripts/invoke.sh",
+    "create-action": "yarn build && node scripts/createAction.js",
+    "upload": "yarn build && node scripts/upload.js",
+    "relay": "node scripts/relay.js",
+    "test": "NODE_ENV=test hardhat test"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^6.0.0",
+    "@nomicfoundation/hardhat-verify": "^2.1.0",
+    "@openzeppelin/contracts": "^5.3.0",
+    "@openzeppelin/defender-sdk": "^2.6.0",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "builtin-modules": "^5.0.0",
+    "hardhat": "^2.25.0",
+    "prettier": "3.5.3",
+    "prettier-plugin-solidity": "^2.0.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.0",
+    "rollup": "^4.44.2"
+  }
+}
