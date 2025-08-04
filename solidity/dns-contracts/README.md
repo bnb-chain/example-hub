@@ -1,6 +1,9 @@
-# ens-contracts
+# dns-contracts
 
 A decentralized naming system on BNB Chain, inspired by ENS, with dynamic token pricing in native currency, CAKE, and USD1, plus a built-in referral system that rewards users for successful mints.
+
+# Live Link
+- [dns.level3labs.fun](https://dns.level3labs.fun)
 
 # ENS
 

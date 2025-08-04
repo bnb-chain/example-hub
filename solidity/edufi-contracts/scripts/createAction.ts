@@ -1,7 +1,6 @@
-require('dotenv').config()
-
-const { Defender } = require('@openzeppelin/defender-sdk')
-const { readFileSync, appendFileSync } = require('fs')
+import "dotenv/config"
+import { Defender } from '@openzeppelin/defender-sdk'
+import { appendFileSync, writeFileSync } from 'fs'
 
 async function main() {
   const relayerId = '69d7107b-8f25-4b26-a735-ff4aa1d30fa8'
@@ -24,9 +23,7 @@ async function main() {
 
   console.log('Action created with ID', actionId)
 
-  appendFileSync('.env', `\nACTION_ID="${actionId}"`, function (err) {
-    if (err) throw err
-  })
+  appendFileSync('.env', `\nACTION_ID="${actionId}"`)
 }
 
 if (require.main === module) {

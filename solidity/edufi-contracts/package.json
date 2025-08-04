@@ -7,15 +7,11 @@
     "local:start": "hardhat node",
     "local:deploy": "hardhat run scripts/deploy.js --network local",
     "local:sign": "hardhat run scripts/sign.js --network local",
-    "create-relayer": "node scripts/createRelayer.js",
+    "create-relayer": "npx ts-node scripts/createRelayer.js",
     "deploy": "node scripts/deploy.js",
-    "sign": "hardhat run scripts/sign.js --network sepolia",
-    "events": "hardhat run scripts/events.js --network sepolia",
-    "verify": "hardhat run scripts/verify.js --network sepolia",
     "build": "rollup -c",
     "invoke": "bash ./scripts/invoke.sh",
-    "create-action": "yarn build && node scripts/createAction.js",
-    "upload": "yarn build && node scripts/upload.js",
+    "create-action": "yarn build && npx ts-node scripts/createAction.ts",
     "relay": "node scripts/relay.js",
     "test": "NODE_ENV=test hardhat test"
   },
@@ -30,7 +26,8 @@
     "builtin-modules": "^5.0.0",
     "hardhat": "^2.25.0",
     "prettier": "3.5.3",
-    "prettier-plugin-solidity": "^2.0.0"
+    "prettier-plugin-solidity": "^2.0.0",
+    "ts-node": "^10.9.2"
   },
   "dependencies": {
     "dotenv": "^17.2.0",

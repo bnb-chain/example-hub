@@ -1,7 +1,6 @@
-require('dotenv').config()
-
-const { Defender } = require('@openzeppelin/defender-sdk')
-const { appendFileSync, writeFileSync } = require('fs')
+import "dotenv/config"
+import { Defender } from '@openzeppelin/defender-sdk'
+import { appendFileSync, writeFileSync } from 'fs'
 
 async function main() {
   const creds = {

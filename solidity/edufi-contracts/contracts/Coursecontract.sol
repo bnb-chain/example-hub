@@ -97,7 +97,7 @@ contract Level3Course is ERC2771Context, ILevel3Course, Ownable {
     function enroll(
         uint _id,
         address _user
-    ) public onlyOwner domainOwner(_user) {
+    ) public domainOwner(_user) {
         require(_id < courseCounter, "Course does not exist");
 
         require(!isEnrolled[_user][_id], "User is already enrolled");
