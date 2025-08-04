@@ -127,7 +127,7 @@
   },
   {
     "caseTitle": "edufi-contracts",
-    "caseDesc": "This project demonstrates an EduFi contract powered by Web3 domain ownership and supports ERC2771Context for meta-transactions.",
+    "caseDesc": "This project demonstrates an EduFi contract implementation powered by Web3 domain ownership and supports ERC2771Context for meta-transactions.",
     "tags": ["BSC"],
     "github": "https://github.com/Level3AI-hub/Level3-Contracts",
     "replit": "",
