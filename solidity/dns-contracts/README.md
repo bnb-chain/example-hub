@@ -9,6 +9,14 @@ A decentralized naming system on BNB Chain, inspired by ENS, with dynamic token 
 
 For documentation of the ENS system, see [docs.ens.domains](https://docs.ens.domains/).
 
+## Testing
+
+After deployment of all contracts, to test if the minting process works run:
+
+```bash
+npx hardhat run scripts/ens-test.ts --network <network-name>
+```
+
 ## npm package
 
 This repo doubles as an npm package with the compiled JSON contracts
