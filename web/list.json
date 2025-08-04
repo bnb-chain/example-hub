@@ -137,7 +137,7 @@
     "imgUrl": "https://cms-static.bnbchain.org/dcms/static/303d0c6a-af8f-4098-a2d0-a5b96ef964ba.png"
   },
   {
-    "caseTitle": "ens-contracts",
+    "caseTitle": "dns-contracts",
     "caseDesc": "This project demonstrates a DNS on BNB Chain with dynamic pricing, lifetime registrations and a referral system",
     "tags": ["BSC"],
     "github": "https://github.com/Level3AI-hub/ens-contracts",
