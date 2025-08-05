@@ -9,6 +9,75 @@ A decentralized naming system on BNB Chain, inspired by ENS, with dynamic token 
 
 For documentation of the ENS system, see [docs.ens.domains](https://docs.ens.domains/).
 
+## Pre-Deployment
+
+Before deploying these contracts to setup your own domain name service, You must configure a few details tailored to the TLD you want to deploy.
+
+First of all, ALL instances of '.creator' in the contracts and deploy scripts must be replaced with your own TLD. For example:
+
+```solidity
+function _setReverseRecord(
+        string memory name,
+        address resolver,
+        address owner
+    ) internal {
+        reverseRegistrar.setNameForAddr(
+            msg.sender,
+            owner,
+            resolver,
+            string.concat(name, ".creator")
+        );
+    }
+```
+in ETHRegistrarController.sol should be replaced with:
+
+```solidity
+function _setReverseRecord(
+        string memory name,
+        address resolver,
+        address owner
+    ) internal {
+        reverseRegistrar.setNameForAddr(
+            msg.sender,
+            owner,
+            resolver,
+            string.concat(name, ".<YOUR_TLD>")
+        );
+    }
+```
+
+AND
+
+```solidity
+    bytes32 private constant CRE8OR_NODE =
+        0x4f2c0fc83d175c423d55ddf2fef3b9b38af479fac3adb42afb02778397a27454;
+
+    bytes32 private constant CRE8OR_LABELHASH =
+        0x0d1f301a4d55e328cfe2f78743e489a98cedaf66d744b3ab1bb877ff82930b0b;
+
+    names[CRE8OR_NODE] = "\x07creator\x00";
+```
+
+in Your NameWrapper Contract should be replaced with:
+
+```solidity
+       bytes32 private constant CRE8OR_NODE =
+        Namehash(YourTLD);
+
+    bytes32 private constant CRE8OR_LABELHASH =
+        Keccak256(YourTLD);
+    
+     names[CRE8OR_NODE] = "\xN<YOUR_TLD>\x00";
+```
+
+Note: In 
+```solidity 
+
+names[CRE8OR_NODE] = "\xN<YOUR_TLD>\x00"; 
+
+```
+'xN' is the number of characters your TLD has. For example, "\x03bnb\x00".
+
 ## Testing
 
 After deployment of all contracts, to test if the minting process works run:
@@ -17,55 +86,6 @@ After deployment of all contracts, to test if the minting process works run:
 npx hardhat run scripts/ens-test.ts --network <network-name>
 ```
 
-## npm package
-
-This repo doubles as an npm package with the compiled JSON contracts
-
-```js
-import {
-  BaseRegistrar,
-  BaseRegistrarImplementation,
-  BulkRenewal,
-  ENS,
-  ENSRegistry,
-  ENSRegistryWithFallback,
-  ETHRegistrarController,
-  FIFSRegistrar,
-  LinearPremiumPriceOracle,
-  PriceOracle,
-  PublicResolver,
-  Resolver,
-  ReverseRegistrar,
-  StablePriceOracle,
-  TestRegistrar,
-} from '@ensdomains/ens-contracts'
-```
-
-## Importing from solidity
-
-```
-// Registry
-import '@ensdomains/ens-contracts/contracts/registry/ENS.sol';
-import '@ensdomains/ens-contracts/contracts/registry/ENSRegistry.sol';
-import '@ensdomains/ens-contracts/contracts/registry/ENSRegistryWithFallback.sol';
-import '@ensdomains/ens-contracts/contracts/registry/ReverseRegistrar.sol';
-import '@ensdomains/ens-contracts/contracts/registry/TestRegistrar.sol';
-// EthRegistrar
-import '@ensdomains/ens-contracts/contracts/ethregistrar/BaseRegistrar.sol';
-import '@ensdomains/ens-contracts/contracts/ethregistrar/BaseRegistrarImplementation.sol';
-import '@ensdomains/ens-contracts/contracts/ethregistrar/BulkRenewal.sol';
-import '@ensdomains/ens-contracts/contracts/ethregistrar/ETHRegistrarController.sol';
-import '@ensdomains/ens-contracts/contracts/ethregistrar/LinearPremiumPriceOracle.sol';
-import '@ensdomains/ens-contracts/contracts/ethregistrar/PriceOracle.sol';
-import '@ensdomains/ens-contracts/contracts/ethregistrar/StablePriceOracle.sol';
-// Resolvers
-import '@ensdomains/ens-contracts/contracts/resolvers/PublicResolver.sol';
-import '@ensdomains/ens-contracts/contracts/resolvers/Resolver.sol';
-```
-
-## Accessing to binary file.
-
-If your environment does not have compiler, you can access to the raw hardhat artifacts files at `node_modules/@ensdomains/ens-contracts/artifacts/contracts/${modName}/${contractName}.sol/${contractName}.json`
 
 ## Contracts
 
