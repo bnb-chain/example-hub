@@ -37,6 +37,7 @@ language, description, and tags to help you find what you need quickly.
 | [go/tg-token-launch](./go/tg-token-launch-example)     | Go         | Telegram bot for token launch automation     | Bot, Token Launch   |
 | [python/langchain-chatbot](./python/langchain-chatbot) | Python     | A chatbot example using LangChain            | AI, BSC, opBNB      |
 | [python/pancacke-swap](./python/pancake-swap-example)  | Python     | PancakeSwap integration example              | DeFi, DEX, BSC      |
+| [python/ai-wallet-reputation-nft](./python/ai-wallet-reputation-nft) | Python     | AI-generated, soulbound reputation NFTs on BNB Chain | AI, NFT, Reputation |
 | [typescript/bnbchain-mcp](./typescript/bnbchain-mcp)   | TypeScript | AI-powered blockchain assistant using Claude | AI, BSC, MCP        |
 | [typescript/eliza-chatbot](./typescript/eliza-chatbot) | TypeScript | A chatbot example using Eliza plugin-bnb     | AI, BSC, opBNB      |
 | [typescript/safucard](./typescript/safucard) | Typescript | Safucard is a React-based decentralized application (dApp) that allows users to input their wallet address and receive a customized visual "SafuCard" scorecard based on their bep-20 token interactions. Users can optionally mint their SafuCard as an NFT to commemorate or showcase their on-chain profile. | BSC |

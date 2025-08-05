@@ -29,7 +29,7 @@ export function createAgent(character: Character, db: any, cache: any, token: st
     modelProvider: character.modelProvider,
     evaluators: [],
     character,
-    plugins: [],
+    plugins: character.plugins || [], // Fixed: Use character.plugins instead of empty array
     providers: [],
     actions: [],
     services: [],

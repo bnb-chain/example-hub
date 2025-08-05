@@ -30,12 +30,25 @@ async function handleUserInput(input: string, agentId: string) {
 
     const data = await response.json();
     rl.pause();
-    data.forEach((message) => console.log(`${'Agent'}: ${message.text}`));
-    rl.resume();
 
+    // Fixed: Add error handling for response data
+    if (Array.isArray(data)) {
+      data.forEach((message) => {
+        if (message && message.text) {
+          console.log(`${'Agent'}: ${message.text}`);
+        }
+      });
+    } else if (data && data.text) {
+      console.log(`${'Agent'}: ${data.text}`);
+    } else {
+      console.log('Agent: No response received');
+    }
+
+    rl.resume();
     rl.prompt();
   } catch (error) {
     console.error('Error fetching response:', error);
+    rl.prompt(); // Ensure prompt is shown even on error
   }
 }
 
