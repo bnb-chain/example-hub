@@ -76,12 +76,7 @@ async function main() {
   console.log(`waiting ${waitMs / 1000}s for commitment age...`)
   await new Promise((r) => setTimeout(r, waitMs))
 
-  const rpcUrl = 'https://bsc-testnet.public.blastapi.io'
-  const publicClient = createPublicClient({
-    chain: bscTestnet,
-    transport: http(rpcUrl),
-  })
-
+  
   // 5) Register name
   const totalCost = priceData.base + priceData.premium
   const registerHash = await controller.write.register(
@@ -116,7 +111,7 @@ async function main() {
   console.log('ENS.owner:', await registry.read.owner([node]))
 
   const CRE8OR_NODE =
-    '0xdb16739af6cfc75c90f34d005d9cd5bf924767f495f495a3ff96537a5bde11e6'
+    namehash(TLD)
 
   const labelhash = keccak256(toBytes(LABEL))
   // 2) Label hash
@@ -130,7 +125,7 @@ async function main() {
 
   const id = keccak256(packed)
   const wrapperData = await nameWrapper.read.getData([BigInt(id)])
-  console.log('NameWrapper.getData owner:', wrapperData[0])
+  console.log('NameWrapper owner:', wrapperData[0])
 
   // 10) Resolver resolution
   console.log('resolver.addr:', await resolver.read.addr([node]))
