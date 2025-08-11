@@ -1,0 +1,390 @@
+{
+  "address": "0xBc9aCd5592ac75cd4F2A83e97C736A2b1E22b466",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "contract AggregatorV3Interface",
+          "name": "_usdOracle",
+          "type": "address"
+        },
+        {
+          "internalType": "contract AggregatorV3Interface",
+          "name": "_cakeOracle",
+          "type": "address"
+        },
+        {
+          "internalType": "contract AggregatorV3Interface",
+          "name": "_usd1Oracle",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "_rentPrices",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_startPremium",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "totalDays",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256[]",
+          "name": "prices",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "RentPriceChanged",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "startPremium",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "elapsed",
+          "type": "uint256"
+        }
+      ],
+      "name": "decayedPremium",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "expires",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "duration",
+          "type": "uint256"
+        }
+      ],
+      "name": "premium",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "expires",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "duration",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "lifetime",
+          "type": "bool"
+        }
+      ],
+      "name": "price",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "base",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "premium",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct IPriceOracle.Price",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "price1Letter",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "price2Letter",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "price3Letter",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "price4Letter",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "price5Letter",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "expires",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "duration",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "token",
+          "type": "string"
+        },
+        {
+          "internalType": "bool",
+          "name": "lifetime",
+          "type": "bool"
+        }
+      ],
+      "name": "priceToken",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "base",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "premium",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct IPriceOracle.Price",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes4",
+          "name": "interfaceID",
+          "type": "bytes4"
+        }
+      ],
+      "name": "supportsInterface",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0xa6c80e8c5df27b9fd66cafcf00c18f100f8d634e0b8ee0841c8dda3334d356db",
+  "receipt": {
+    "to": null,
+    "from": "0x2A0D7311fA7e9aC2890CFd8219b2dEf0c206E79B",
+    "contractAddress": "0xBc9aCd5592ac75cd4F2A83e97C736A2b1E22b466",
+    "transactionIndex": 0,
+    "gasUsed": "1323172",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x69d9aa221be45a78c9c8dcae14c590a4d00cc5b16e54abe32790804ef517eeca",
+    "transactionHash": "0xa6c80e8c5df27b9fd66cafcf00c18f100f8d634e0b8ee0841c8dda3334d356db",
+    "logs": [],
+    "blockNumber": 57534967,
+    "cumulativeGasUsed": "1323172",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [
+    "0x2514895c72f50D8bd4B4F9b1110F0D6bD2c97526",
+    "0x81faeDDfeBc2F8Ac524327d70Cf913001732224C",
+    "0xEca2605f0BCF2BA5966372C99837b1F182d3D620",
+    [
+      "0",
+      "3170979198377",
+      "1585489599188",
+      "792744799594",
+      "317097919838"
+    ],
+    "100000000000000000000000000",
+    "21"
+  ],
+  "numDeployments": 1,
+  "solcInputHash": "dcc6184d14b5e21d84340667ccb71894",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"contract AggregatorV3Interface\",\"name\":\"_usdOracle\",\"type\":\"address\"},{\"internalType\":\"contract AggregatorV3Interface\",\"name\":\"_cakeOracle\",\"type\":\"address\"},{\"internalType\":\"contract AggregatorV3Interface\",\"name\":\"_usd1Oracle\",\"type\":\"address\"},{\"internalType\":\"uint256[]\",\"name\":\"_rentPrices\",\"type\":\"uint256[]\"},{\"internalType\":\"uint256\",\"name\":\"_startPremium\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"totalDays\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256[]\",\"name\":\"prices\",\"type\":\"uint256[]\"}],\"name\":\"RentPriceChanged\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"startPremium\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"elapsed\",\"type\":\"uint256\"}],\"name\":\"decayedPremium\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"expires\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"duration\",\"type\":\"uint256\"}],\"name\":\"premium\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"expires\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"duration\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"lifetime\",\"type\":\"bool\"}],\"name\":\"price\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"base\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"premium\",\"type\":\"uint256\"}],\"internalType\":\"struct IPriceOracle.Price\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"price1Letter\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"price2Letter\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"price3Letter\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"price4Letter\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"price5Letter\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"expires\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"duration\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"token\",\"type\":\"string\"},{\"internalType\":\"bool\",\"name\":\"lifetime\",\"type\":\"bool\"}],\"name\":\"priceToken\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"base\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"premium\",\"type\":\"uint256\"}],\"internalType\":\"struct IPriceOracle.Price\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"interfaceID\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"decayedPremium(uint256,uint256)\":{\"details\":\"Returns the premium price at current time elapsed\",\"params\":{\"elapsed\":\"time past since expiry\",\"startPremium\":\"starting price\"}},\"premium(string,uint256,uint256)\":{\"details\":\"Returns the pricing premium in wei.\"},\"price(string,uint256,uint256,bool)\":{\"details\":\"Returns the price to register or renew a name.\",\"params\":{\"duration\":\"How long the name is being registered or extended for, in seconds.\",\"expires\":\"When the name presently expires (0 if this is a new registration).\",\"name\":\"The name being registered or renewed.\"},\"returns\":{\"_0\":\"base premium tuple of base price + premium price\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/ethregistrar/TokenPriceOracle.sol\":\"TokenPriceOracle\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":1200},\"remappings\":[]},\"sources\":{\"@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.0;\\n\\n// solhint-disable-next-line interface-starts-with-i\\ninterface AggregatorV3Interface {\\n  function decimals() external view returns (uint8);\\n\\n  function description() external view returns (string memory);\\n\\n  function version() external view returns (uint256);\\n\\n  function getRoundData(\\n    uint80 _roundId\\n  ) external view returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound);\\n\\n  function latestRoundData()\\n    external\\n    view\\n    returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound);\\n}\\n\",\"keccak256\":\"0x257a8d28fa83d3d942547c8e129ef465e4b5f3f31171e7be4739a4c98da6b4f0\",\"license\":\"MIT\"},\"@openzeppelin/contracts/access/Ownable.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v4.9.0) (access/Ownable.sol)\\n\\npragma solidity ^0.8.0;\\n\\nimport \\\"../utils/Context.sol\\\";\\n\\n/**\\n * @dev Contract module which provides a basic access control mechanism, where\\n * there is an account (an owner) that can be granted exclusive access to\\n * specific functions.\\n *\\n * By default, the owner account will be the one that deploys the contract. This\\n * can later be changed with {transferOwnership}.\\n *\\n * This module is used through inheritance. It will make available the modifier\\n * `onlyOwner`, which can be applied to your functions to restrict their use to\\n * the owner.\\n */\\nabstract contract Ownable is Context {\\n    address private _owner;\\n\\n    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);\\n\\n    /**\\n     * @dev Initializes the contract setting the deployer as the initial owner.\\n     */\\n    constructor() {\\n        _transferOwnership(_msgSender());\\n    }\\n\\n    /**\\n     * @dev Throws if called by any account other than the owner.\\n     */\\n    modifier onlyOwner() {\\n        _checkOwner();\\n        _;\\n    }\\n\\n    /**\\n     * @dev Returns the address of the current owner.\\n     */\\n    function owner() public view virtual returns (address) {\\n        return _owner;\\n    }\\n\\n    /**\\n     * @dev Throws if the sender is not the owner.\\n     */\\n    function _checkOwner() internal view virtual {\\n        require(owner() == _msgSender(), \\\"Ownable: caller is not the owner\\\");\\n    }\\n\\n    /**\\n     * @dev Leaves the contract without owner. It will not be possible to call\\n     * `onlyOwner` functions. Can only be called by the current owner.\\n     *\\n     * NOTE: Renouncing ownership will leave the contract without an owner,\\n     * thereby disabling any functionality that is only available to the owner.\\n     */\\n    function renounceOwnership() public virtual onlyOwner {\\n        _transferOwnership(address(0));\\n    }\\n\\n    /**\\n     * @dev Transfers ownership of the contract to a new account (`newOwner`).\\n     * Can only be called by the current owner.\\n     */\\n    function transferOwnership(address newOwner) public virtual onlyOwner {\\n        require(newOwner != address(0), \\\"Ownable: new owner is the zero address\\\");\\n        _transferOwnership(newOwner);\\n    }\\n\\n    /**\\n     * @dev Transfers ownership of the contract to a new account (`newOwner`).\\n     * Internal function without access restriction.\\n     */\\n    function _transferOwnership(address newOwner) internal virtual {\\n        address oldOwner = _owner;\\n        _owner = newOwner;\\n        emit OwnershipTransferred(oldOwner, newOwner);\\n    }\\n}\\n\",\"keccak256\":\"0xba43b97fba0d32eb4254f6a5a297b39a19a247082a02d6e69349e071e2946218\",\"license\":\"MIT\"},\"@openzeppelin/contracts/utils/Context.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts v4.4.1 (utils/Context.sol)\\n\\npragma solidity ^0.8.0;\\n\\n/**\\n * @dev Provides information about the current execution context, including the\\n * sender of the transaction and its data. While these are generally available\\n * via msg.sender and msg.data, they should not be accessed in such a direct\\n * manner, since when dealing with meta-transactions the account sending and\\n * paying for execution may not be the actual sender (as far as an application\\n * is concerned).\\n *\\n * This contract is only required for intermediate, library-like contracts.\\n */\\nabstract contract Context {\\n    function _msgSender() internal view virtual returns (address) {\\n        return msg.sender;\\n    }\\n\\n    function _msgData() internal view virtual returns (bytes calldata) {\\n        return msg.data;\\n    }\\n}\\n\",\"keccak256\":\"0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7\",\"license\":\"MIT\"},\"@openzeppelin/contracts/utils/introspection/IERC165.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts v4.4.1 (utils/introspection/IERC165.sol)\\n\\npragma solidity ^0.8.0;\\n\\n/**\\n * @dev Interface of the ERC165 standard, as defined in the\\n * https://eips.ethereum.org/EIPS/eip-165[EIP].\\n *\\n * Implementers can declare support of contract interfaces, which can then be\\n * queried by others ({ERC165Checker}).\\n *\\n * For an implementation, see {ERC165}.\\n */\\ninterface IERC165 {\\n    /**\\n     * @dev Returns true if this contract implements the interface defined by\\n     * `interfaceId`. See the corresponding\\n     * https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section]\\n     * to learn more about how these ids are created.\\n     *\\n     * This function call must use less than 30 000 gas.\\n     */\\n    function supportsInterface(bytes4 interfaceId) external view returns (bool);\\n}\\n\",\"keccak256\":\"0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1\",\"license\":\"MIT\"},\"contracts/ethregistrar/ExponentialPremiumPriceOracle.sol\":{\"content\":\"//SPDX-License-Identifier: MIT\\npragma solidity ~0.8.17;\\n\\nimport \\\"./StablePriceOracle.sol\\\";\\n\\ncontract ExponentialPremiumPriceOracle is StablePriceOracle {\\n    uint256 constant GRACE_PERIOD = 90 days;\\n    uint256 immutable startPremium;\\n    uint256 immutable endValue;\\n\\n    constructor(\\n        AggregatorV3Interface _usdOracle,\\n        uint256[] memory _rentPrices,\\n        uint256 _startPremium,\\n        uint256 totalDays\\n    ) StablePriceOracle(_usdOracle, _rentPrices) {\\n        startPremium = _startPremium;\\n        endValue = _startPremium >> totalDays;\\n    }\\n\\n    uint256 constant PRECISION = 1e18;\\n    uint256 constant bit1 = 999989423469314432; // 0.5 ^ 1/65536 * (10 ** 18)\\n    uint256 constant bit2 = 999978847050491904; // 0.5 ^ 2/65536 * (10 ** 18)\\n    uint256 constant bit3 = 999957694548431104;\\n    uint256 constant bit4 = 999915390886613504;\\n    uint256 constant bit5 = 999830788931929088;\\n    uint256 constant bit6 = 999661606496243712;\\n    uint256 constant bit7 = 999323327502650752;\\n    uint256 constant bit8 = 998647112890970240;\\n    uint256 constant bit9 = 997296056085470080;\\n    uint256 constant bit10 = 994599423483633152;\\n    uint256 constant bit11 = 989228013193975424;\\n    uint256 constant bit12 = 978572062087700096;\\n    uint256 constant bit13 = 957603280698573696;\\n    uint256 constant bit14 = 917004043204671232;\\n    uint256 constant bit15 = 840896415253714560;\\n    uint256 constant bit16 = 707106781186547584;\\n\\n    /**\\n     * @dev Returns the pricing premium in internal base units.\\n     */\\n    function _premium(\\n        string memory,\\n        uint256 expires,\\n        uint256\\n    ) internal view override returns (uint256) {\\n        expires = expires + GRACE_PERIOD;\\n        if (expires > block.timestamp) {\\n            return 0;\\n        }\\n\\n        uint256 elapsed = block.timestamp - expires;\\n        uint256 premium = decayedPremium(startPremium, elapsed);\\n        if (premium >= endValue) {\\n            return premium - endValue;\\n        }\\n        return 0;\\n    }\\n\\n    /**\\n     * @dev Returns the premium price at current time elapsed\\n     * @param startPremium starting price\\n     * @param elapsed time past since expiry\\n     */\\n    function decayedPremium(\\n        uint256 startPremium,\\n        uint256 elapsed\\n    ) public pure returns (uint256) {\\n        uint256 daysPast = (elapsed * PRECISION) / 1 days;\\n        uint256 intDays = daysPast / PRECISION;\\n        uint256 premium = startPremium >> intDays;\\n        uint256 partDay = (daysPast - intDays * PRECISION);\\n        uint256 fraction = (partDay * (2 ** 16)) / PRECISION;\\n        uint256 totalPremium = addFractionalPremium(fraction, premium);\\n        return totalPremium;\\n    }\\n\\n    function addFractionalPremium(\\n        uint256 fraction,\\n        uint256 premium\\n    ) internal pure returns (uint256) {\\n        if (fraction & (1 << 0) != 0) {\\n            premium = (premium * bit1) / PRECISION;\\n        }\\n        if (fraction & (1 << 1) != 0) {\\n            premium = (premium * bit2) / PRECISION;\\n        }\\n        if (fraction & (1 << 2) != 0) {\\n            premium = (premium * bit3) / PRECISION;\\n        }\\n        if (fraction & (1 << 3) != 0) {\\n            premium = (premium * bit4) / PRECISION;\\n        }\\n        if (fraction & (1 << 4) != 0) {\\n            premium = (premium * bit5) / PRECISION;\\n        }\\n        if (fraction & (1 << 5) != 0) {\\n            premium = (premium * bit6) / PRECISION;\\n        }\\n        if (fraction & (1 << 6) != 0) {\\n            premium = (premium * bit7) / PRECISION;\\n        }\\n        if (fraction & (1 << 7) != 0) {\\n            premium = (premium * bit8) / PRECISION;\\n        }\\n        if (fraction & (1 << 8) != 0) {\\n            premium = (premium * bit9) / PRECISION;\\n        }\\n        if (fraction & (1 << 9) != 0) {\\n            premium = (premium * bit10) / PRECISION;\\n        }\\n        if (fraction & (1 << 10) != 0) {\\n            premium = (premium * bit11) / PRECISION;\\n        }\\n        if (fraction & (1 << 11) != 0) {\\n            premium = (premium * bit12) / PRECISION;\\n        }\\n        if (fraction & (1 << 12) != 0) {\\n            premium = (premium * bit13) / PRECISION;\\n        }\\n        if (fraction & (1 << 13) != 0) {\\n            premium = (premium * bit14) / PRECISION;\\n        }\\n        if (fraction & (1 << 14) != 0) {\\n            premium = (premium * bit15) / PRECISION;\\n        }\\n        if (fraction & (1 << 15) != 0) {\\n            premium = (premium * bit16) / PRECISION;\\n        }\\n        return premium;\\n    }\\n\\n    function supportsInterface(\\n        bytes4 interfaceID\\n    ) public view virtual override returns (bool) {\\n        return super.supportsInterface(interfaceID);\\n    }\\n}\\n\",\"keccak256\":\"0xb1216535d04a6cb36d4a184c69755eb64a9e9890c94e83d4407a8f631ae6bfb5\",\"license\":\"MIT\"},\"contracts/ethregistrar/IPriceOracle.sol\":{\"content\":\"//SPDX-License-Identifier: MIT\\npragma solidity >=0.8.17 <0.9.0;\\n\\ninterface IPriceOracle {\\n    struct Price {\\n        uint256 base;\\n        uint256 premium;\\n    }\\n\\n    /**\\n     * @dev Returns the price to register or renew a name.\\n     * @param name The name being registered or renewed.\\n     * @param expires When the name presently expires (0 if this is a new registration).\\n     * @param duration How long the name is being registered or extended for, in seconds.\\n     * @return base premium tuple of base price + premium price\\n     */\\n    function price(\\n        string calldata name,\\n        uint256 expires,\\n        uint256 duration,\\n        bool lifetime\\n    ) external view returns (Price calldata);\\n}\\n\",\"keccak256\":\"0xc1f749d6238b0e77cc804153b2ce8fc2e082d28129e734839ccc2b2be7ee9d2b\",\"license\":\"MIT\"},\"contracts/ethregistrar/StablePriceOracle.sol\":{\"content\":\"//SPDX-License-Identifier: MIT\\npragma solidity ~0.8.17;\\n\\nimport \\\"./IPriceOracle.sol\\\";\\nimport \\\"../utils/StringUtils.sol\\\";\\nimport \\\"@openzeppelin/contracts/access/Ownable.sol\\\";\\nimport \\\"@openzeppelin/contracts/utils/introspection/IERC165.sol\\\";\\nimport {AggregatorV3Interface} from \\\"@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol\\\";\\n\\n\\n\\n// StablePriceOracle sets a price in USD, based on an oracle.\\ncontract StablePriceOracle is IPriceOracle {\\n    using StringUtils for *;\\n    AggregatorV3Interface internal usdOracle;\\n\\n    // Rent in base price units by length\\n    uint256 public immutable price1Letter;\\n    uint256 public immutable price2Letter;\\n    uint256 public immutable price3Letter;\\n    uint256 public immutable price4Letter;\\n    uint256 public immutable price5Letter;\\n\\n    // Oracle address\\n\\n    event RentPriceChanged(uint256[] prices);\\n\\n    constructor(AggregatorV3Interface _usdOracle, uint256[] memory _rentPrices) {\\n        usdOracle = _usdOracle;\\n        price1Letter = _rentPrices[0];\\n        price2Letter = _rentPrices[1];\\n        price3Letter = _rentPrices[2];\\n        price4Letter = _rentPrices[3];\\n        price5Letter = _rentPrices[4];\\n    }\\n\\n    function price(\\n        string calldata name,\\n        uint256 expires,\\n        uint256 duration,\\n        bool lifetime\\n    ) external view override returns (IPriceOracle.Price memory) {\\n        uint256 len = name.strlen();\\n        uint256 basePrice;\\n\\n        if (len >= 5 && lifetime) {\\n            basePrice = price5Letter * 31536000 * 4;\\n        } else if (len == 4 && lifetime) {\\n            basePrice = price4Letter * 31536000 * 4;\\n        } else if (len == 3 && lifetime) {\\n            basePrice = price3Letter * 31536000 * 6;\\n        } else if (len == 2 && lifetime) {\\n            basePrice = price2Letter * 31536000 * 10;\\n        } else if (len == 1 && lifetime) {\\n            basePrice = price1Letter * 31536000;\\n        } else if (len >= 5 && lifetime == false) { \\n            basePrice = price5Letter * duration;\\n        } else if (len == 4 && lifetime == false) {\\n            basePrice = price4Letter * duration;\\n        } else if (len == 3 && lifetime == false) {\\n            basePrice = price3Letter * duration;\\n        } else if (len == 2 && lifetime == false) {\\n            basePrice = price2Letter * duration;\\n        } else {\\n            basePrice = price1Letter * duration;\\n        }\\n      return\\n            IPriceOracle.Price({\\n                base: attoUSDToWei(basePrice),\\n                premium: attoUSDToWei(_premium(name, expires, duration))\\n            });\\n    }\\n\\n    /**\\n     * @dev Returns the pricing premium in wei.\\n     */\\n    function premium(\\n        string calldata name,\\n        uint256 expires,\\n        uint256 duration\\n    ) external view returns (uint256) {\\n        return attoUSDToWei(_premium(name, expires, duration));\\n    }\\n\\n    /**\\n     * @dev Returns the pricing premium in internal base units.\\n     */\\n    function _premium(\\n        string memory name,\\n        uint256 expires,\\n        uint256 duration\\n    ) internal view virtual returns (uint256) {\\n        return 0;\\n    }\\n\\n     function attoUSDToWei(uint256 amount) internal view returns (uint256) {\\n        (, int256 ethPrice,,,) = usdOracle.latestRoundData();\\n        return (amount * 1e8) / uint256(ethPrice);\\n    }\\n\\n    function weiToAttoUSD(uint256 amount) internal view returns (uint256) {\\n        (, int256 ethPrice,,,) = usdOracle.latestRoundData();\\n        return (amount * uint256(ethPrice)) / 1e8;\\n    }\\n\\n    function supportsInterface(\\n        bytes4 interfaceID\\n    ) public view virtual returns (bool) {\\n        return\\n            interfaceID == type(IERC165).interfaceId ||\\n            interfaceID == type(IPriceOracle).interfaceId;\\n    }\\n}\\n\",\"keccak256\":\"0x54a747b1762c567f40f99603f147789dc03aab46eafb4e0eaac7340092cccea3\",\"license\":\"MIT\"},\"contracts/ethregistrar/TokenPriceOracle.sol\":{\"content\":\"//SPDX-License-Identifier: MIT\\npragma solidity ~0.8.17;\\n\\nimport \\\"./ExponentialPremiumPriceOracle.sol\\\";\\nimport {AggregatorV3Interface} from \\\"@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol\\\";\\n\\ncontract TokenPriceOracle is ExponentialPremiumPriceOracle {\\n    AggregatorV3Interface internal cakeOracle;\\n    AggregatorV3Interface internal usd1Oracle;\\n    using StringUtils for *;\\n    constructor(\\n        AggregatorV3Interface _usdOracle,\\n        AggregatorV3Interface _cakeOracle,\\n        AggregatorV3Interface _usd1Oracle,\\n        uint256[] memory _rentPrices,\\n        uint256 _startPremium,\\n        uint256 totalDays\\n    )ExponentialPremiumPriceOracle(_usdOracle, _rentPrices, _startPremium, totalDays) {\\n       usd1Oracle = _usd1Oracle;\\n       cakeOracle = _cakeOracle;\\n    }\\n\\n\\n    function priceToken(\\n        string calldata name,\\n        uint256 expires,\\n        uint256 duration,\\n        string memory token,\\n        bool lifetime\\n    ) external view returns (IPriceOracle.Price memory) {\\n        uint256 len = name.strlen();\\n        uint256 basePrice;\\n\\n        if (len >= 5 && lifetime) {\\n            basePrice = price5Letter * 31536000 * 4;\\n        } else if (len == 4 && lifetime) {\\n            basePrice = price4Letter * 31536000 * 4;\\n        } else if (len == 3 && lifetime) {\\n            basePrice = price3Letter * 31536000 * 6;\\n        } else if (len == 2 && lifetime) {\\n            basePrice = price2Letter * 31536000 * 10;\\n        } else if (len == 1 && lifetime) {\\n            basePrice = price1Letter * 31536000;\\n        } else if (len >= 5 && lifetime == false) { \\n            basePrice = price5Letter * duration;\\n        } else if (len == 4 && lifetime == false) {\\n            basePrice = price4Letter * duration;\\n        } else if (len == 3 && lifetime == false) {\\n            basePrice = price3Letter * duration;\\n        } else if (len == 2 && lifetime == false) {\\n            basePrice = price2Letter * duration;\\n        } else {\\n            basePrice = price1Letter * duration;\\n        }\\n        if(keccak256(bytes(token)) == keccak256(bytes(\\\"cake\\\"))){\\n                 return\\n            IPriceOracle.Price({\\n                base: attoUSDToCake(basePrice),\\n                premium: attoUSDToCake(_premium(name, expires, duration))\\n            });\\n        } else {\\n             return\\n            IPriceOracle.Price({\\n                base: attoUSDToUSD1(basePrice),\\n                premium: attoUSDToCake(_premium(name, expires, duration))\\n            });\\n        }\\n       \\n    }\\n     function attoUSDToCake(uint256 amount) internal view returns (uint256) {\\n        (, int256 cakePrice,,,) = cakeOracle.latestRoundData();\\n        return (amount * 1e8) / uint256(cakePrice);\\n    }\\n    function attoUSDToUSD1(uint256 amount) internal view returns (uint256) {\\n        (, int256 usd1Price,,,) = usd1Oracle.latestRoundData();\\n        return (amount * 1e8) / uint256(usd1Price);\\n    }\\n     function attoCakeToUSD(uint256 amount) internal view returns (uint256) {\\n        (, int256 cakePrice,,,) = cakeOracle.latestRoundData();\\n        return (amount * uint256(cakePrice)) / 1e8;\\n    }\\n    function attoUSD1ToUSD(uint256 amount) internal view returns (uint256) {\\n        (, int256 usd1Price,,,) = usd1Oracle.latestRoundData();\\n        return (amount * uint256(usd1Price)) / 1e8;\\n    }\\n\\n}\\n\",\"keccak256\":\"0x315a2173ce37b23b47f11600bd0ecf1407ba59a52db2c5ec628038bd8d75d4ca\",\"license\":\"MIT\"},\"contracts/utils/StringUtils.sol\":{\"content\":\"pragma solidity >=0.8.4;\\n\\nlibrary StringUtils {\\n    /**\\n     * @dev Returns the length of a given string\\n     *\\n     * @param s The string to measure the length of\\n     * @return The length of the input string\\n     */\\n    function strlen(string memory s) internal pure returns (uint256) {\\n        uint256 len;\\n        uint256 i = 0;\\n        uint256 bytelength = bytes(s).length;\\n        for (len = 0; i < bytelength; len++) {\\n            bytes1 b = bytes(s)[i];\\n            if (b < 0x80) {\\n                i += 1;\\n            } else if (b < 0xE0) {\\n                i += 2;\\n            } else if (b < 0xF0) {\\n                i += 3;\\n            } else if (b < 0xF8) {\\n                i += 4;\\n            } else if (b < 0xFC) {\\n                i += 5;\\n            } else {\\n                i += 6;\\n            }\\n        }\\n        return len;\\n    }\\n\\n    /**\\n     * @dev Escapes special characters in a given string\\n     *\\n     * @param str The string to escape\\n     * @return The escaped string\\n     */\\n    function escape(string memory str) internal pure returns (string memory) {\\n        bytes memory strBytes = bytes(str);\\n        uint extraChars = 0;\\n\\n        // count extra space needed for escaping\\n        for (uint i = 0; i < strBytes.length; i++) {\\n            if (_needsEscaping(strBytes[i])) {\\n                extraChars++;\\n            }\\n        }\\n\\n        // allocate buffer with the exact size needed\\n        bytes memory buffer = new bytes(strBytes.length + extraChars);\\n        uint index = 0;\\n\\n        // escape characters\\n        for (uint i = 0; i < strBytes.length; i++) {\\n            if (_needsEscaping(strBytes[i])) {\\n                buffer[index++] = \\\"\\\\\\\\\\\";\\n                buffer[index++] = _getEscapedChar(strBytes[i]);\\n            } else {\\n                buffer[index++] = strBytes[i];\\n            }\\n        }\\n\\n        return string(buffer);\\n    }\\n\\n    // determine if a character needs escaping\\n    function _needsEscaping(bytes1 char) private pure returns (bool) {\\n        return\\n            char == '\\\"' ||\\n            char == \\\"/\\\" ||\\n            char == \\\"\\\\\\\\\\\" ||\\n            char == \\\"\\\\n\\\" ||\\n            char == \\\"\\\\r\\\" ||\\n            char == \\\"\\\\t\\\";\\n    }\\n\\n    // get the escaped character\\n    function _getEscapedChar(bytes1 char) private pure returns (bytes1) {\\n        if (char == \\\"\\\\n\\\") return \\\"n\\\";\\n        if (char == \\\"\\\\r\\\") return \\\"r\\\";\\n        if (char == \\\"\\\\t\\\") return \\\"t\\\";\\n        return char;\\n    }\\n}\\n\",\"keccak256\":\"0xb3838963dcc378d8dde1bd03666ff4fc66c37909a5608950b6ef6eb78f9025c4\"}},\"version\":1}",
+  "bytecode": "0x6101606040523480156200001257600080fd5b506040516200195e3803806200195e833981016040819052620000359162000190565b600080546001600160a01b0319166001600160a01b0388161781558351879185918591859185918591829190620000705762000070620002a6565b60200260200101516080818152505080600181518110620000955762000095620002a6565b602002602001015160a0818152505080600281518110620000ba57620000ba620002a6565b602002602001015160c0818152505080600381518110620000df57620000df620002a6565b602002602001015160e0818152505080600481518110620001045762000104620002a6565b60209081029190910101516101005250506101208290521c610140525050600280546001600160a01b039586166001600160a01b031991821617909155600180549690951695169490941790925550620002bc92505050565b80516001600160a01b03811681146200017557600080fd5b919050565b634e487b7160e01b600052604160045260246000fd5b60008060008060008060c08789031215620001aa57600080fd5b620001b5876200015d565b95506020620001c68189016200015d565b9550620001d6604089016200015d565b60608901519095506001600160401b0380821115620001f457600080fd5b818a0191508a601f8301126200020957600080fd5b8151818111156200021e576200021e6200017a565b8060051b604051601f19603f830116810181811085821117156200024657620002466200017a565b60405291825284820192508381018501918d8311156200026557600080fd5b938501935b8285101562000285578451845293850193928501926200026a565b8098505050505050506080870151915060a087015190509295509295509295565b634e487b7160e01b600052603260045260246000fd5b60805160a05160c05160e0516101005161012051610140516115b5620003a9600039600081816110ab01526110d50152600061108201526000818161012501528181610340015281816104ab01528181610713015261087e01526000818161020101528181610392015281816104e80152818161076501526108bb0152600081816101a0015281816103d201528181610525015281816107a501526108f80152600081816101da0152818161041d01528181610562015281816107f0015261093501526000818160f0015281816104680152818161058c0152818161083b015261095f01526115b56000f3fe608060405234801561001057600080fd5b50600436106100be5760003560e01c80638416a37411610076578063a34e35961161005b578063a34e3596146101c2578063cd5d2c74146101d5578063d820ed42146101fc57600080fd5b80638416a37414610188578063a200e1531461019b57600080fd5b806359b6b86c116100a757806359b6b86c1461012057806359e1777c146101475780638361401d1461015a57600080fd5b806301ffc9a7146100c35780632c0fd74c146100eb575b600080fd5b6100d66100d13660046111ef565b610223565b60405190151581526020015b60405180910390f35b6101127f000000000000000000000000000000000000000000000000000000000000000081565b6040519081526020016100e2565b6101127f000000000000000000000000000000000000000000000000000000000000000081565b610112610155366004611231565b610234565b61016d6101683660046112c7565b6102cf565b604080518251815260209283015192810192909252016100e2565b61016d6101963660046113c5565b6106a2565b6101127f000000000000000000000000000000000000000000000000000000000000000081565b6101126101d036600461142c565b6109f8565b6101127f000000000000000000000000000000000000000000000000000000000000000081565b6101127f000000000000000000000000000000000000000000000000000000000000000081565b600061022e82610a49565b92915050565b6000806201518061024d670de0b6b3a764000085611493565b61025791906114aa565b9050600061026d670de0b6b3a7640000836114aa565b905084811c6000610286670de0b6b3a764000084611493565b61029090856114cc565b90506000670de0b6b3a76400006102aa8362010000611493565b6102b491906114aa565b905060006102c28285610ae1565b9998505050505050505050565b6040805180820190915260008082526020820152600061032488888080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250610e0192505050565b90506000600582101580156103365750835b1561037b576103697f00000000000000000000000000000000000000000000000000000000000000006301e13380611493565b610374906004611493565b90506105b3565b8160041480156103885750835b156103bb576103697f00000000000000000000000000000000000000000000000000000000000000006301e13380611493565b8160031480156103c85750835b15610406576103fb7f00000000000000000000000000000000000000000000000000000000000000006301e13380611493565b610374906006611493565b8160021480156104135750835b15610451576104467f00000000000000000000000000000000000000000000000000000000000000006301e13380611493565b61037490600a611493565b81600114801561045e5750835b15610491576103747f00000000000000000000000000000000000000000000000000000000000000006301e13380611493565b600582101580156104a0575083155b156104cf57610374867f0000000000000000000000000000000000000000000000000000000000000000611493565b8160041480156104dd575083155b1561050c57610374867f0000000000000000000000000000000000000000000000000000000000000000611493565b81600314801561051a575083155b1561054957610374867f0000000000000000000000000000000000000000000000000000000000000000611493565b816002148015610557575083155b1561058657610374867f0000000000000000000000000000000000000000000000000000000000000000611493565b6105b0867f0000000000000000000000000000000000000000000000000000000000000000611493565b90505b60408051808201909152600481527f63616b65000000000000000000000000000000000000000000000000000000006020918201528551908601207fd638d242b45c8aba8055c7b1781a7b0ac9dabf4a46aaede0b3bc1daec8c68d630161068457604051806040016040528061062883610f90565b81526020016106786106738c8c8080601f0160208091040260200160405190810160405280939291908181526020018383808284376000920191909152508e92508d915061104c9050565b610f90565b81525092505050610698565b60405180604001604052806106288361110f565b9695505050505050565b604080518082019091526000808252602082015260006106f787878080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250610e0192505050565b90506000600582101580156107095750835b1561074e5761073c7f00000000000000000000000000000000000000000000000000000000000000006301e13380611493565b610747906004611493565b9050610986565b81600414801561075b5750835b1561078e5761073c7f00000000000000000000000000000000000000000000000000000000000000006301e13380611493565b81600314801561079b5750835b156107d9576107ce7f00000000000000000000000000000000000000000000000000000000000000006301e13380611493565b610747906006611493565b8160021480156107e65750835b15610824576108197f00000000000000000000000000000000000000000000000000000000000000006301e13380611493565b61074790600a611493565b8160011480156108315750835b15610864576107477f00000000000000000000000000000000000000000000000000000000000000006301e13380611493565b60058210158015610873575083155b156108a257610747857f0000000000000000000000000000000000000000000000000000000000000000611493565b8160041480156108b0575083155b156108df57610747857f0000000000000000000000000000000000000000000000000000000000000000611493565b8160031480156108ed575083155b1561091c57610747857f0000000000000000000000000000000000000000000000000000000000000000611493565b81600214801561092a575083155b1561095957610747857f0000000000000000000000000000000000000000000000000000000000000000611493565b610983857f0000000000000000000000000000000000000000000000000000000000000000611493565b90505b604051806040016040528061099a8361117f565b81526020016109ea6109e58b8b8080601f0160208091040260200160405190810160405280939291908181526020018383808284376000920191909152508d92508c915061104c9050565b61117f565b905298975050505050505050565b6000610a406109e586868080601f01602080910402602001604051908101604052809392919081815260200183838082843760009201919091525088925087915061104c9050565b95945050505050565b60007fffffffff0000000000000000000000000000000000000000000000000000000082167f01ffc9a700000000000000000000000000000000000000000000000000000000148061022e57507fffffffff0000000000000000000000000000000000000000000000000000000082167f8416a374000000000000000000000000000000000000000000000000000000001492915050565b60006001831615610b1457670de0b6b3a7640000610b07670de0ad151d09418084611493565b610b1191906114aa565b91505b6002831615610b4557670de0b6b3a7640000610b38670de0a3769959680084611493565b610b4291906114aa565b91505b6004831615610b7657670de0b6b3a7640000610b69670de09039a5fa510084611493565b610b7391906114aa565b91505b6008831615610ba757670de0b6b3a7640000610b9a670de069c00f3e120084611493565b610ba491906114aa565b91505b6010831615610bd857670de0b6b3a7640000610bcb670de01cce21c9440084611493565b610bd591906114aa565b91505b6020831615610c0957670de0b6b3a7640000610bfc670ddf82ef46ce100084611493565b610c0691906114aa565b91505b6040831615610c3a57670de0b6b3a7640000610c2d670dde4f458f8e8d8084611493565b610c3791906114aa565b91505b6080831615610c6b57670de0b6b3a7640000610c5e670ddbe84213d5f08084611493565b610c6891906114aa565b91505b610100831615610c9d57670de0b6b3a7640000610c90670dd71b7aa6df5b8084611493565b610c9a91906114aa565b91505b610200831615610ccf57670de0b6b3a7640000610cc2670dcd86e7f28cde0084611493565b610ccc91906114aa565b91505b610400831615610d0157670de0b6b3a7640000610cf4670dba71a3084ad68084611493565b610cfe91906114aa565b91505b610800831615610d3357670de0b6b3a7640000610d26670d94961b13dbde8084611493565b610d3091906114aa565b91505b611000831615610d6557670de0b6b3a7640000610d58670d4a171c35c9838084611493565b610d6291906114aa565b91505b612000831615610d9757670de0b6b3a7640000610d8a670cb9da519ccfb70084611493565b610d9491906114aa565b91505b614000831615610dc957670de0b6b3a7640000610dbc670bab76d59c18d68084611493565b610dc691906114aa565b91505b618000831615610dfb57670de0b6b3a7640000610dee6709d025defee4df8084611493565b610df891906114aa565b91505b50919050565b8051600090819081905b80821015610f87576000858381518110610e2757610e276114df565b01602001516001600160f81b03191690507f8000000000000000000000000000000000000000000000000000000000000000811015610e7257610e6b6001846114f5565b9250610f74565b7fe0000000000000000000000000000000000000000000000000000000000000006001600160f81b031982161015610eaf57610e6b6002846114f5565b7ff0000000000000000000000000000000000000000000000000000000000000006001600160f81b031982161015610eec57610e6b6003846114f5565b7ff8000000000000000000000000000000000000000000000000000000000000006001600160f81b031982161015610f2957610e6b6004846114f5565b7ffc000000000000000000000000000000000000000000000000000000000000006001600160f81b031982161015610f6657610e6b6005846114f5565b610f716006846114f5565b92505b5082610f7f81611508565b935050610e0b565b50909392505050565b600080600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1663feaf968c6040518163ffffffff1660e01b815260040160a060405180830381865afa158015611000573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190611024919061153b565b50505091505080836305f5e10061103b9190611493565b61104591906114aa565b9392505050565b600061105b6276a700846114f5565b92504283111561106d57506000611045565b600061107984426114cc565b905060006110a77f000000000000000000000000000000000000000000000000000000000000000083610234565b90507f00000000000000000000000000000000000000000000000000000000000000008110611103576110fa7f0000000000000000000000000000000000000000000000000000000000000000826114cc565b92505050611045565b50600095945050505050565b600080600260009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1663feaf968c6040518163ffffffff1660e01b815260040160a060405180830381865afa158015611000573d6000803e3d6000fd5b60008054604080517ffeaf968c0000000000000000000000000000000000000000000000000000000081529051839273ffffffffffffffffffffffffffffffffffffffff169163feaf968c9160048083019260a09291908290030181865afa158015611000573d6000803e3d6000fd5b60006020828403121561120157600080fd5b81357fffffffff000000000000000000000000000000000000000000000000000000008116811461104557600080fd5b6000806040838503121561124457600080fd5b50508035926020909101359150565b60008083601f84011261126557600080fd5b50813567ffffffffffffffff81111561127d57600080fd5b60208301915083602082850101111561129557600080fd5b9250929050565b634e487b7160e01b600052604160045260246000fd5b803580151581146112c257600080fd5b919050565b60008060008060008060a087890312156112e057600080fd5b863567ffffffffffffffff808211156112f857600080fd5b6113048a838b01611253565b90985096506020890135955060408901359450606089013591508082111561132b57600080fd5b818901915089601f83011261133f57600080fd5b8135818111156113515761135161129c565b604051601f8201601f19908116603f011681019083821181831017156113795761137961129c565b816040528281528c602084870101111561139257600080fd5b8260208601602083013760006020848301015280965050505050506113b9608088016112b2565b90509295509295509295565b6000806000806000608086880312156113dd57600080fd5b853567ffffffffffffffff8111156113f457600080fd5b61140088828901611253565b9096509450506020860135925060408601359150611420606087016112b2565b90509295509295909350565b6000806000806060858703121561144257600080fd5b843567ffffffffffffffff81111561145957600080fd5b61146587828801611253565b90989097506020870135966040013595509350505050565b634e487b7160e01b600052601160045260246000fd5b808202811582820484141761022e5761022e61147d565b6000826114c757634e487b7160e01b600052601260045260246000fd5b500490565b8181038181111561022e5761022e61147d565b634e487b7160e01b600052603260045260246000fd5b8082018082111561022e5761022e61147d565b60006001820161151a5761151a61147d565b5060010190565b805169ffffffffffffffffffff811681146112c257600080fd5b600080600080600060a0868803121561155357600080fd5b61155c86611521565b94506020860151935060408601519250606086015191506114206080870161152156fea2646970667358221220c59b2b93d1c3efcc2b1294521ef120bb936737802dc500eb735c8e26d21176be64736f6c63430008110033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100be5760003560e01c80638416a37411610076578063a34e35961161005b578063a34e3596146101c2578063cd5d2c74146101d5578063d820ed42146101fc57600080fd5b80638416a37414610188578063a200e1531461019b57600080fd5b806359b6b86c116100a757806359b6b86c1461012057806359e1777c146101475780638361401d1461015a57600080fd5b806301ffc9a7146100c35780632c0fd74c146100eb575b600080fd5b6100d66100d13660046111ef565b610223565b60405190151581526020015b60405180910390f35b6101127f000000000000000000000000000000000000000000000000000000000000000081565b6040519081526020016100e2565b6101127f000000000000000000000000000000000000000000000000000000000000000081565b610112610155366004611231565b610234565b61016d6101683660046112c7565b6102cf565b604080518251815260209283015192810192909252016100e2565b61016d6101963660046113c5565b6106a2565b6101127f000000000000000000000000000000000000000000000000000000000000000081565b6101126101d036600461142c565b6109f8565b6101127f000000000000000000000000000000000000000000000000000000000000000081565b6101127f000000000000000000000000000000000000000000000000000000000000000081565b600061022e82610a49565b92915050565b6000806201518061024d670de0b6b3a764000085611493565b61025791906114aa565b9050600061026d670de0b6b3a7640000836114aa565b905084811c6000610286670de0b6b3a764000084611493565b61029090856114cc565b90506000670de0b6b3a76400006102aa8362010000611493565b6102b491906114aa565b905060006102c28285610ae1565b9998505050505050505050565b6040805180820190915260008082526020820152600061032488888080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250610e0192505050565b90506000600582101580156103365750835b1561037b576103697f00000000000000000000000000000000000000000000000000000000000000006301e13380611493565b610374906004611493565b90506105b3565b8160041480156103885750835b156103bb576103697f00000000000000000000000000000000000000000000000000000000000000006301e13380611493565b8160031480156103c85750835b15610406576103fb7f00000000000000000000000000000000000000000000000000000000000000006301e13380611493565b610374906006611493565b8160021480156104135750835b15610451576104467f00000000000000000000000000000000000000000000000000000000000000006301e13380611493565b61037490600a611493565b81600114801561045e5750835b15610491576103747f00000000000000000000000000000000000000000000000000000000000000006301e13380611493565b600582101580156104a0575083155b156104cf57610374867f0000000000000000000000000000000000000000000000000000000000000000611493565b8160041480156104dd575083155b1561050c57610374867f0000000000000000000000000000000000000000000000000000000000000000611493565b81600314801561051a575083155b1561054957610374867f0000000000000000000000000000000000000000000000000000000000000000611493565b816002148015610557575083155b1561058657610374867f0000000000000000000000000000000000000000000000000000000000000000611493565b6105b0867f0000000000000000000000000000000000000000000000000000000000000000611493565b90505b60408051808201909152600481527f63616b65000000000000000000000000000000000000000000000000000000006020918201528551908601207fd638d242b45c8aba8055c7b1781a7b0ac9dabf4a46aaede0b3bc1daec8c68d630161068457604051806040016040528061062883610f90565b81526020016106786106738c8c8080601f0160208091040260200160405190810160405280939291908181526020018383808284376000920191909152508e92508d915061104c9050565b610f90565b81525092505050610698565b60405180604001604052806106288361110f565b9695505050505050565b604080518082019091526000808252602082015260006106f787878080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250610e0192505050565b90506000600582101580156107095750835b1561074e5761073c7f00000000000000000000000000000000000000000000000000000000000000006301e13380611493565b610747906004611493565b9050610986565b81600414801561075b5750835b1561078e5761073c7f00000000000000000000000000000000000000000000000000000000000000006301e13380611493565b81600314801561079b5750835b156107d9576107ce7f00000000000000000000000000000000000000000000000000000000000000006301e13380611493565b610747906006611493565b8160021480156107e65750835b15610824576108197f00000000000000000000000000000000000000000000000000000000000000006301e13380611493565b61074790600a611493565b8160011480156108315750835b15610864576107477f00000000000000000000000000000000000000000000000000000000000000006301e13380611493565b60058210158015610873575083155b156108a257610747857f0000000000000000000000000000000000000000000000000000000000000000611493565b8160041480156108b0575083155b156108df57610747857f0000000000000000000000000000000000000000000000000000000000000000611493565b8160031480156108ed575083155b1561091c57610747857f0000000000000000000000000000000000000000000000000000000000000000611493565b81600214801561092a575083155b1561095957610747857f0000000000000000000000000000000000000000000000000000000000000000611493565b610983857f0000000000000000000000000000000000000000000000000000000000000000611493565b90505b604051806040016040528061099a8361117f565b81526020016109ea6109e58b8b8080601f0160208091040260200160405190810160405280939291908181526020018383808284376000920191909152508d92508c915061104c9050565b61117f565b905298975050505050505050565b6000610a406109e586868080601f01602080910402602001604051908101604052809392919081815260200183838082843760009201919091525088925087915061104c9050565b95945050505050565b60007fffffffff0000000000000000000000000000000000000000000000000000000082167f01ffc9a700000000000000000000000000000000000000000000000000000000148061022e57507fffffffff0000000000000000000000000000000000000000000000000000000082167f8416a374000000000000000000000000000000000000000000000000000000001492915050565b60006001831615610b1457670de0b6b3a7640000610b07670de0ad151d09418084611493565b610b1191906114aa565b91505b6002831615610b4557670de0b6b3a7640000610b38670de0a3769959680084611493565b610b4291906114aa565b91505b6004831615610b7657670de0b6b3a7640000610b69670de09039a5fa510084611493565b610b7391906114aa565b91505b6008831615610ba757670de0b6b3a7640000610b9a670de069c00f3e120084611493565b610ba491906114aa565b91505b6010831615610bd857670de0b6b3a7640000610bcb670de01cce21c9440084611493565b610bd591906114aa565b91505b6020831615610c0957670de0b6b3a7640000610bfc670ddf82ef46ce100084611493565b610c0691906114aa565b91505b6040831615610c3a57670de0b6b3a7640000610c2d670dde4f458f8e8d8084611493565b610c3791906114aa565b91505b6080831615610c6b57670de0b6b3a7640000610c5e670ddbe84213d5f08084611493565b610c6891906114aa565b91505b610100831615610c9d57670de0b6b3a7640000610c90670dd71b7aa6df5b8084611493565b610c9a91906114aa565b91505b610200831615610ccf57670de0b6b3a7640000610cc2670dcd86e7f28cde0084611493565b610ccc91906114aa565b91505b610400831615610d0157670de0b6b3a7640000610cf4670dba71a3084ad68084611493565b610cfe91906114aa565b91505b610800831615610d3357670de0b6b3a7640000610d26670d94961b13dbde8084611493565b610d3091906114aa565b91505b611000831615610d6557670de0b6b3a7640000610d58670d4a171c35c9838084611493565b610d6291906114aa565b91505b612000831615610d9757670de0b6b3a7640000610d8a670cb9da519ccfb70084611493565b610d9491906114aa565b91505b614000831615610dc957670de0b6b3a7640000610dbc670bab76d59c18d68084611493565b610dc691906114aa565b91505b618000831615610dfb57670de0b6b3a7640000610dee6709d025defee4df8084611493565b610df891906114aa565b91505b50919050565b8051600090819081905b80821015610f87576000858381518110610e2757610e276114df565b01602001516001600160f81b03191690507f8000000000000000000000000000000000000000000000000000000000000000811015610e7257610e6b6001846114f5565b9250610f74565b7fe0000000000000000000000000000000000000000000000000000000000000006001600160f81b031982161015610eaf57610e6b6002846114f5565b7ff0000000000000000000000000000000000000000000000000000000000000006001600160f81b031982161015610eec57610e6b6003846114f5565b7ff8000000000000000000000000000000000000000000000000000000000000006001600160f81b031982161015610f2957610e6b6004846114f5565b7ffc000000000000000000000000000000000000000000000000000000000000006001600160f81b031982161015610f6657610e6b6005846114f5565b610f716006846114f5565b92505b5082610f7f81611508565b935050610e0b565b50909392505050565b600080600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1663feaf968c6040518163ffffffff1660e01b815260040160a060405180830381865afa158015611000573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190611024919061153b565b50505091505080836305f5e10061103b9190611493565b61104591906114aa565b9392505050565b600061105b6276a700846114f5565b92504283111561106d57506000611045565b600061107984426114cc565b905060006110a77f000000000000000000000000000000000000000000000000000000000000000083610234565b90507f00000000000000000000000000000000000000000000000000000000000000008110611103576110fa7f0000000000000000000000000000000000000000000000000000000000000000826114cc565b92505050611045565b50600095945050505050565b600080600260009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1663feaf968c6040518163ffffffff1660e01b815260040160a060405180830381865afa158015611000573d6000803e3d6000fd5b60008054604080517ffeaf968c0000000000000000000000000000000000000000000000000000000081529051839273ffffffffffffffffffffffffffffffffffffffff169163feaf968c9160048083019260a09291908290030181865afa158015611000573d6000803e3d6000fd5b60006020828403121561120157600080fd5b81357fffffffff000000000000000000000000000000000000000000000000000000008116811461104557600080fd5b6000806040838503121561124457600080fd5b50508035926020909101359150565b60008083601f84011261126557600080fd5b50813567ffffffffffffffff81111561127d57600080fd5b60208301915083602082850101111561129557600080fd5b9250929050565b634e487b7160e01b600052604160045260246000fd5b803580151581146112c257600080fd5b919050565b60008060008060008060a087890312156112e057600080fd5b863567ffffffffffffffff808211156112f857600080fd5b6113048a838b01611253565b90985096506020890135955060408901359450606089013591508082111561132b57600080fd5b818901915089601f83011261133f57600080fd5b8135818111156113515761135161129c565b604051601f8201601f19908116603f011681019083821181831017156113795761137961129c565b816040528281528c602084870101111561139257600080fd5b8260208601602083013760006020848301015280965050505050506113b9608088016112b2565b90509295509295509295565b6000806000806000608086880312156113dd57600080fd5b853567ffffffffffffffff8111156113f457600080fd5b61140088828901611253565b9096509450506020860135925060408601359150611420606087016112b2565b90509295509295909350565b6000806000806060858703121561144257600080fd5b843567ffffffffffffffff81111561145957600080fd5b61146587828801611253565b90989097506020870135966040013595509350505050565b634e487b7160e01b600052601160045260246000fd5b808202811582820484141761022e5761022e61147d565b6000826114c757634e487b7160e01b600052601260045260246000fd5b500490565b8181038181111561022e5761022e61147d565b634e487b7160e01b600052603260045260246000fd5b8082018082111561022e5761022e61147d565b60006001820161151a5761151a61147d565b5060010190565b805169ffffffffffffffffffff811681146112c257600080fd5b600080600080600060a0868803121561155357600080fd5b61155c86611521565b94506020860151935060408601519250606086015191506114206080870161152156fea2646970667358221220c59b2b93d1c3efcc2b1294521ef120bb936737802dc500eb735c8e26d21176be64736f6c63430008110033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {
+      "decayedPremium(uint256,uint256)": {
+        "details": "Returns the premium price at current time elapsed",
+        "params": {
+          "elapsed": "time past since expiry",
+          "startPremium": "starting price"
+        }
+      },
+      "premium(string,uint256,uint256)": {
+        "details": "Returns the pricing premium in wei."
+      },
+      "price(string,uint256,uint256,bool)": {
+        "details": "Returns the price to register or renew a name.",
+        "params": {
+          "duration": "How long the name is being registered or extended for, in seconds.",
+          "expires": "When the name presently expires (0 if this is a new registration).",
+          "name": "The name being registered or renewed."
+        },
+        "returns": {
+          "_0": "base premium tuple of base price + premium price"
+        }
+      }
+    },
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 6514,
+        "contract": "contracts/ethregistrar/TokenPriceOracle.sol:TokenPriceOracle",
+        "label": "usdOracle",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_contract(AggregatorV3Interface)45"
+      },
+      {
+        "astId": 7185,
+        "contract": "contracts/ethregistrar/TokenPriceOracle.sol:TokenPriceOracle",
+        "label": "cakeOracle",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_contract(AggregatorV3Interface)45"
+      },
+      {
+        "astId": 7188,
+        "contract": "contracts/ethregistrar/TokenPriceOracle.sol:TokenPriceOracle",
+        "label": "usd1Oracle",
+        "offset": 0,
+        "slot": "2",
+        "type": "t_contract(AggregatorV3Interface)45"
+      }
+    ],
+    "types": {
+      "t_contract(AggregatorV3Interface)45": {
+        "encoding": "inplace",
+        "label": "contract AggregatorV3Interface",
+        "numberOfBytes": "20"
+      }
+    }
+  }
+}

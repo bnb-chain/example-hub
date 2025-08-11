@@ -40,7 +40,8 @@ language, description, and tags to help you find what you need quickly.
 | [python/ai-wallet-reputation-nft](./python/ai-wallet-reputation-nft) | Python     | AI-generated, soulbound reputation NFTs on BNB Chain | AI, NFT, Reputation |
 | [typescript/bnbchain-mcp](./typescript/bnbchain-mcp)   | TypeScript | AI-powered blockchain assistant using Claude | AI, BSC, MCP        |
 | [typescript/eliza-chatbot](./typescript/eliza-chatbot) | TypeScript | A chatbot example using Eliza plugin-bnb     | AI, BSC, opBNB      |
-
+| [solidity/course-contracts](./solidity/course-contracts) | Solidity | This Project Demonstrates an EduFi contract implementation powered by Web3 domain name ownership | BSC |
+| [solidity/ens-contracts](./solidity/ens-contracts) | Solidity | This project demonstrates a DNS on BNB Chain with dynamic pricing, lifetime registrations and a referral system | BSC |
 More examples are coming soon—stay tuned for updates!
 
 ## How to Add a New Example
