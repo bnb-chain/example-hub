@@ -186,12 +186,6 @@ cd ens-contracts
 bun i
 ```
 
-### How to run tests
-
-```
-bun run test
-```
-
 ### How to publish
 
 ```
