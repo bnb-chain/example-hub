@@ -80,7 +80,7 @@
     "otherLink": "",
     "imgUrl": "https://cms-static.bnbchain.org/dcms/static/303d0c6a-af8f-4098-a2d0-a5b96ef964ba.png"
   },
-   {
+  {
     "caseTitle": "BNBChain MCP - AI-Powered Blockchain Assistant",
     "caseDesc": "A ready-to-use template that combines BNB Chain’s MCP with Claude AI, enabling natural language interaction with BNB Smart Chain and Greenfield.",
     "tags": [
@@ -159,6 +159,23 @@
     "video": {},
     "guide": "https://github.com/bnb-chain/example-hub/tree/main/typescript/4everland-hosting-mcp",
     "otherLink": "",
+    "imgUrl": "https://cms-static.bnbchain.org/dcms/static/303d0c6a-af8f-4098-a2d0-a5b96ef964ba.png"
+  },
+  {
+    "caseTitle": "swap-protocol",
+    "caseDesc": "A decentralized token swap application for BSC",
+    "tags": [
+      "Defi",
+      "Trading"
+    ],
+    "github": "https://github.com/aniketsahu115/bnb-swap-protocol",
+    "replit": "",
+    "video": {
+      "type": "youtube",
+      "link": "https://drive.google.com/file/d/18P9C9ALCBr9P3MLv8YtLINSiwaOjW53g/view?usp=sharing"
+    },
+    "guide": "",
+    "otherLink": "https://www.bnbchain.org/en/solutions",
     "imgUrl": "https://cms-static.bnbchain.org/dcms/static/303d0c6a-af8f-4098-a2d0-a5b96ef964ba.png"
   }
 ]

@@ -40,7 +40,7 @@ language, description, and tags to help you find what you need quickly.
 | [python/ai-wallet-reputation-nft](./python/ai-wallet-reputation-nft) | Python     | AI-generated, soulbound reputation NFTs on BNB Chain | AI, NFT, Reputation |
 | [typescript/bnbchain-mcp](./typescript/bnbchain-mcp)   | TypeScript | AI-powered blockchain assistant using Claude | AI, BSC, MCP        |
 | [typescript/eliza-chatbot](./typescript/eliza-chatbot) | TypeScript | A chatbot example using Eliza plugin-bnb     | AI, BSC, opBNB      |
-
+| [solidity,javascript/bnb-swap-protocol](./solidity,javascript/bnb-swap-protocol) | Solidity,javascript | A decentralized token swap application for BSC | Defi, Trading |
 More examples are coming soon—stay tuned for updates!
 
 ## How to Add a New Example
