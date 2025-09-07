@@ -1,0 +1,58 @@
+{
+  "name": "bnb-auto-mass-payouts",
+  "version": "1.0.0",
+  "description": "Auto-Mass Payouts for BNB Chain - Distribute tokens to hundreds of wallets",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "compile": "hardhat compile",
+    "deploy:testnet": "hardhat run scripts/deploy.cjs --network bscTestnet",
+    "deploy:mainnet": "hardhat run scripts/deploy.cjs --network bscMainnet",
+    "verify": "hardhat run scripts/verify.cjs",
+    "test:contract": "hardhat test",
+    "test:hardhat": "hardhat test",
+    "setup": "node scripts/setup-env.js",
+    "clean": "hardhat clean && rm -rf dist"
+  },
+  "main": "index.js",
+  "keywords": [
+    "bnb",
+    "blockchain",
+    "mass-payouts",
+    "defi",
+    "web3"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@radix-ui/react-slot": "^1.0.2",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
+    "date-fns": "^2.30.0",
+    "ethers": "^5.7.2",
+    "lucide-react": "^0.294.0",
+    "papaparse": "^5.4.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tailwind-merge": "^2.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.1.1",
+    "vite": "^5.0.0",
+    "tailwindcss": "^3.3.6",
+    "postcss": "^8.4.32",
+    "autoprefixer": "^10.4.16",
+    "hardhat": "^2.19.0",
+    "@nomiclabs/hardhat-ethers": "^2.2.3",
+    "@nomiclabs/hardhat-waffle": "^2.0.6",
+    "@nomiclabs/hardhat-etherscan": "^3.1.7",
+    "chai": "^4.3.10",
+    "ethereum-waffle": "^4.0.10",
+    "hardhat-gas-reporter": "^1.0.9",
+    "solidity-coverage": "^0.8.4",
+    "hardhat-contract-sizer": "^2.10.0",
+    "dotenv": "^16.3.1",
+    "@openzeppelin/contracts": "^4.9.3"
+  }
+}

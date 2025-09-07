@@ -31,15 +31,16 @@ After setup, navigate to the project directory and follow the example's `README.
 Explore a variety of examples for different implementations below. The table includes each example's name, programming
 language, description, and tags to help you find what you need quickly.
 
-| Name                                                   | Language   | Description                                  | Tags                |
-| ------------------------------------------------------ | ---------- | -------------------------------------------- | ------------------- |
-| [go/eip7702](./go/eip7702-demo)                        | Go         | EIP-7702 implementation for BNB Chain        | Smart Contract, EIP |
-| [go/tg-token-launch](./go/tg-token-launch-example)     | Go         | Telegram bot for token launch automation     | Bot, Token Launch   |
-| [python/langchain-chatbot](./python/langchain-chatbot) | Python     | A chatbot example using LangChain            | AI, BSC, opBNB      |
-| [python/pancacke-swap](./python/pancake-swap-example)  | Python     | PancakeSwap integration example              | DeFi, DEX, BSC      |
-| [python/ai-wallet-reputation-nft](./python/ai-wallet-reputation-nft) | Python     | AI-generated, soulbound reputation NFTs on BNB Chain | AI, NFT, Reputation |
-| [typescript/bnbchain-mcp](./typescript/bnbchain-mcp)   | TypeScript | AI-powered blockchain assistant using Claude | AI, BSC, MCP        |
-| [typescript/eliza-chatbot](./typescript/eliza-chatbot) | TypeScript | A chatbot example using Eliza plugin-bnb     | AI, BSC, opBNB      |
+| Name                                                                 | Language             | Description                                                                                                                                                                                     | Tags                |
+| -------------------------------------------------------------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| [go/eip7702](./go/eip7702-demo)                                      | Go                   | EIP-7702 implementation for BNB Chain                                                                                                                                                           | Smart Contract, EIP |
+| [go/tg-token-launch](./go/tg-token-launch-example)                   | Go                   | Telegram bot for token launch automation                                                                                                                                                        | Bot, Token Launch   |
+| [python/langchain-chatbot](./python/langchain-chatbot)               | Python               | A chatbot example using LangChain                                                                                                                                                               | AI, BSC, opBNB      |
+| [python/pancacke-swap](./python/pancake-swap-example)                | Python               | PancakeSwap integration example                                                                                                                                                                 | DeFi, DEX, BSC      |
+| [python/ai-wallet-reputation-nft](./python/ai-wallet-reputation-nft) | Python               | AI-generated, soulbound reputation NFTs on BNB Chain                                                                                                                                            | AI, NFT, Reputation |
+| [typescript/bnbchain-mcp](./typescript/bnbchain-mcp)                 | TypeScript           | AI-powered blockchain assistant using Claude                                                                                                                                                    | AI, BSC, MCP        |
+| [typescript/eliza-chatbot](./typescript/eliza-chatbot)               | TypeScript           | A chatbot example using Eliza plugin-bnb                                                                                                                                                        | AI, BSC, opBNB      |
+| [examples/auto-mass-payout](./examples/auto-mass-payout)             | Solidity, TypeScript | Batch payout tool using a Solidity 0.8.19 Hardhat contract and a React 18 + Vite + Tailwind CSS frontend (Ethers.js, Web3Modal) to distribute tokens to multiple addresses on BNB Chain Testnet | DeFi, Payments      |
 
 More examples are coming soon—stay tuned for updates!
 
