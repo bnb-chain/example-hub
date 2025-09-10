@@ -131,21 +131,34 @@
     "imgUrl": "https://cms-static.bnbchain.org/dcms/static/303d0c6a-af8f-4098-a2d0-a5b96ef964ba.png"
   },
   {
-    "caseTitle": "aiTradingAssistant",
-    "caseDesc": "AI-powered trading assistant for BNB Chain ecosystem with real USDT→BNB swaps via PancakeSwap, technical analysis, and natural language interface",
+    "caseTitle": "AI-Powered Reputation NFT Badges on BNB Chain",
+    "caseDesc": "Forge unique, soulbound ERC-721 NFT reputation badges on the BNB Chain using data analysis and generative AI. This project analyzes wallet activity, generates insightful explanations via LLMs, and mints NFTs with off-chain metadata stored on IPFS.",
     "tags": [
-      "BNBChain",
-      "trading",
-      "analysis",
-      "PancakeSwap",
+      "BSC",
       "AI",
-      "MCP"
+      "NFT",
+      "Python"
     ],
-    "github": "https://github.com/bnb-chain/example-hub/tree/main/typescript/ai-trading-assistant",
+    "github": "https://github.com/bnb-chain/example-hub/tree/main/python/ai-wallet-reputation-nft",
     "replit": "",
     "video": {},
-    "guide": "",
-    "otherLink": "https://www.bnbchain.org/en/solutions",
+    "guide": "https://github.com/bnb-chain/example-hub/tree/main/python/ai-wallet-reputation-nft",
+    "otherLink": "",
+    "imgUrl": "https://i.imgur.com/rDzMPSA.png"
+  },
+  {
+    "caseTitle": "4EVERLAND Hosting MCP - AI-Powered Hosting Assistant",
+    "caseDesc": "You can deploy your dApp to decentralized networks like Greenfield, IPFS and Arweave with simple AI Chat interface and instantly get an accessible domain.",
+    "tags": [
+      "Greenfield",
+      "AI",
+      "TypeScript"
+    ],
+    "github": "https://github.com/bnb-chain/example-hub/tree/main/typescript/4everland-hosting-mcp",
+    "replit": "",
+    "video": {},
+    "guide": "https://github.com/bnb-chain/example-hub/tree/main/typescript/4everland-hosting-mcp",
+    "otherLink": "",
     "imgUrl": "https://cms-static.bnbchain.org/dcms/static/303d0c6a-af8f-4098-a2d0-a5b96ef964ba.png"
   }
 ]
