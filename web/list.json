@@ -160,5 +160,22 @@
     "guide": "https://github.com/bnb-chain/example-hub/tree/main/typescript/4everland-hosting-mcp",
     "otherLink": "",
     "imgUrl": "https://cms-static.bnbchain.org/dcms/static/303d0c6a-af8f-4098-a2d0-a5b96ef964ba.png"
+  },
+  {
+    "caseTitle": "Quick Test Swap Example",
+    "caseDesc": "A simple example demonstrating a token swap on BNB Chain.",
+    "tags": [
+      "BSC",
+      "opBNB",
+      "swap",
+      "DeFi",
+      "BNBChain"
+    ],
+    "github": "https://github.com/bnb-chain/example-hub/tree/main/typescript/quick-test-swap",
+    "replit": "",
+    "video": {},
+    "guide": "",
+    "otherLink": "https://www.bnbchain.org/en/solutions",
+    "imgUrl": "https://cms-static.bnbchain.org/dcms/static/303d0c6a-af8f-4098-a2d0-a5b96ef964ba.png"
   }
 ]
