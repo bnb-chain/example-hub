@@ -19,7 +19,7 @@
 
 ## Quick Start (drop-in page)
 
-If you have a Next.js (TypeScript) app, add a page like `/app/tax/page.tsx` and paste:
+If you have a Next.js (TypeScript) app, add a page like `/app/page.tsx` and paste:
 
 ```tsx
 "use client";
