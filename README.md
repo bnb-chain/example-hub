@@ -48,7 +48,7 @@ More examples are coming soon—stay tuned for updates!
 Contributing a new example is a fantastic way to support the BNB Chain developer community. Follow these steps to ensure
 your submission is seamless and aligns with the repository's standards.
 
-### Development Setup
+### Development Setuphttps://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode
 
 To maintain code consistency, install these VS Code extensions before you begin:
 
