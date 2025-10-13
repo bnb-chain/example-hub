@@ -43,7 +43,11 @@ func (m *MongoDB) Read(client *mongo.Client, filter interface{}, result interfac
 	if err != nil {
 		return false
 	}
-	defer cursor.Close(context.Background())
+	defer func() {
+		if err := cursor.Close(context.Background()); err != nil {
+			// Log the error but don't fail the operation
+		}
+	}()
 
 	if err := cursor.All(context.Background(), result); err != nil {
 		return false

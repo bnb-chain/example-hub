@@ -2,8 +2,6 @@ package tests
 
 import (
 	"context"
-	"crypto/rand"
-	"encoding/hex"
 	"testing"
 	"time"
 
@@ -14,16 +12,9 @@ import (
 	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
-func RandomString(length int) string {
-	bytes := make([]byte, length)
-	if _, err := rand.Read(bytes); err != nil {
-		return ""
-	}
-	// hex encoding doubles the length (1 byte -> 2 chars)
-	return hex.EncodeToString(bytes)[:length]
-}
 func TestCreate(t *testing.T) {
 	client, err := db.ConnectToDB("mongodb://localhost:27017")
+	testUserId := "test_user_341c212cb93b395"
 
 	t.Run("User can create a wallet", func(t *testing.T) {
 		// Arrange
@@ -32,7 +23,7 @@ func TestCreate(t *testing.T) {
 		}
 		wf := functions.WalletFunctions{
 			MongoConnection: client,
-			UserId:          RandomString(15),
+			UserId:          testUserId,
 		}
 		mg := db.MongoDB{
 			Database:   "User",

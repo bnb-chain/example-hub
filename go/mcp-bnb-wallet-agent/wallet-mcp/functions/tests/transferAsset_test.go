@@ -22,7 +22,11 @@ func TestTransferAsset(t *testing.T) {
 	ctx := context.Background()
 
 	mongoClient, err := db.ConnectToDB("mongodb://localhost:27017")
-	defer mongoClient.Disconnect(context.Background())
+	defer func() {
+		if err := mongoClient.Disconnect(context.Background()); err != nil {
+			t.Logf("Warning: failed to disconnect from MongoDB: %v", err)
+		}
+	}()
 	if err != nil {
 		t.Fatalf("failed to connect to MongoDB: %v", err)
 	}

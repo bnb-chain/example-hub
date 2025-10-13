@@ -22,7 +22,11 @@ func TestSignTransaction(t *testing.T) {
 	toAddress := "0x5A2D55362b3ce1Bb5434c16a2aBd923c429a3446"
 
 	mongoClient, err := db.ConnectToDB("mongodb://localhost:27017")
-	defer mongoClient.Disconnect(context.Background())
+	defer func() {
+		if err := mongoClient.Disconnect(context.Background()); err != nil {
+			t.Logf("Warning: failed to disconnect from MongoDB: %v", err)
+		}
+	}()
 	if err != nil {
 		t.Fatalf("failed to connect to database: %v", err)
 	}

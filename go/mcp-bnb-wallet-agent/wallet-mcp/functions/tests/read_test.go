@@ -18,7 +18,7 @@ func TestRead(t *testing.T) {
 		Collection: "Wallet",
 	}
 	client, err := db.ConnectToDB("mongodb://localhost:27017")
-
+	testUserId := "test_user_341c212cb93b395"
 	t.Run("If user exists, the wallet address can be found in the database", func(t *testing.T) {
 		// Arrange
 		if err != nil {
@@ -26,7 +26,7 @@ func TestRead(t *testing.T) {
 		}
 		wf := functions.WalletFunctions{
 			MongoConnection: client,
-			UserId:          RandomString(15),
+			UserId:          testUserId,
 		}
 		pk, err := wf.CreateWallet()
 		if err != nil {

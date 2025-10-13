@@ -99,6 +99,9 @@ client := NewMCPClient("http://localhost:8085/mcp")
 walletAddress, err := client.CallTool("create_wallet", map[string]interface{}{
     "user_id": "user_12345",
 })
+if err != nil {
+    log.Fatal(err)
+}
 ```
 
 ### Checking Balance
@@ -107,6 +110,9 @@ walletAddress, err := client.CallTool("create_wallet", map[string]interface{}{
 balance, err := client.CallTool("get_wallet_balance", map[string]interface{}{
     "user_id": "user_12345",
 })
+if err != nil {
+    log.Fatal(err)
+}
 ```
 
 ### Transferring BNB
@@ -118,6 +124,9 @@ txHash, err := client.CallTool("transfer_asset", map[string]interface{}{
     "to_address": "0x5A2D55362b3ce1Bb5434c16a2aBd923c429a3446",
     "amount":     "100000000000000",  // 0.0001 BNB in wei
 })
+if err != nil {
+    log.Fatal(err)
+}
 ```
 
 ## Project Structure

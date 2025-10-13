@@ -17,7 +17,11 @@ func TestGetWalletBalance(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to connect to MongoDB: %v", err)
 	}
-	defer mongoClient.Disconnect(context.Background())
+	defer func() {
+		if err := mongoClient.Disconnect(context.Background()); err != nil {
+			t.Logf("Warning: failed to disconnect from MongoDB: %v", err)
+		}
+	}()
 
 	wf := functions.WalletFunctions{
 		MongoConnection: mongoClient,
