@@ -1,0 +1,36 @@
+{
+  "name": "caserush",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@privy-io/react-auth": "^3.4.0",
+    "@privy-io/wagmi": "^2.0.1",
+    "dotenv": "^17.2.3",
+    "next": "16.0.0",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "viem": "^2.38.3",
+    "wagmi": "^2.18.2"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^6.1.0",
+    "@nomicfoundation/hardhat-verify": "^3.0.4",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.0.0",
+    "ethers": "^6.15.0",
+    "hardhat": "^3.0.8",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

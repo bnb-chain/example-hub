@@ -160,5 +160,22 @@
     "guide": "https://github.com/bnb-chain/example-hub/tree/main/typescript/4everland-hosting-mcp",
     "otherLink": "",
     "imgUrl": "https://cms-static.bnbchain.org/dcms/static/303d0c6a-af8f-4098-a2d0-a5b96ef964ba.png"
+  },
+  {
+    "caseTitle": "CaseRush",
+    "caseDesc": "Provably fair CS:GO case opening dApp with on-chain inventory and automated BNB payouts on BSC",
+    "tags": [
+      "BSC",
+      "DeFi",
+      "Gaming",
+      "Smart Contract",
+      "TypeScript"
+    ],
+    "github": "https://github.com/nangs6610/caserush",
+    "replit": "",
+    "video": {},
+    "guide": "https://github.com/bnb-chain/example-hub/tree/main/typescript/caserush",
+    "otherLink": "https://www.caserush.fun",
+    "imgUrl": "https://cms-static.bnbchain.org/dcms/static/303d0c6a-af8f-4098-a2d0-a5b96ef964ba.png"
   }
 ]
