@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Events - NFT Ticketing</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      header {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        margin-bottom: 30px;
+      }
+
+      .back-btn {
+        color: #667eea;
+        text-decoration: none;
+        margin-bottom: 15px;
+        display: inline-block;
+      }
+
+      h1 {
+        color: #667eea;
+      }
+
+      .card {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+
+      .event-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .event-item {
+        padding: 20px;
+        border: 2px solid #f0f0f0;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+      }
+
+      .event-item h3 {
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      .event-info {
+        color: #666;
+        margin-bottom: 5px;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #667eea;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-top: 10px;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 12px;
+        font-weight: bold;
+        margin-left: 10px;
+      }
+
+      .badge.available {
+        background: #4caf50;
+        color: white;
+      }
+
+      .badge.sold-out {
+        background: #f44336;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <a href="/" class="back-btn">← Back to Home</a>
+        <h1>All Events</h1>
+      </header>
+
+      <div class="card">
+        {% if events %}
+        <div class="event-list">
+          {% for event in events %}
+          <div class="event-item">
+            <h3>
+              {{ event.name }} {% if event.tickets_sold < event.capacity %}
+              <span class="badge available">Available</span>
+              {% else %}
+              <span class="badge sold-out">Sold Out</span>
+              {% endif %}
+            </h3>
+            <div class="event-info">
+              <strong>Date:</strong> {{ event.date }}
+            </div>
+            <div class="event-info">
+              <strong>Location:</strong> {{ event.location }}
+            </div>
+            <div class="event-info">
+              <strong>Tickets:</strong> {{ event.tickets_sold }} / {{
+              event.capacity }}
+            </div>
+            <div class="event-info">
+              <strong>Created:</strong> {{ event.created_at }}
+            </div>
+            <a href="/events/{{ event.id }}" class="btn">View Details</a>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p style="text-align: center; color: #999">No events available.</p>
+        {% endif %}
+      </div>
+    </div>
+  </body>
+</html>

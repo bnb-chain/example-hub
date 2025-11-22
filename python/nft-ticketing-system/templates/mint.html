@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mint Ticket - NFT Ticketing</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      header {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        margin-bottom: 30px;
+      }
+
+      .back-btn {
+        color: #667eea;
+        text-decoration: none;
+        margin-bottom: 15px;
+        display: inline-block;
+      }
+
+      .card {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      select,
+      input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+      }
+
+      .btn {
+        width: 100%;
+        padding: 12px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .btn:hover {
+        opacity: 0.9;
+      }
+
+      .result {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 5px;
+        display: none;
+      }
+
+      .result.success {
+        background: #e8f5e9;
+        border: 1px solid #4caf50;
+        color: #2e7d32;
+      }
+
+      .result.error {
+        background: #ffebee;
+        border: 1px solid #f44336;
+        color: #c62828;
+      }
+
+      .qr-display {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      .qr-display img {
+        max-width: 250px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <a href="/" class="back-btn">← Back to Home</a>
+        <h1>🎫 Mint Ticket NFT</h1>
+      </header>
+
+      <div class="card">
+        <form id="mintForm">
+          <div class="form-group">
+            <label for="event_id">Select Event</label>
+            <select id="event_id" name="event_id" required>
+              <option value="">Choose an event...</option>
+              {% for event in events %} {% if event.tickets_sold <
+              event.capacity %}
+              <option value="{{ event.id }}">
+                {{ event.name }} - {{ event.date }} ({{ event.capacity -
+                event.tickets_sold }} available)
+              </option>
+              {% endif %} {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="owner_address">Your Wallet Address</label>
+            <input
+              type="text"
+              id="owner_address"
+              name="owner_address"
+              placeholder="0x..."
+              required
+              pattern="0x[a-fA-F0-9]{40}"
+            />
+            <small style="color: #666">BNB Chain address (0x...)</small>
+          </div>
+
+          <button type="submit" class="btn">Mint Ticket</button>
+        </form>
+
+        <div id="result" class="result"></div>
+        <div id="qrDisplay" class="qr-display"></div>
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("mintForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const resultDiv = document.getElementById("result");
+          const qrDiv = document.getElementById("qrDisplay");
+          const btn = e.target.querySelector("button");
+
+          btn.disabled = true;
+          btn.textContent = "Minting...";
+          resultDiv.style.display = "none";
+          qrDiv.innerHTML = "";
+
+          const formData = {
+            event_id: parseInt(document.getElementById("event_id").value),
+            owner_address: document.getElementById("owner_address").value,
+          };
+
+          try {
+            const response = await fetch("/api/mint", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(formData),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+              resultDiv.className = "result success";
+              resultDiv.style.display = "block";
+              resultDiv.innerHTML = `
+                        <strong>✅ Success!</strong><br>
+                        Token ID: #${result.token_id}<br>
+                        Transaction: ${result.tx_hash.substring(0, 20)}...<br>
+                        ${result.message}
+                    `;
+
+              if (result.qr_code) {
+                qrDiv.innerHTML = `
+                            <h3>Your Ticket QR Code</h3>
+                            <img src="/${result.qr_code}" alt="Ticket QR Code">
+                            <p style="color: #666; margin-top: 10px;">
+                                Save this QR code for event check-in
+                            </p>
+                        `;
+              }
+
+              // Reset form
+              e.target.reset();
+            } else {
+              resultDiv.className = "result error";
+              resultDiv.style.display = "block";
+              resultDiv.innerHTML = `<strong>❌ Error:</strong> ${
+                result.detail || "Failed to mint ticket"
+              }`;
+            }
+          } catch (error) {
+            resultDiv.className = "result error";
+            resultDiv.style.display = "block";
+            resultDiv.innerHTML = `<strong>❌ Error:</strong> ${error.message}`;
+          } finally {
+            btn.disabled = false;
+            btn.textContent = "Mint Ticket";
+          }
+        });
+    </script>
+  </body>
+</html>

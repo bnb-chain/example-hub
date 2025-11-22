@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify Ticket - NFT Ticketing</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      header {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        margin-bottom: 30px;
+      }
+
+      .back-btn {
+        color: #667eea;
+        text-decoration: none;
+        margin-bottom: 15px;
+        display: inline-block;
+      }
+
+      .card {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+      }
+
+      .btn {
+        width: 100%;
+        padding: 12px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .btn:hover {
+        opacity: 0.9;
+      }
+
+      .result {
+        margin-top: 20px;
+        padding: 20px;
+        border-radius: 5px;
+        display: none;
+      }
+
+      .result.valid {
+        background: #e8f5e9;
+        border: 2px solid #4caf50;
+      }
+
+      .result.invalid {
+        background: #ffebee;
+        border: 2px solid #f44336;
+      }
+
+      .result-icon {
+        font-size: 48px;
+        text-align: center;
+        margin-bottom: 15px;
+      }
+
+      .result-text {
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .result-details {
+        font-size: 14px;
+        color: #666;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <a href="/" class="back-btn">← Back to Home</a>
+        <h1>✅ Verify Ticket</h1>
+      </header>
+
+      <div class="card">
+        <p style="color: #666; margin-bottom: 20px">
+          Scan the QR code or enter the ticket data to verify and check in.
+        </p>
+
+        <form id="verifyForm">
+          <div class="form-group">
+            <label for="qr_data">QR Code Data or Token ID</label>
+            <input
+              type="text"
+              id="qr_data"
+              name="qr_data"
+              placeholder="TICKET:123:EVENT:1 or just 123"
+              required
+            />
+            <small style="color: #666"
+              >Enter the QR code data or just the token ID</small
+            >
+          </div>
+
+          <button type="submit" class="btn">Verify Ticket</button>
+        </form>
+
+        <div id="result" class="result"></div>
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("verifyForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const resultDiv = document.getElementById("result");
+          const btn = e.target.querySelector("button");
+
+          btn.disabled = true;
+          btn.textContent = "Verifying...";
+          resultDiv.style.display = "none";
+
+          let qrData = document.getElementById("qr_data").value.trim();
+
+          // If just a number, format it as QR data
+          if (/^\d+$/.test(qrData)) {
+            qrData = `TICKET:${qrData}:EVENT:0`;
+          }
+
+          try {
+            const response = await fetch("/api/verify", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ qr_data: qrData }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.valid) {
+              resultDiv.className = "result valid";
+              resultDiv.style.display = "block";
+              resultDiv.innerHTML = `
+                        <div class="result-icon">✅</div>
+                        <div class="result-text" style="color: #2e7d32;">VALID TICKET</div>
+                        <div class="result-details">
+                            <strong>Token ID:</strong> #${result.token_id}<br>
+                            <strong>Owner:</strong> ${result.owner.substring(
+                              0,
+                              20
+                            )}...<br>
+                            <strong>Event ID:</strong> ${result.event_id}<br>
+                            <strong>Status:</strong> ${result.message}
+                        </div>
+                    `;
+            } else {
+              resultDiv.className = "result invalid";
+              resultDiv.style.display = "block";
+              resultDiv.innerHTML = `
+                        <div class="result-icon">❌</div>
+                        <div class="result-text" style="color: #c62828;">INVALID TICKET</div>
+                        <div class="result-details">
+                            ${
+                              result.message ||
+                              result.detail ||
+                              "Ticket verification failed"
+                            }
+                        </div>
+                    `;
+            }
+
+            // Clear form after verification
+            e.target.reset();
+          } catch (error) {
+            resultDiv.className = "result invalid";
+            resultDiv.style.display = "block";
+            resultDiv.innerHTML = `
+                    <div class="result-icon">❌</div>
+                    <div class="result-text" style="color: #c62828;">ERROR</div>
+                    <div class="result-details">${error.message}</div>
+                `;
+          } finally {
+            btn.disabled = false;
+            btn.textContent = "Verify Ticket";
+          }
+        });
+    </script>
+  </body>
+</html>
