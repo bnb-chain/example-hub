@@ -42,11 +42,12 @@ You need to prepare the following environment and credentials:
 
 ### 1. Install Global Dependencies
 
-Globally install `typescript` and `tsx` to support project execution:
+Globally install `typescript`, `tsx`, `pm2` to support project execution:
 
 ```bash
 npm install -g typescript
 npm install -g tsx
+npm install -g pm2
 ````
 
 ### 2\. Clone the Project
