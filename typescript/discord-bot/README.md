@@ -8,6 +8,7 @@ It uses [Ethers.js](https://docs.ethers.org/v6/) to listen for two key transacti
 
 All alerts are instantly pushed to Discord, and all processed transactions can be logged to a local CSV file (optional).
 
+![Cover](./doc/cover.png)
 
 ---
 

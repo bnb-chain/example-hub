@@ -8,6 +8,8 @@
 
 所有警报即时推送至 Discord，并且所有已处理的交易可以记录到本地 CSV 文件中（可选）。
 
+![Cover](./doc/cover.png)
+
 ---
 
 ## 💡 主要特性 (Features)
