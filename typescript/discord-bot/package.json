@@ -1,0 +1,22 @@
+{
+  "name": "discord-bot",
+  "version": "1.0.0",
+  "description": "A Discord bot that can monitor transactions on the BSC and opBNB chains, as well as BEP20 contract transfer events.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc",
+    "build:clean": "rimraf dist && tsc",
+    "start": "pm2 start dist/index.js --name bnb-monitor",
+    "restart": "pm2 restart bnb-monitor",
+    "stop": "pm2 stop bnb-monitor"
+  },
+  "keywords": ["BNB", "opBNB", "BEP20", "Discord", "Transfer"],
+  "author": "web3cli",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "discord.js": "^14.25.1",
+    "ethers": "^6.16.0"
+  }
+}
