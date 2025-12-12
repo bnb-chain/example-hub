@@ -2,6 +2,11 @@
 
 A full-stack hackathon showcase: users describe art with AI prompts, mint the generated NFT on BNB Chain testnet, and trade it through a fixed-price marketplace with real-time listings powered by Supabase + Moralis Streams.
 
+## Live Demo
+
+- **Frontend:** https://bnbchainnftmarketplace.netlify.app/ (BNB Chain testnet)
+- **MarketplaceNFT Contract:** `0x7158C3cc9eA0176e29BB277F3F66C02305E02940`
+
 ## Highlights
 
 - **AI-powered creation** – Replicate (Flux Schnell) turns prompts into artwork, Pinata pins the output, and metadata is ready for minting in a single flow.
