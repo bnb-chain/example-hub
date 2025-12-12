@@ -2,6 +2,9 @@
 
 A full-stack hackathon showcase: users describe art with AI prompts, mint the generated NFT on BNB Chain testnet, and trade it through a fixed-price marketplace with real-time listings powered by Supabase + Moralis Streams.
 
+Launch a Marketplace NFT
+Sculpt your NFT by describing the art, layering optional traits, and picking your favorite generated image before minting it on-chain.
+
 ## Live Demo
 
 - **Frontend:** https://bnbchainnftmarketplace.netlify.app/ (BNB Chain testnet)
