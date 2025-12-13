@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAO Voting Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+        }
+        
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .proposal {
+            border-left: 4px solid #667eea;
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .proposal h3 {
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .proposal p {
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .status.active {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .status.passed {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .status.rejected {
+            background: #f44336;
+            color: white;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #ddd;
+            color: #333;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .meta {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🗳️ DAO Voting Dashboard</h1>
+            <p class="subtitle">Off-chain + On-chain Governance for BNB Chain</p>
+        </header>
+        
+        <div class="card">
+            <h2>Create New Proposal</h2>
+            <form id="createProposalForm">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="creator">Creator Address</label>
+                    <input type="text" id="creator" name="creator" placeholder="0x..." required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="duration">Voting Duration (days)</label>
+                    <input type="number" id="duration" name="duration" value="7" min="1" max="30" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Create Proposal</button>
+            </form>
+        </div>
+        
+        <div class="card">
+            <h2>Active Proposals</h2>
+            <div id="proposalsList">
+                {% if proposals %}
+                    {% for proposal in proposals %}
+                    <div class="proposal">
+                        <h3>{{ proposal.title }}</h3>
+                        <p>{{ proposal.description[:150] }}{% if proposal.description|length > 150 %}...{% endif %}</p>
+                        <div>
+                            <span class="status {{ proposal.status }}">{{ proposal.status.upper() }}</span>
+                            <span class="meta">Created: {{ proposal.created_at }}</span>
+                            <span class="meta">Ends: {{ proposal.end_time }}</span>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <a href="/proposal/{{ proposal.id }}" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <p>No proposals yet. Create one to get started!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('createProposalForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                title: document.getElementById('title').value,
+                description: document.getElementById('description').value,
+                creator: document.getElementById('creator').value,
+                duration_days: parseInt(document.getElementById('duration').value)
+            };
+            
+            try {
+                const response = await fetch('/api/proposals', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    alert('Proposal created successfully!');
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + (result.detail || 'Failed to create proposal'));
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>
