@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oracle Update - Dynamic NFT</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        padding: 40px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      .back-link {
+        display: inline-block;
+        color: #667eea;
+        text-decoration: none;
+        margin-bottom: 20px;
+        font-size: 1.1em;
+      }
+
+      .back-link:hover {
+        text-decoration: underline;
+      }
+
+      h1 {
+        color: #2d3748;
+        margin-bottom: 10px;
+      }
+
+      .subtitle {
+        color: #718096;
+        margin-bottom: 30px;
+      }
+
+      .oracle-info {
+        background: #f7fafc;
+        padding: 25px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        border: 2px solid #e2e8f0;
+      }
+
+      .oracle-type {
+        display: inline-block;
+        background: #667eea;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        margin-bottom: 15px;
+        font-weight: 500;
+      }
+
+      .oracle-data {
+        background: #2d3748;
+        color: #48bb78;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 15px;
+        font-family: monospace;
+        font-size: 0.9em;
+        line-height: 1.6;
+      }
+
+      .update-section {
+        margin-bottom: 40px;
+      }
+
+      .section-title {
+        color: #2d3748;
+        font-size: 1.3em;
+        margin-bottom: 15px;
+      }
+
+      .oracle-selector {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .oracle-option {
+        flex: 1;
+        min-width: 150px;
+        padding: 15px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .oracle-option:hover {
+        border-color: #667eea;
+        background: #f7fafc;
+      }
+
+      .oracle-option.selected {
+        border-color: #667eea;
+        background: #667eea;
+        color: white;
+      }
+
+      .oracle-option-icon {
+        font-size: 2em;
+        margin-bottom: 8px;
+      }
+
+      .oracle-option-name {
+        font-weight: 500;
+      }
+
+      .btn {
+        padding: 15px 40px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1em;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        max-width: 300px;
+        display: block;
+        margin: 0 auto;
+      }
+
+      .btn-update {
+        background: #48bb78;
+        color: white;
+      }
+
+      .btn-update:hover {
+        background: #38a169;
+        transform: translateY(-2px);
+      }
+
+      .btn-update:disabled {
+        background: #cbd5e0;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .result-box {
+        background: #f0fff4;
+        border: 2px solid #48bb78;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+        display: none;
+      }
+
+      .result-box.visible {
+        display: block;
+      }
+
+      .result-title {
+        color: #22543d;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .result-content {
+        color: #2f855a;
+      }
+
+      .loading {
+        text-align: center;
+        color: #718096;
+        padding: 20px;
+      }
+
+      .spinner {
+        border: 3px solid #f3f4f6;
+        border-top: 3px solid #667eea;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 15px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .tokens-affected {
+        background: #f7fafc;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 30px;
+      }
+
+      .token-count {
+        font-size: 2em;
+        color: #667eea;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="/" class="back-link">← Back to Collection</a>
+
+      <h1>🔄 Oracle Update</h1>
+      <p class="subtitle">
+        Update all NFT metadata based on latest oracle data
+      </p>
+
+      <div class="oracle-info">
+        <span class="oracle-type"
+          >Current Oracle: {{ oracle_type|capitalize }}</span
+        >
+
+        <h3 style="color: #2d3748; margin-top: 15px; margin-bottom: 10px">
+          Latest Oracle Data
+        </h3>
+        <div class="oracle-data">
+          {% for key, value in oracle_data.items() %} {{ key }}: {{ value }}<br />
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="update-section">
+        <h2 class="section-title">Select Oracle Type</h2>
+
+        <div class="oracle-selector">
+          <div class="oracle-option selected" data-type="weather">
+            <div class="oracle-option-icon">🌤️</div>
+            <div class="oracle-option-name">Weather</div>
+          </div>
+
+          <div class="oracle-option" data-type="price">
+            <div class="oracle-option-icon">💰</div>
+            <div class="oracle-option-name">Price Feed</div>
+          </div>
+
+          <div class="oracle-option" data-type="sports">
+            <div class="oracle-option-icon">⚽</div>
+            <div class="oracle-option-name">Sports Score</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tokens-affected">
+        <h3 style="color: #2d3748; margin-bottom: 10px">Tokens to Update</h3>
+        <div class="token-count">{{ tokens|length }}</div>
+        <div style="color: #718096">tokens will be updated</div>
+      </div>
+
+      <div style="margin-top: 30px">
+        <button class="btn btn-update" id="updateBtn" onclick="updateOracle()">
+          🔄 Update All Tokens
+        </button>
+      </div>
+
+      <div class="result-box" id="resultBox">
+        <div class="result-title">✅ Update Complete!</div>
+        <div class="result-content" id="resultContent"></div>
+      </div>
+
+      <div class="loading" id="loading" style="display: none">
+        <div class="spinner"></div>
+        <div>Updating tokens with oracle data...</div>
+      </div>
+    </div>
+
+    <script>
+      let selectedOracle = "weather";
+
+      // Oracle selection
+      document.querySelectorAll(".oracle-option").forEach((option) => {
+        option.addEventListener("click", function () {
+          document.querySelectorAll(".oracle-option").forEach((opt) => {
+            opt.classList.remove("selected");
+          });
+          this.classList.add("selected");
+          selectedOracle = this.dataset.type;
+        });
+      });
+
+      async function updateOracle() {
+        const updateBtn = document.getElementById("updateBtn");
+        const loading = document.getElementById("loading");
+        const resultBox = document.getElementById("resultBox");
+        const resultContent = document.getElementById("resultContent");
+
+        // Disable button and show loading
+        updateBtn.disabled = true;
+        loading.style.display = "block";
+        resultBox.classList.remove("visible");
+
+        try {
+          const response = await fetch("/api/oracle/update", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              oracle_type: selectedOracle,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            resultContent.textContent = `Successfully updated ${data.updated_count} tokens using ${data.oracle_type} oracle data.`;
+            resultBox.classList.add("visible");
+
+            // Reload after a delay to show updated tokens
+            setTimeout(() => {
+              window.location.href = "/";
+            }, 2000);
+          } else {
+            alert("Update failed");
+          }
+        } catch (error) {
+          alert("Error: " + error.message);
+        } finally {
+          loading.style.display = "none";
+          updateBtn.disabled = false;
+        }
+      }
+    </script>
+  </body>
+</html>
