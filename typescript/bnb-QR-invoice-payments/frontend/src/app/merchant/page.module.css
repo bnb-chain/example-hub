@@ -1,0 +1,200 @@
+.page {
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #04070f, #010206 65%);
+  font-family: var(--font-geist-sans);
+  padding: 2rem;
+  color: #f8fafc;
+}
+
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.hero {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.hero h1 {
+  font-size: clamp(2.25rem, 5vw, 3rem);
+  margin: 0;
+  background: linear-gradient(120deg, #f0b90b, #f8d660);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+  margin: 0;
+  color: #cdd5ff;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  position: relative;
+  overflow: hidden;
+  background: rgba(14, 20, 35, 0.95);
+  padding: 1.5rem;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(240, 185, 11, 0.2);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, rgba(240, 185, 11, 0.2), transparent 60%);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.card h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.formGroup label {
+  font-size: 0.9rem;
+  color: #cbd5f5;
+}
+
+.formGroup input,
+.formGroup textarea,
+.formGroup select {
+  border-radius: 0.75rem;
+  border: 1px solid rgba(240, 185, 11, 0.35);
+  background: rgba(5, 7, 15, 0.7);
+  color: #f8fafc;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+}
+
+.formGroup textarea {
+  min-height: 80px;
+}
+
+.button {
+  background: linear-gradient(120deg, #f0b90b, #f9d649);
+  color: #05070f;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  border: none;
+  font-weight: 650;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.secondaryButton {
+  background: transparent;
+  border: 1px solid rgba(240, 185, 11, 0.4);
+  color: #f0b90b;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.muted {
+  color: #9fb3ff;
+  font-size: 0.9rem;
+}
+
+.status {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.qrWrapper {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: rgba(5, 7, 15, 0.65);
+  border: 1px dashed rgba(240, 185, 11, 0.3);
+}
+
+.pill {
+  display: inline-flex;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  background: rgba(240, 185, 11, 0.15);
+  color: #f0b90b;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.statusBadge {
+  align-self: center;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.18);
+  color: #34d399;
+  font-weight: 600;
+}
+
+.codeBlock {
+  background: #010206;
+  color: #f8fafc;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.85rem;
+  max-height: 200px;
+  overflow: auto;
+}
+
+.infoLine {
+  font-size: 0.85rem;
+  color: #fef9e3;
+  padding: 0.35rem 0.6rem;
+  background: rgba(240, 185, 11, 0.1);
+  border-radius: 0.6rem;
+  word-break: break-all;
+}
+
+.infoLine code {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.8rem;
+}
+
+.error {
+  text-align: center;
+  color: #f87171;
+  font-weight: 600;
+}
