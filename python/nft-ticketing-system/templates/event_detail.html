@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ event.name }} - NFT Ticketing</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      header {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        margin-bottom: 30px;
+      }
+
+      .back-btn {
+        color: #667eea;
+        text-decoration: none;
+        margin-bottom: 15px;
+        display: inline-block;
+      }
+
+      .card {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+
+      .event-info {
+        color: #666;
+        margin-bottom: 10px;
+      }
+
+      .event-info strong {
+        color: #333;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: bold;
+        margin: 10px 0;
+      }
+
+      .badge.available {
+        background: #4caf50;
+        color: white;
+      }
+
+      .badge.sold-out {
+        background: #f44336;
+        color: white;
+      }
+
+      .ticket-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .ticket-card {
+        padding: 15px;
+        border: 2px solid #f0f0f0;
+        border-radius: 8px;
+        text-align: center;
+      }
+
+      .ticket-card img {
+        max-width: 150px;
+        margin: 10px 0;
+      }
+
+      .ticket-id {
+        font-family: monospace;
+        color: #667eea;
+        font-weight: bold;
+      }
+
+      .ticket-status {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 10px;
+        font-size: 11px;
+        margin-top: 5px;
+      }
+
+      .ticket-status.active {
+        background: #4caf50;
+        color: white;
+      }
+
+      .ticket-status.used {
+        background: #9e9e9e;
+        color: white;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 12px 24px;
+        background: #667eea;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <a href="/events" class="back-btn">← Back to Events</a>
+        <h1>{{ event.name }}</h1>
+      </header>
+
+      <div class="card">
+        <h2>Event Details</h2>
+        <div class="event-info"><strong>Date:</strong> {{ event.date }}</div>
+        <div class="event-info">
+          <strong>Location:</strong> {{ event.location }}
+        </div>
+        <div class="event-info">
+          <strong>Capacity:</strong> {{ event.capacity }}
+        </div>
+        <div class="event-info">
+          <strong>Tickets Sold:</strong> {{ event.tickets_sold }} / {{
+          event.capacity }}
+        </div>
+
+        {% if event.tickets_sold < event.capacity %}
+        <span class="badge available"
+          >{{ event.capacity - event.tickets_sold }} Tickets Available</span
+        >
+        <div>
+          <a href="/mint?event_id={{ event.id }}" class="btn">Mint Ticket</a>
+        </div>
+        {% else %}
+        <span class="badge sold-out">Sold Out</span>
+        {% endif %}
+      </div>
+
+      <div class="card">
+        <h2>Minted Tickets ({{ tickets|length }})</h2>
+        {% if tickets %}
+        <div class="ticket-grid">
+          {% for ticket in tickets %}
+          <div class="ticket-card">
+            <div class="ticket-id">Token #{{ ticket.token_id }}</div>
+            {% if ticket.qr_code_path %}
+            <img src="/{{ ticket.qr_code_path }}" alt="QR Code" />
+            {% endif %}
+            <div style="font-size: 11px; color: #999; margin-top: 5px">
+              {{ ticket.owner_address[:10] }}...
+            </div>
+            {% if ticket.checked_in %}
+            <span class="ticket-status used">Checked In</span>
+            {% else %}
+            <span class="ticket-status active">Active</span>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p style="text-align: center; color: #999; margin-top: 20px">
+          No tickets minted yet.
+        </p>
+        {% endif %}
+      </div>
+    </div>
+  </body>
+</html>

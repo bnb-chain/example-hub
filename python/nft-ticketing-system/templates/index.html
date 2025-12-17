@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFT Ticketing System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+        }
+        
+        .nav {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .nav a {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: opacity 0.3s;
+        }
+        
+        .nav a:hover {
+            opacity: 0.8;
+        }
+        
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .event-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .event-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+        
+        .event-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .event-info {
+            color: #666;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .event-info strong {
+            color: #333;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        .badge.available {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .badge.sold-out {
+            background: #f44336;
+            color: white;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            opacity: 0.8;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎫 NFT Ticketing System</h1>
+            <p class="subtitle">Blockchain-based event ticketing on BNB Chain</p>
+            <div class="nav">
+                <a href="/">Home</a>
+                <a href="/events">Events</a>
+                <a href="/mint">Mint Ticket</a>
+                <a href="/verify">Verify Ticket</a>
+            </div>
+        </header>
+        
+        <div class="card">
+            <h2>Welcome</h2>
+            <p style="color: #666; margin-top: 10px;">
+                This is a simple NFT-based ticketing system built on BNB Chain testnet. 
+                Browse events, mint tickets as NFTs, and verify them with QR codes.
+            </p>
+        </div>
+        
+        <div class="card">
+            <h2>Recent Events</h2>
+            {% if events %}
+                <div class="event-grid">
+                    {% for event in events[:6] %}
+                    <div class="event-card">
+                        <h3>{{ event.name }}</h3>
+                        <div class="event-info"><strong>Date:</strong> {{ event.date }}</div>
+                        <div class="event-info"><strong>Location:</strong> {{ event.location }}</div>
+                        <div class="event-info">
+                            <strong>Tickets:</strong> {{ event.tickets_sold }} / {{ event.capacity }}
+                        </div>
+                        {% if event.tickets_sold < event.capacity %}
+                            <span class="badge available">Available</span>
+                        {% else %}
+                            <span class="badge sold-out">Sold Out</span>
+                        {% endif %}
+                        <div>
+                            <a href="/events/{{ event.id }}" class="btn">View Details</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <p>No events yet. Create one to get started!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
