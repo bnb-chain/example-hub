@@ -1,0 +1,20 @@
+{
+  "name": "auto-mass-payouts",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "payout": "tsx src/index.ts",
+    "dry-run": "tsx src/index.ts --csv payouts.csv --dry-run"
+  },
+  "dependencies": {
+    "csv-parse": "^5.5.0",
+    "dotenv": "^16.4.5",
+    "ethers": "^6.12.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
