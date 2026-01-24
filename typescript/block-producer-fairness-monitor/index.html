@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Block Producer Fairness Monitor - BNBChain Cookbook</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #f3ba2f 0%, #f7931e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            gap: 1.5rem;
+            padding: 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .info-pane {
+            flex: 0 0 350px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .info-pane h2 {
+            color: #f3ba2f;
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+        }
+
+        .info-pane h3 {
+            color: #f7931e;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .info-pane p {
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            color: #b0b0b0;
+        }
+
+        .info-pane ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: #b0b0b0;
+        }
+
+        .info-pane li {
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .interaction-pane {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .input-group label {
+            color: #f3ba2f;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .input-group input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 0.75rem;
+            color: #e0e0e0;
+            font-size: 1rem;
+            width: 150px;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #f3ba2f;
+            box-shadow: 0 0 0 3px rgba(243, 186, 47, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #f3ba2f 0%, #f7931e 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 2rem;
+            color: #0a0e27;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(243, 186, 47, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .status.loading {
+            display: block;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #60a5fa;
+        }
+
+        .status.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #f87171;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .metric-card .label {
+            color: #b0b0b0;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-card .value {
+            color: #f3ba2f;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .metric-card .sub-value {
+            color: #b0b0b0;
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        .fairness-indicator {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .fairness-indicator.fair {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .fairness-indicator.unfair {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .producers-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .producers-table th {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            text-align: left;
+            color: #f3ba2f;
+            font-weight: 600;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .producers-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .producers-table tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .address {
+            font-family: 'Courier New', monospace;
+            color: #60a5fa;
+        }
+
+        .percentage-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .percentage-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f3ba2f 0%, #f7931e 100%);
+            transition: width 0.3s ease;
+        }
+
+        .deviation {
+            font-weight: 600;
+        }
+
+        .deviation.positive {
+            color: #4ade80;
+        }
+
+        .deviation.negative {
+            color: #f87171;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .info-pane {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔍 Block Producer Fairness Monitor</h1>
+    </div>
+
+    <div class="container">
+        <div class="info-pane">
+            <h2>About This Demo</h2>
+            <p>
+                This tool monitors block producer fairness on the BNB Smart Chain (BSC) network. 
+                It analyzes recent blocks to detect potential imbalances in validator distribution.
+            </p>
+
+            <h3>How It Works</h3>
+            <ul>
+                <li>Fetches recent blocks from BSC</li>
+                <li>Identifies the producer (validator) for each block</li>
+                <li>Calculates distribution statistics</li>
+                <li>Measures fairness using Gini coefficient</li>
+                <li>Highlights any significant deviations</li>
+            </ul>
+
+            <h3>Key Metrics</h3>
+            <ul>
+                <li><strong>Gini Coefficient:</strong> Measures inequality (0 = perfect equality, 1 = maximum inequality)</li>
+                <li><strong>Max Deviation:</strong> Largest difference from expected block count</li>
+                <li><strong>Fairness Status:</strong> Indicates if distribution is considered fair</li>
+            </ul>
+
+            <h3>Why It Matters</h3>
+            <p>
+                Fair block production ensures network decentralization and prevents validator concentration. 
+                This monitor helps detect potential issues with validator rotation and distribution.
+            </p>
+        </div>
+
+        <div class="interaction-pane">
+            <div class="controls">
+                <div class="input-group">
+                    <label for="blockCount">Number of Blocks</label>
+                    <input type="number" id="blockCount" value="100" min="10" max="1000" step="10">
+                </div>
+                <button class="btn" id="analyzeBtn" onclick="analyzeBlocks()">Analyze Blocks</button>
+            </div>
+
+            <div class="status" id="status"></div>
+
+            <div id="results" style="display: none;">
+                <div class="metrics">
+                    <div class="metric-card">
+                        <div class="label">Total Blocks Analyzed</div>
+                        <div class="value" id="totalBlocks">-</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="label">Unique Producers</div>
+                        <div class="value" id="uniqueProducers">-</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="label">Gini Coefficient</div>
+                        <div class="value" id="giniCoefficient">-</div>
+                        <div class="sub-value">Lower is better</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="label">Max Deviation</div>
+                        <div class="value" id="maxDeviation">-</div>
+                        <div class="sub-value">From expected</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="label">Fairness Status</div>
+                        <div class="value" id="fairnessStatus">-</div>
+                        <div class="fairness-indicator" id="fairnessIndicator"></div>
+                    </div>
+                </div>
+
+                <h3 style="color: #f3ba2f; margin-top: 2rem; margin-bottom: 1rem;">Block Producer Distribution</h3>
+                <table class="producers-table">
+                    <thead>
+                        <tr>
+                            <th>Producer Address</th>
+                            <th>Blocks Produced</th>
+                            <th>Percentage</th>
+                            <th>Expected</th>
+                            <th>Deviation</th>
+                        </tr>
+                    </thead>
+                    <tbody id="producersTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function analyzeBlocks() {
+            const blockCount = parseInt(document.getElementById('blockCount').value);
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const status = document.getElementById('status');
+            const results = document.getElementById('results');
+
+            // Validate input
+            if (blockCount < 10 || blockCount > 1000) {
+                status.className = 'status error';
+                status.textContent = 'Please enter a number between 10 and 1000';
+                status.style.display = 'block';
+                return;
+            }
+
+            // Show loading state
+            analyzeBtn.disabled = true;
+            status.className = 'status loading';
+            status.textContent = `Analyzing ${blockCount} blocks...`;
+            status.style.display = 'block';
+            results.style.display = 'none';
+
+            try {
+                const response = await fetch(`/api/analyze?blockCount=${blockCount}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+
+                // Display results
+                displayResults(data);
+                results.style.display = 'block';
+                status.style.display = 'none';
+            } catch (error) {
+                status.className = 'status error';
+                status.textContent = `Error: ${error.message}`;
+                status.style.display = 'block';
+            } finally {
+                analyzeBtn.disabled = false;
+            }
+        }
+
+        function displayResults(data) {
+            // Update metrics
+            document.getElementById('totalBlocks').textContent = data.totalBlocks;
+            document.getElementById('uniqueProducers').textContent = data.uniqueProducers;
+            document.getElementById('giniCoefficient').textContent = data.giniCoefficient.toFixed(4);
+            document.getElementById('maxDeviation').textContent = data.maxDeviation.toFixed(2);
+
+            // Update fairness status
+            const fairnessStatus = document.getElementById('fairnessStatus');
+            const fairnessIndicator = document.getElementById('fairnessIndicator');
+            if (data.isFair) {
+                fairnessStatus.textContent = 'Fair';
+                fairnessIndicator.textContent = '✓ Distribution is fair';
+                fairnessIndicator.className = 'fairness-indicator fair';
+            } else {
+                fairnessStatus.textContent = 'Unfair';
+                fairnessIndicator.textContent = '⚠ Distribution may be imbalanced';
+                fairnessIndicator.className = 'fairness-indicator unfair';
+            }
+
+            // Update producers table
+            const tbody = document.getElementById('producersTableBody');
+            tbody.innerHTML = '';
+
+            data.producers.forEach(producer => {
+                const row = document.createElement('tr');
+                const maxPercentage = Math.max(...data.producers.map(p => p.percentage));
+                const barWidth = (producer.percentage / maxPercentage) * 100;
+
+                row.innerHTML = `
+                    <td class="address">${producer.address}</td>
+                    <td>${producer.blockCount}</td>
+                    <td>
+                        ${producer.percentage.toFixed(2)}%
+                        <div class="percentage-bar">
+                            <div class="percentage-fill" style="width: ${barWidth}%"></div>
+                        </div>
+                    </td>
+                    <td>${producer.expectedBlocks.toFixed(2)}</td>
+                    <td class="deviation ${producer.deviation >= 0 ? 'positive' : 'negative'}">
+                        ${producer.deviation >= 0 ? '+' : ''}${producer.deviation.toFixed(2)}
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Allow Enter key to trigger analysis
+        document.getElementById('blockCount').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                analyzeBlocks();
+            }
+        });
+
+        // Auto-analyze on page load
+        window.addEventListener('load', () => {
+            analyzeBlocks();
+        });
+    </script>
+</body>
+</html>
+
+
