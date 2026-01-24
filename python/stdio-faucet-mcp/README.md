@@ -67,7 +67,7 @@ Request testnet BNB tokens from the faucet.
 **Example:**
 ```json
 {
-  "recipient_address": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+  "recipient_address": "0x742d35Cc6634C0532925a3a844Bc9e7595f0bEb",
   "amount": 0.1
 }
 ```
@@ -149,6 +149,21 @@ Ensure your private key:
 ## License
 
 This project is provided as-is for educational and development purposes.
+
+## Testing
+
+Run unit tests:
+
+```bash
+pip install -r requirements.txt
+pytest test_server.py -v
+```
+
+Run tests with coverage:
+
+```bash
+pytest test_server.py --cov=server --cov-report=html
+```
 
 ## Support
 
