@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contract Surface Area Analyzer - BNBChain Cookbook</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(15, 20, 40, 0.8);
+            padding: 1.5rem 2rem;
+            border-bottom: 2px solid #2d3748;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            color: #f0b90b;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .header p {
+            color: #a0a0a0;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .info-pane {
+            flex: 1;
+            background: rgba(20, 25, 45, 0.6);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid #2d3748;
+            backdrop-filter: blur(10px);
+            overflow-y: auto;
+            max-height: calc(100vh - 200px);
+        }
+
+        .interaction-pane {
+            flex: 1.5;
+            background: rgba(20, 25, 45, 0.6);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid #2d3748;
+            backdrop-filter: blur(10px);
+            overflow-y: auto;
+            max-height: calc(100vh - 200px);
+        }
+
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .section h2 {
+            color: #f0b90b;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #2d3748;
+        }
+
+        .section h3 {
+            color: #60a5fa;
+            font-size: 1.1rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .section p, .section li {
+            color: #cbd5e0;
+            line-height: 1.8;
+            margin-bottom: 0.8rem;
+        }
+
+        .section ul {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .section li {
+            margin-bottom: 0.5rem;
+        }
+
+        .code-block {
+            background: #0f1419;
+            border: 1px solid #2d3748;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #4ade80;
+            overflow-x: auto;
+        }
+
+        .highlight {
+            background: rgba(240, 185, 11, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            color: #f0b90b;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #60a5fa;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            background: #0f1419;
+            border: 1px solid #2d3748;
+            border-radius: 6px;
+            color: #e0e0e0;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #f0b90b;
+            box-shadow: 0 0 0 3px rgba(240, 185, 11, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #f0b90b 0%, #d4a017 100%);
+            color: #0a0e27;
+            border: none;
+            padding: 0.875rem 2rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(240, 185, 11, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results {
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .result-card {
+            background: #0f1419;
+            border: 1px solid #2d3748;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .result-card h3 {
+            color: #f0b90b;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-item {
+            background: rgba(240, 185, 11, 0.1);
+            border: 1px solid rgba(240, 185, 11, 0.2);
+            border-radius: 6px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stat-item .label {
+            color: #a0a0a0;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-item .value {
+            color: #f0b90b;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+
+        .risk-low {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+
+        .risk-medium {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .risk-high {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .function-list,
+        .event-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+
+        .function-item,
+        .event-item {
+            background: #0a0e27;
+            border: 1px solid #2d3748;
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+        }
+
+        .function-item .signature {
+            color: #60a5fa;
+        }
+
+        .function-item .visibility {
+            color: #f0b90b;
+            margin-right: 0.5rem;
+        }
+
+        .function-item .mutability {
+            color: #4ade80;
+            margin-right: 0.5rem;
+        }
+
+        .event-item .name {
+            color: #60a5fa;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: #f0b90b;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid #2d3748;
+            border-top: 3px solid #f0b90b;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 6px;
+            padding: 1rem;
+            color: #ef4444;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .risk-factors {
+            margin-top: 1rem;
+        }
+
+        .risk-factor {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 3px solid #ef4444;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+            color: #cbd5e0;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔍 Contract Surface Area Analyzer</h1>
+        <p>Analyze smart contract attack surface and complexity on BNB Smart Chain</p>
+    </div>
+
+    <div class="container">
+        <div class="info-pane">
+            <div class="section">
+                <h2>About This Tool</h2>
+                <p>
+                    The <span class="highlight">Contract Surface Area Analyzer</span> evaluates smart contracts 
+                    deployed on BNB Smart Chain (BSC) to assess their attack surface and complexity.
+                </p>
+                <p>
+                    Understanding a contract's surface area is crucial for security auditing, as it helps identify 
+                    potential attack vectors and complexity hotspots.
+                </p>
+            </div>
+
+            <div class="section">
+                <h2>What is Surface Area?</h2>
+                <p>
+                    The <strong>surface area</strong> of a smart contract refers to all the ways it can be 
+                    interacted with from the outside:
+                </p>
+                <ul>
+                    <li><strong>Public Functions</strong> - Can be called internally and externally</li>
+                    <li><strong>External Functions</strong> - Can only be called from outside the contract</li>
+                    <li><strong>Payable Functions</strong> - Can receive ETH/BNB, increasing financial risk</li>
+                    <li><strong>Events</strong> - Emitted data that can be monitored</li>
+                    <li><strong>Fallback/Receive</strong> - Special functions for handling unexpected calls</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>Key Metrics</h2>
+                <h3>Complexity Score</h3>
+                <p>
+                    A weighted score that considers the number and type of functions, events, and special 
+                    functions. Higher scores indicate more complex contracts with larger attack surfaces.
+                </p>
+
+                <h3>Risk Factors</h3>
+                <p>
+                    Identifies potential security concerns such as:
+                </p>
+                <ul>
+                    <li>High number of public/external functions</li>
+                    <li>Multiple payable functions</li>
+                    <li>Presence of fallback/receive functions</li>
+                    <li>Proxy pattern usage</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>How to Use</h2>
+                <ol>
+                    <li>Enter a contract address on BSC</li>
+                    <li>Optionally select a contract type (ERC20, ERC721, etc.) for better analysis</li>
+                    <li>Click "Analyze Contract" to start the analysis</li>
+                    <li>Review the results including functions, events, and risk factors</li>
+                </ol>
+            </div>
+
+            <div class="section">
+                <h2>Example Contracts</h2>
+                <div class="code-block">
+USDT (BSC): 0x55d398326f99059fF775485246999027B3197955
+PancakeSwap Router V2: 0x10ED43C718714eb63d5aA57B78B54704E256024E
+                </div>
+            </div>
+        </div>
+
+        <div class="interaction-pane">
+            <div class="section">
+                <h2>Analyze Contract</h2>
+                <form id="analyzeForm">
+                    <div class="form-group">
+                        <label for="contractAddress">Contract Address</label>
+                        <input 
+                            type="text" 
+                            id="contractAddress" 
+                            placeholder="0x..." 
+                            required
+                            pattern="^0x[a-fA-F0-9]{40}$"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contractType">Contract Type (Optional)</label>
+                        <select id="contractType">
+                            <option value="">None - Use provided ABI</option>
+                            <option value="ERC20">ERC20 Token</option>
+                            <option value="ERC721">ERC721 NFT</option>
+                            <option value="ERC1155">ERC1155 Multi-Token</option>
+                            <option value="UNISWAP_V2">Uniswap V2 Router</option>
+                            <option value="UNISWAP_V3">Uniswap V3 Router</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn" id="analyzeBtn">Analyze Contract</button>
+                </form>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Analyzing contract surface area...</p>
+                </div>
+
+                <div class="error" id="error"></div>
+
+                <div class="results" id="results">
+                    <div class="result-card">
+                        <h3>Contract Information</h3>
+                        <div class="stat-grid">
+                            <div class="stat-item">
+                                <div class="label">Contract Address</div>
+                                <div class="value" id="contractAddr" style="font-size: 0.9rem; word-break: break-all;"></div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="label">Is Proxy</div>
+                                <div class="value" id="isProxy"></div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="label">Complexity Score</div>
+                                <div class="value" id="complexityScore"></div>
+                            </div>
+                        </div>
+                        <div id="implementationAddr" style="margin-top: 1rem; color: #60a5fa; display: none;">
+                            Implementation: <span id="implAddr"></span>
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <h3>Function Statistics</h3>
+                        <div class="stat-grid">
+                            <div class="stat-item">
+                                <div class="label">Total Functions</div>
+                                <div class="value" id="totalFunctions"></div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="label">Public</div>
+                                <div class="value" id="publicFunctions"></div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="label">External</div>
+                                <div class="value" id="externalFunctions"></div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="label">Payable</div>
+                                <div class="value" id="payableFunctions"></div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <div class="stat-item" style="display: inline-block; margin-right: 1rem;">
+                                <div class="label">Has Fallback</div>
+                                <div class="value" id="hasFallback"></div>
+                            </div>
+                            <div class="stat-item" style="display: inline-block;">
+                                <div class="label">Has Receive</div>
+                                <div class="value" id="hasReceive"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <h3>Events</h3>
+                        <div class="stat-item" style="display: inline-block;">
+                            <div class="label">Total Events</div>
+                            <div class="value" id="totalEvents"></div>
+                        </div>
+                        <div class="event-list" id="eventList"></div>
+                    </div>
+
+                    <div class="result-card">
+                        <h3>Functions</h3>
+                        <div class="function-list" id="functionList"></div>
+                    </div>
+
+                    <div class="result-card">
+                        <h3>Risk Factors</h3>
+                        <div class="risk-factors" id="riskFactors"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('analyzeForm');
+        const loading = document.getElementById('loading');
+        const results = document.getElementById('results');
+        const error = document.getElementById('error');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const contractAddress = document.getElementById('contractAddress').value.trim();
+            const contractType = document.getElementById('contractType').value;
+            
+            // Reset UI
+            loading.classList.add('show');
+            results.classList.remove('show');
+            error.classList.remove('show');
+            analyzeBtn.disabled = true;
+            
+            try {
+                // In a real implementation, this would call a backend API
+                // For this demo, we'll simulate the analysis
+                // In production, you'd make a fetch call to your backend
+                
+                // Simulate API call delay
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // For demo purposes, we'll show example data
+                // In production, replace this with actual API call:
+                // const response = await fetch('/api/analyze', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify({ contractAddress, contractType })
+                // });
+                // const data = await response.json();
+                
+                // Example data structure (replace with actual API response)
+                const data = {
+                    contractAddress: contractAddress,
+                    isProxy: false,
+                    implementationAddress: null,
+                    totalFunctions: 8,
+                    publicFunctions: 3,
+                    externalFunctions: 5,
+                    payableFunctions: 2,
+                    functions: [
+                        {
+                            name: 'transfer',
+                            visibility: 'public',
+                            stateMutability: 'nonpayable',
+                            inputs: [{ name: 'to', type: 'address' }, { name: 'amount', type: 'uint256' }],
+                            outputs: [{ name: '', type: 'bool' }]
+                        },
+                        {
+                            name: 'approve',
+                            visibility: 'external',
+                            stateMutability: 'nonpayable',
+                            inputs: [{ name: 'spender', type: 'address' }, { name: 'amount', type: 'uint256' }],
+                            outputs: [{ name: '', type: 'bool' }]
+                        }
+                    ],
+                    totalEvents: 2,
+                    events: [
+                        {
+                            name: 'Transfer',
+                            inputs: [
+                                { name: 'from', type: 'address', indexed: true },
+                                { name: 'to', type: 'address', indexed: true },
+                                { name: 'value', type: 'uint256', indexed: false }
+                            ]
+                        }
+                    ],
+                    hasFallback: false,
+                    hasReceive: false,
+                    complexityScore: 42,
+                    riskFactors: [
+                        'No significant risk factors identified'
+                    ]
+                };
+                
+                displayResults(data);
+                
+            } catch (err) {
+                showError(err.message || 'An error occurred while analyzing the contract');
+            } finally {
+                loading.classList.remove('show');
+                analyzeBtn.disabled = false;
+            }
+        });
+        
+        function displayResults(data) {
+            document.getElementById('contractAddr').textContent = data.contractAddress;
+            document.getElementById('isProxy').textContent = data.isProxy ? 'Yes' : 'No';
+            document.getElementById('complexityScore').textContent = data.complexityScore;
+            
+            if (data.implementationAddress) {
+                document.getElementById('implementationAddr').style.display = 'block';
+                document.getElementById('implAddr').textContent = data.implementationAddress;
+            } else {
+                document.getElementById('implementationAddr').style.display = 'none';
+            }
+            
+            document.getElementById('totalFunctions').textContent = data.totalFunctions;
+            document.getElementById('publicFunctions').textContent = data.publicFunctions;
+            document.getElementById('externalFunctions').textContent = data.externalFunctions;
+            document.getElementById('payableFunctions').textContent = data.payableFunctions;
+            document.getElementById('hasFallback').textContent = data.hasFallback ? 'Yes' : 'No';
+            document.getElementById('hasReceive').textContent = data.hasReceive ? 'Yes' : 'No';
+            document.getElementById('totalEvents').textContent = data.totalEvents;
+            
+            // Display functions
+            const functionList = document.getElementById('functionList');
+            functionList.innerHTML = '';
+            if (data.functions && data.functions.length > 0) {
+                data.functions.forEach(func => {
+                    const div = document.createElement('div');
+                    div.className = 'function-item';
+                    const inputs = func.inputs.map(i => `${i.type} ${i.name || ''}`).join(', ');
+                    const outputs = func.outputs.map(o => o.type).join(', ');
+                    div.innerHTML = `
+                        <span class="visibility">${func.visibility}</span>
+                        <span class="mutability">${func.stateMutability}</span>
+                        <span class="signature">${func.name}(${inputs})${outputs ? ` returns (${outputs})` : ''}</span>
+                    `;
+                    functionList.appendChild(div);
+                });
+            } else {
+                functionList.innerHTML = '<p style="color: #a0a0a0;">No function data available. Provide ABI for detailed analysis.</p>';
+            }
+            
+            // Display events
+            const eventList = document.getElementById('eventList');
+            eventList.innerHTML = '';
+            if (data.events && data.events.length > 0) {
+                data.events.forEach(event => {
+                    const div = document.createElement('div');
+                    div.className = 'event-item';
+                    const inputs = event.inputs.map(i => `${i.indexed ? 'indexed ' : ''}${i.type} ${i.name || ''}`).join(', ');
+                    div.innerHTML = `<span class="name">event ${event.name}(${inputs})</span>`;
+                    eventList.appendChild(div);
+                });
+            } else {
+                eventList.innerHTML = '<p style="color: #a0a0a0;">No event data available.</p>';
+            }
+            
+            // Display risk factors
+            const riskFactors = document.getElementById('riskFactors');
+            riskFactors.innerHTML = '';
+            if (data.riskFactors && data.riskFactors.length > 0) {
+                data.riskFactors.forEach(risk => {
+                    const div = document.createElement('div');
+                    div.className = 'risk-factor';
+                    div.textContent = risk;
+                    riskFactors.appendChild(div);
+                });
+            }
+            
+            results.classList.add('show');
+        }
+        
+        function showError(message) {
+            error.textContent = message;
+            error.classList.add('show');
+        }
+    </script>
+</body>
+</html>
+
+
