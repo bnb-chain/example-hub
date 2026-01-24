@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allowance Abuse Scanner - BNBChain Cookbook</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .info-pane {
+            flex: 0 0 400px;
+            background: rgba(26, 31, 58, 0.8);
+            border-radius: 16px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-y: auto;
+            max-height: calc(100vh - 40px);
+        }
+
+        .interaction-pane {
+            flex: 1;
+            background: rgba(26, 31, 58, 0.8);
+            border-radius: 16px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-y: auto;
+            max-height: calc(100vh - 40px);
+        }
+
+        h1 {
+            color: #4fc3f7;
+            margin-bottom: 20px;
+            font-size: 28px;
+            border-bottom: 2px solid rgba(79, 195, 247, 0.3);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #81c784;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        h3 {
+            color: #ffb74d;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        p, li {
+            line-height: 1.6;
+            margin-bottom: 12px;
+            color: #b0b0b0;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+
+        .risk-LOW {
+            background: rgba(76, 175, 80, 0.2);
+            color: #81c784;
+            border: 1px solid #81c784;
+        }
+
+        .risk-MEDIUM {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffb74d;
+            border: 1px solid #ffb74d;
+        }
+
+        .risk-HIGH {
+            background: rgba(255, 152, 0, 0.2);
+            color: #ff9800;
+            border: 1px solid #ff9800;
+        }
+
+        .risk-CRITICAL {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+            border: 1px solid #f44336;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4fc3f7;
+            font-weight: 500;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(10, 14, 39, 0.6);
+            border: 2px solid rgba(79, 195, 247, 0.3);
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #4fc3f7;
+            box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.1);
+        }
+
+        button {
+            background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 195, 247, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: rgba(79, 195, 247, 0.3);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            color: #4fc3f7;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid rgba(79, 195, 247, 0.3);
+            border-top: 3px solid #4fc3f7;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results {
+            margin-top: 30px;
+        }
+
+        .summary {
+            background: rgba(10, 14, 39, 0.6);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4fc3f7;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: #b0b0b0;
+        }
+
+        .summary-value {
+            color: #4fc3f7;
+            font-weight: 600;
+        }
+
+        .allowance-card {
+            background: rgba(10, 14, 39, 0.6);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid;
+            transition: transform 0.2s;
+        }
+
+        .allowance-card:hover {
+            transform: translateX(5px);
+        }
+
+        .allowance-card.risk-LOW {
+            border-left-color: #81c784;
+        }
+
+        .allowance-card.risk-MEDIUM {
+            border-left-color: #ffb74d;
+        }
+
+        .allowance-card.risk-HIGH {
+            border-left-color: #ff9800;
+        }
+
+        .allowance-card.risk-CRITICAL {
+            border-left-color: #f44336;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .token-info {
+            flex: 1;
+        }
+
+        .token-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #e0e0e0;
+            margin-bottom: 5px;
+        }
+
+        .token-address {
+            font-size: 12px;
+            color: #888;
+            font-family: 'Courier New', monospace;
+        }
+
+        .card-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .detail-item {
+            background: rgba(26, 31, 58, 0.5);
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .detail-value {
+            font-size: 16px;
+            color: #e0e0e0;
+            font-weight: 500;
+            word-break: break-all;
+        }
+
+        .risk-reason {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(244, 67, 54, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid;
+            font-size: 14px;
+        }
+
+        .risk-reason.risk-LOW {
+            background: rgba(76, 175, 80, 0.1);
+            border-left-color: #81c784;
+        }
+
+        .risk-reason.risk-MEDIUM {
+            background: rgba(255, 193, 7, 0.1);
+            border-left-color: #ffb74d;
+        }
+
+        .risk-reason.risk-HIGH {
+            background: rgba(255, 152, 0, 0.1);
+            border-left-color: #ff9800;
+        }
+
+        .risk-reason.risk-CRITICAL {
+            background: rgba(244, 67, 54, 0.1);
+            border-left-color: #f44336;
+        }
+
+        .error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid #f44336;
+            color: #f44336;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #4fc3f7;
+        }
+
+        .spender-input {
+            margin-top: 10px;
+        }
+
+        .add-spender-btn {
+            background: rgba(79, 195, 247, 0.2);
+            border: 1px solid #4fc3f7;
+            color: #4fc3f7;
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .spender-list {
+            margin-top: 10px;
+        }
+
+        .spender-tag {
+            display: inline-block;
+            background: rgba(79, 195, 247, 0.2);
+            color: #4fc3f7;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            margin: 5px 5px 5px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .remove-spender {
+            margin-left: 8px;
+            cursor: pointer;
+            color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="info-pane">
+            <h1>🔍 Allowance Abuse Scanner</h1>
+            
+            <h2>What is this?</h2>
+            <p>
+                This tool scans ERC-20 token allowances on BNB Smart Chain (BSC) to identify 
+                potentially risky or excessive token permissions granted to other addresses.
+            </p>
+
+            <h2>Why is this important?</h2>
+            <p>
+                Token allowances allow one address (spender) to transfer tokens on behalf of 
+                another address (owner). If allowances are too high or granted to untrusted 
+                contracts, your tokens could be at risk.
+            </p>
+
+            <h2>Risk Levels</h2>
+            <ul>
+                <li>
+                    <span class="risk-badge risk-CRITICAL">CRITICAL</span>
+                    Infinite or near-infinite allowances that could drain all tokens
+                </li>
+                <li>
+                    <span class="risk-badge risk-HIGH">HIGH</span>
+                    Allowances significantly exceeding balance or very large absolute values
+                </li>
+                <li>
+                    <span class="risk-badge risk-MEDIUM">MEDIUM</span>
+                    Allowances exceeding balance or granted to contracts
+                </li>
+                <li>
+                    <span class="risk-badge risk-LOW">LOW</span>
+                    Allowances within reasonable limits
+                </li>
+            </ul>
+
+            <h2>How it works</h2>
+            <ol>
+                <li>Enter a wallet address to scan</li>
+                <li>Optionally add specific spender addresses to check</li>
+                <li>Click "Scan Allowances" to analyze token permissions</li>
+                <li>Review the results and risk assessments</li>
+            </ol>
+
+            <h2>Common Use Cases</h2>
+            <ul>
+                <li>Security audits before connecting to DeFi protocols</li>
+                <li>Checking permissions granted to DEX routers</li>
+                <li>Identifying forgotten or excessive allowances</li>
+                <li>Monitoring token permissions for compliance</li>
+            </ul>
+
+            <h3>Supported Tokens</h3>
+            <p>
+                The scanner checks common BSC tokens including USDT, BUSD, USDC, ETH, BTCB, CAKE, and DAI.
+                You can also specify custom spender addresses to check specific contracts.
+            </p>
+        </div>
+
+        <div class="interaction-pane">
+            <h1>Scan Token Allowances</h1>
+            
+            <div class="input-group">
+                <label for="ownerAddress">Owner Address (Wallet to Scan)</label>
+                <input 
+                    type="text" 
+                    id="ownerAddress" 
+                    placeholder="0x..." 
+                    value=""
+                />
+            </div>
+
+            <div class="input-group">
+                <label>Custom Spenders (Optional)</label>
+                <div style="display: flex; gap: 10px;">
+                    <input 
+                        type="text" 
+                        id="spenderInput" 
+                        placeholder="0x..." 
+                        class="spender-input"
+                        style="flex: 1;"
+                    />
+                    <button class="add-spender-btn" onclick="addSpender()">Add Spender</button>
+                </div>
+                <div id="spenderList" class="spender-list"></div>
+            </div>
+
+            <button onclick="scanAllowances()" id="scanBtn">Scan Allowances</button>
+            <button onclick="clearResults()" id="clearBtn">Clear Results</button>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Scanning allowances on BSC...</p>
+            </div>
+
+            <div id="error" style="display: none;"></div>
+
+            <div id="results" class="results"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <script>
+        // Use ethers from global scope (v5)
+        const { ethers } = window.ethers || {};
+
+        const BSC_RPC_URL = 'https://bsc-dataseed1.binance.org/';
+        const ERC20_ABI = [
+            'function allowance(address owner, address spender) external view returns (uint256)',
+            'function balanceOf(address account) external view returns (uint256)',
+            'function decimals() external view returns (uint8)',
+            'function symbol() external view returns (string)',
+            'function name() external view returns (string)',
+            'function totalSupply() external view returns (uint256)'
+        ];
+
+        const COMMON_BSC_TOKENS = [
+            '0x55d398326f99059fF775485246999027B3197955', // USDT
+            '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', // BUSD
+            '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', // USDC
+            '0x2170Ed0880ac9A755fd29B2688956BD959F933F8', // ETH
+            '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c', // BTCB
+            '0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82', // CAKE
+            '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3', // DAI
+        ];
+
+        const COMMON_SPENDERS = [
+            '0x10ED43C718714eb63d5aA57B78B54704E256024E', // PancakeSwap Router V2
+            '0x13f4EA83D0bd40E75C8222255bc855a974568Dd4', // PancakeSwap Router V3
+            '0x11111112542D85B3EF69AE05771c2dCCff4fAa26', // 1inch Router
+        ];
+
+        let customSpenders = [];
+        let provider;
+
+        function initProvider() {
+            if (!provider) {
+                provider = new ethers.providers.JsonRpcProvider(BSC_RPC_URL);
+            }
+            return provider;
+        }
+
+        window.addSpender = function() {
+            const input = document.getElementById('spenderInput');
+            const address = input.value.trim();
+            
+            if (!address) return;
+            
+            try {
+                const normalized = ethers.utils.getAddress(address);
+                if (!customSpenders.includes(normalized)) {
+                    customSpenders.push(normalized);
+                    updateSpenderList();
+                    input.value = '';
+                }
+            } catch (error) {
+                alert('Invalid address format');
+            }
+        };
+
+        function removeSpender(address) {
+            customSpenders = customSpenders.filter(s => s !== address);
+            updateSpenderList();
+        }
+
+        function updateSpenderList() {
+            const list = document.getElementById('spenderList');
+            list.innerHTML = customSpenders.map(addr => 
+                `<span class="spender-tag">${addr}<span class="remove-spender" onclick="removeSpender('${addr}')">×</span></span>`
+            ).join('');
+        }
+
+        window.removeSpender = removeSpender;
+
+        async function isContract(address) {
+            try {
+                const code = await provider.getCode(address);
+                return code !== '0x' && code !== '';
+            } catch {
+                return false;
+            }
+        }
+
+        async function getTokenInfo(tokenAddress) {
+            try {
+                const tokenContract = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+                const [symbol, name, decimals] = await Promise.all([
+                    tokenContract.symbol().catch(() => 'UNKNOWN'),
+                    tokenContract.name().catch(() => 'Unknown Token'),
+                    tokenContract.decimals().catch(() => 18)
+                ]);
+                return { symbol, name, decimals };
+            } catch {
+                return { symbol: 'UNKNOWN', name: 'Unknown Token', decimals: 18 };
+            }
+        }
+
+        function calculateRiskLevel(allowance, balance, totalSupply, isContractSpender) {
+            const MAX_UINT256 = ethers.BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
+            
+            if (allowance.gte(MAX_UINT256.div(2))) {
+                return {
+                    level: 'CRITICAL',
+                    reason: 'Infinite or near-infinite allowance detected. Spender can drain all tokens.'
+                };
+            }
+
+            if (balance.gt(0)) {
+                const ratio = allowance.mul(10000).div(balance).toNumber() / 10000;
+                if (ratio > 100) {
+                    return {
+                        level: 'HIGH',
+                        reason: `Allowance (${ratio.toFixed(2)}x) is much larger than current balance.`
+                    };
+                }
+            }
+
+            const oneMillion = ethers.BigNumber.from('1000000000000000000000000');
+            if (allowance.gt(oneMillion)) {
+                return {
+                    level: 'HIGH',
+                    reason: 'Very large absolute allowance detected (> 1M tokens).'
+                };
+            }
+
+            if (balance.gt(0) && allowance.gt(balance)) {
+                return {
+                    level: 'MEDIUM',
+                    reason: 'Allowance exceeds current token balance.'
+                };
+            }
+
+            if (isContractSpender && allowance.gt(ethers.BigNumber.from('1000000000000000000000'))) {
+                return {
+                    level: 'MEDIUM',
+                    reason: 'Significant allowance granted to a contract address.'
+                };
+            }
+
+            return {
+                level: 'LOW',
+                reason: 'Allowance appears to be within reasonable limits.'
+            };
+        }
+
+        window.scanAllowances = async function() {
+            const ownerInput = document.getElementById('ownerAddress');
+            const ownerAddress = ownerInput.value.trim();
+            
+            if (!ownerAddress) {
+                showError('Please enter an owner address');
+                return;
+            }
+
+            try {
+                const normalizedOwner = ethers.utils.getAddress(ownerAddress);
+                initProvider();
+                
+                document.getElementById('loading').classList.add('active');
+                document.getElementById('error').style.display = 'none';
+                document.getElementById('scanBtn').disabled = true;
+                document.getElementById('results').innerHTML = '';
+
+                const spendersToCheck = customSpenders.length > 0 ? customSpenders : COMMON_SPENDERS;
+                const allowances = [];
+
+                for (const tokenAddress of COMMON_BSC_TOKENS) {
+                    try {
+                        const tokenContract = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+                        const tokenInfo = await getTokenInfo(tokenAddress);
+                        const balance = await tokenContract.balanceOf(normalizedOwner).catch(() => ethers.BigNumber.from(0));
+
+                        for (const spender of spendersToCheck) {
+                            try {
+                                const normalizedSpender = ethers.utils.getAddress(spender);
+                                const allowance = await tokenContract.allowance(normalizedOwner, normalizedSpender);
+                                
+                                if (allowance.gt(0)) {
+                                    const isContractSpender = await isContract(normalizedSpender);
+                                    const totalSupply = await tokenContract.totalSupply().catch(() => null);
+                                    const { level, reason } = calculateRiskLevel(allowance, balance, totalSupply, isContractSpender);
+                                    
+                                    allowances.push({
+                                        tokenAddress,
+                                        tokenSymbol: tokenInfo.symbol,
+                                        tokenName: tokenInfo.name,
+                                        spender: normalizedSpender,
+                                        allowance: allowance.toString(),
+                                        allowanceFormatted: ethers.utils.formatUnits(allowance, tokenInfo.decimals),
+                                        balance: balance.toString(),
+                                        balanceFormatted: ethers.utils.formatUnits(balance, tokenInfo.decimals),
+                                        riskLevel: level,
+                                        riskReason: reason
+                                    });
+                                }
+                            } catch (error) {
+                                continue;
+                            }
+                        }
+                    } catch (error) {
+                        continue;
+                    }
+                }
+
+                displayResults(normalizedOwner, allowances);
+            } catch (error) {
+                showError('Error: ' + error.message);
+            } finally {
+                document.getElementById('loading').classList.remove('active');
+                document.getElementById('scanBtn').disabled = false;
+            }
+        };
+
+        function displayResults(ownerAddress, allowances) {
+            const resultsDiv = document.getElementById('results');
+            
+            if (allowances.length === 0) {
+                resultsDiv.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">✓</div>
+                        <h2>No Active Allowances Found</h2>
+                        <p>No token allowances were detected for the scanned address.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const highRiskCount = allowances.filter(a => a.riskLevel === 'HIGH').length;
+            const criticalRiskCount = allowances.filter(a => a.riskLevel === 'CRITICAL').length;
+
+            let html = `
+                <div class="summary">
+                    <h2>Scan Summary</h2>
+                    <div class="summary-item">
+                        <span class="summary-label">Owner Address:</span>
+                        <span class="summary-value">${ownerAddress}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Total Allowances:</span>
+                        <span class="summary-value">${allowances.length}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">High Risk:</span>
+                        <span class="summary-value" style="color: #ff9800;">${highRiskCount}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Critical Risk:</span>
+                        <span class="summary-value" style="color: #f44336;">${criticalRiskCount}</span>
+                    </div>
+                </div>
+            `;
+
+            allowances.forEach(allowance => {
+                html += `
+                    <div class="allowance-card risk-${allowance.riskLevel}">
+                        <div class="card-header">
+                            <div class="token-info">
+                                <div class="token-name">${allowance.tokenSymbol} - ${allowance.tokenName}</div>
+                                <div class="token-address">${allowance.tokenAddress}</div>
+                            </div>
+                            <span class="risk-badge risk-${allowance.riskLevel}">${allowance.riskLevel}</span>
+                        </div>
+                        <div class="card-details">
+                            <div class="detail-item">
+                                <div class="detail-label">Spender</div>
+                                <div class="detail-value">${allowance.spender}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Allowance</div>
+                                <div class="detail-value">${parseFloat(allowance.allowanceFormatted).toLocaleString()} ${allowance.tokenSymbol}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Balance</div>
+                                <div class="detail-value">${parseFloat(allowance.balanceFormatted).toLocaleString()} ${allowance.tokenSymbol}</div>
+                            </div>
+                        </div>
+                        <div class="risk-reason risk-${allowance.riskLevel}">
+                            <strong>Risk Assessment:</strong> ${allowance.riskReason}
+                        </div>
+                    </div>
+                `;
+            });
+
+            resultsDiv.innerHTML = html;
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.innerHTML = `<div class="error">${message}</div>`;
+            errorDiv.style.display = 'block';
+        }
+
+        window.clearResults = function() {
+            document.getElementById('results').innerHTML = '';
+            document.getElementById('error').style.display = 'none';
+            customSpenders = [];
+            updateSpenderList();
+        };
+
+        // Allow Enter key to trigger scan
+        document.getElementById('ownerAddress').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                scanAllowances();
+            }
+        });
+
+        document.getElementById('spenderInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addSpender();
+            }
+        });
+    </script>
+</body>
+</html>
+
