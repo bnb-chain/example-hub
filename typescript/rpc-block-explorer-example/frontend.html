@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RPC Block Explorer — BSC</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0d0f14;
+      --surface: #151922;
+      --surface2: #1c212c;
+      --border: #2a3142;
+      --text: #e4e8f0;
+      --textDim: #8b95a8;
+      --accent: #00d4aa;
+      --accentDim: #00a884;
+      --danger: #ff6b6b;
+      --warn: #ffc857;
+      --ok: #00d4aa;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Outfit', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(280px, 380px) 1fr;
+      min-height: 100vh;
+    }
+    @media (max-width: 820px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+    .info-pane {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 1.75rem 1.5rem;
+      overflow-y: auto;
+    }
+    .info-pane h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+    }
+    .info-pane .subtitle {
+      font-size: 0.75rem;
+      color: var(--textDim);
+      margin-bottom: 1.25rem;
+    }
+    .info-pane p {
+      font-size: 0.9rem;
+      color: var(--textDim);
+      margin-bottom: 1rem;
+    }
+    .info-pane h2 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-top: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    .info-pane ul {
+      font-size: 0.85rem;
+      color: var(--textDim);
+      padding-left: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .info-pane li { margin-bottom: 0.35rem; }
+    .interaction-pane {
+      padding: 1.75rem 2rem;
+      overflow-y: auto;
+    }
+    .interaction-pane h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+    .toolbar {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .toolbar input {
+      flex: 1;
+      min-width: 200px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      padding: 0.75rem 1rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+    }
+    .toolbar input::placeholder { color: var(--textDim); }
+    .toolbar input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(0,212,170,0.15);
+    }
+    .btn {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.1s, background 0.2s;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+    }
+    .btn-primary:hover { background: var(--accentDim); }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .btn-secondary {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { background: var(--surface); }
+    .status {
+      font-size: 0.875rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+    }
+    .status.loading { color: var(--warn); }
+    .status.error { color: var(--danger); background: #f8514922; border-color: var(--danger); }
+    .status.ok { color: var(--success); }
+    .message {
+      font-size: 0.9rem;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+    .message.error {
+      background: rgba(255,107,107,0.12);
+      border: 1px solid rgba(255,107,107,0.35);
+      color: var(--danger);
+    }
+    .message.loading {
+      background: rgba(0,212,170,0.08);
+      border: 1px solid rgba(0,212,170,0.25);
+      color: var(--accent);
+    }
+    .result {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .result-header {
+      padding: 1rem 1.25rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .result-body {
+      padding: 1.25rem;
+    }
+    .field {
+      margin-bottom: 1rem;
+    }
+    .field:last-child {
+      margin-bottom: 0;
+    }
+    .field-label {
+      font-size: 0.75rem;
+      color: var(--textDim);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.35rem;
+    }
+    .field-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--text);
+      word-break: break-all;
+    }
+    .field-value.number {
+      color: var(--accent);
+    }
+    .field-value.hash {
+      color: var(--accent);
+      font-size: 0.85rem;
+    }
+    .field-value.address {
+      color: var(--accent);
+    }
+    .tx-list {
+      margin-top: 1rem;
+    }
+    .tx-item {
+      padding: 0.75rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .tx-item:hover {
+      background: var(--surface2);
+    }
+    .tx-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .tx-hash {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--accent);
+    }
+    .tx-status {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .tx-status.success {
+      background: rgba(0,212,170,0.15);
+      color: var(--accent);
+    }
+    .tx-status.failed {
+      background: rgba(255,107,107,0.15);
+      color: var(--danger);
+    }
+    .tx-details {
+      font-size: 0.8rem;
+      color: var(--textDim);
+    }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 600px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="info-pane">
+      <h1>RPC Block Explorer</h1>
+      <p class="subtitle">Explore BNB Smart Chain blocks and transactions via JSON-RPC</p>
+
+      <h2>What this demo does</h2>
+      <p>
+        This app connects directly to a BSC RPC endpoint to fetch and display block and transaction data.
+        You can explore blocks by number or hash, view transaction details, and see real-time blockchain information.
+      </p>
+
+      <h2>Features</h2>
+      <ul>
+        <li><strong>Latest block</strong> — Get the current block number on BSC mainnet</li>
+        <li><strong>Block search</strong> — Find blocks by number (decimal or hex) or hash</li>
+        <li><strong>Transaction details</strong> — View full transaction information including gas, value, and status</li>
+        <li><strong>Block data</strong> — See block metadata, gas usage, miner, and all transactions</li>
+      </ul>
+
+      <h2>How to use</h2>
+      <ul>
+        <li>Click "Get Latest Block" to fetch the most recent block</li>
+        <li>Enter a block number (e.g., 35000000) or hash to search</li>
+        <li>Click on any transaction hash to view its details</li>
+        <li>Use "latest", "earliest", or "pending" as special block identifiers</li>
+      </ul>
+
+      <h2>Why it matters</h2>
+      <p>
+        Understanding how to interact with blockchain RPC endpoints is fundamental for building
+        dApps, monitoring networks, and analyzing on-chain data. This explorer demonstrates
+        standard JSON-RPC methods used across Ethereum-compatible chains like BSC.
+      </p>
+    </aside>
+
+    <main class="interaction-pane">
+      <h2>Block Explorer</h2>
+      
+      <div class="toolbar">
+        <button type="button" class="btn btn-primary" id="latestBtn">Get Latest Block</button>
+        <input type="text" id="blockInput" placeholder="Block number or hash (e.g., 35000000 or 0x...)" />
+        <button type="button" class="btn btn-primary" id="searchBtn">Search Block</button>
+      </div>
+
+      <div id="message"></div>
+      <div id="result"></div>
+    </main>
+  </div>
+
+  <script>
+    const latestBtn = document.getElementById('latestBtn');
+    const searchBtn = document.getElementById('searchBtn');
+    const blockInput = document.getElementById('blockInput');
+    const messageEl = document.getElementById('message');
+    const resultEl = document.getElementById('result');
+
+    function showMessage(text, type = 'loading') {
+      messageEl.innerHTML = `<div class="message ${type}">${text}</div>`;
+      resultEl.innerHTML = '';
+    }
+
+    function hideMessage() {
+      messageEl.innerHTML = '';
+    }
+
+    function formatNumber(hex) {
+      return parseInt(hex, 16).toLocaleString();
+    }
+
+    function formatTimestamp(hex) {
+      const timestamp = parseInt(hex, 16);
+      return new Date(timestamp * 1000).toLocaleString();
+    }
+
+    function formatWei(hex) {
+      const wei = BigInt(hex);
+      const bnb = Number(wei) / 1e18;
+      return bnb.toFixed(6) + ' BNB';
+    }
+
+    function formatGwei(hex) {
+      const wei = BigInt(hex);
+      const gwei = Number(wei) / 1e9;
+      return gwei.toFixed(2) + ' Gwei';
+    }
+
+    function shortenHash(hash) {
+      if (!hash) return '';
+      return hash.substring(0, 10) + '...' + hash.substring(hash.length - 8);
+    }
+
+    function shortenAddress(addr) {
+      if (!addr) return '';
+      return addr.substring(0, 8) + '...' + addr.substring(addr.length - 6);
+    }
+
+    async function fetchLatest() {
+      try {
+        showMessage('Fetching latest block number...', 'loading');
+        const res = await fetch('/api/latest');
+        if (!res.ok) throw new Error('Failed to fetch latest block');
+        const data = await res.json();
+        await fetchBlock(data.blockNumber.toString());
+      } catch (e) {
+        showMessage(e.message || 'Failed to fetch latest block', 'error');
+      }
+    }
+
+    async function fetchBlock(input) {
+      try {
+        showMessage(`Fetching block: ${input}...`, 'loading');
+        const res = await fetch(`/api/block/${encodeURIComponent(input)}`);
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.error || 'Failed to fetch block');
+        }
+        const block = await res.json();
+        displayBlock(block);
+        hideMessage();
+      } catch (e) {
+        showMessage(e.message || 'Failed to fetch block', 'error');
+      }
+    }
+
+    // Make fetchBlock globally accessible for onclick handlers
+    window.fetchBlock = fetchBlock;
+
+    async function fetchTransaction(hash) {
+      try {
+        showMessage(`Fetching transaction: ${shortenHash(hash)}...`, 'loading');
+        const res = await fetch(`/api/transaction/${hash}`);
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.error || 'Failed to fetch transaction');
+        }
+        const tx = await res.json();
+        displayTransaction(tx);
+        hideMessage();
+      } catch (e) {
+        showMessage(e.message || 'Failed to fetch transaction', 'error');
+      }
+    }
+
+    function displayBlock(block) {
+      const gasUsed = formatNumber(block.gasUsed);
+      const gasLimit = formatNumber(block.gasLimit);
+      const gasPercent = ((parseInt(block.gasUsed, 16) / parseInt(block.gasLimit, 16)) * 100).toFixed(2);
+      
+      let txListHtml = '';
+      if (block.transactions && block.transactions.length > 0) {
+        txListHtml = '<div class="tx-list"><div class="field-label">Transactions (' + block.transactions.length + ')</div>';
+        block.transactions.forEach(tx => {
+          const status = tx.status ? `<span class="tx-status ${tx.status}">${tx.status}</span>` : '';
+          txListHtml += `
+            <div class="tx-item" data-hash="${tx.hash}">
+              <div class="tx-item-header">
+                <span class="tx-hash">${shortenHash(tx.hash)}</span>
+                ${status}
+              </div>
+              <div class="tx-details">
+                From: ${shortenAddress(tx.from)} → To: ${tx.to ? shortenAddress(tx.to) : 'Contract Creation'}
+                <br>Value: ${formatWei(tx.value)} | Gas: ${formatGwei(tx.gasPrice)}
+              </div>
+            </div>
+          `;
+        });
+        txListHtml += '</div>';
+      }
+
+      resultEl.innerHTML = `
+        <div class="result">
+          <div class="result-header">Block #${formatNumber(block.number)}</div>
+          <div class="result-body">
+            <div class="grid-2">
+              <div class="field">
+                <div class="field-label">Block Number</div>
+                <div class="field-value number">${formatNumber(block.number)}</div>
+              </div>
+              <div class="field">
+                <div class="field-label">Timestamp</div>
+                <div class="field-value">${formatTimestamp(block.timestamp)}</div>
+              </div>
+              <div class="field">
+                <div class="field-label">Block Hash</div>
+                <div class="field-value hash">${block.hash}</div>
+              </div>
+              <div class="field">
+                <div class="field-label">Parent Hash</div>
+                <div class="field-value hash">${block.parentHash}</div>
+              </div>
+              <div class="field">
+                <div class="field-label">Miner</div>
+                <div class="field-value address">${block.miner}</div>
+              </div>
+              <div class="field">
+                <div class="field-label">Difficulty</div>
+                <div class="field-value number">${formatNumber(block.difficulty)}</div>
+              </div>
+              <div class="field">
+                <div class="field-label">Gas Used</div>
+                <div class="field-value number">${gasUsed} / ${gasLimit} (${gasPercent}%)</div>
+              </div>
+              <div class="field">
+                <div class="field-label">Size</div>
+                <div class="field-value number">${formatNumber(block.size)} bytes</div>
+              </div>
+            </div>
+            ${txListHtml}
+          </div>
+        </div>
+      `;
+
+      // Add click handlers for transactions
+      resultEl.querySelectorAll('.tx-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const hash = item.getAttribute('data-hash');
+          if (hash) fetchTransaction(hash);
+        });
+      });
+    }
+
+    function displayTransaction(tx) {
+      resultEl.innerHTML = `
+        <div class="result">
+          <div class="result-header">Transaction ${shortenHash(tx.hash)}</div>
+          <div class="result-body">
+            <div class="field">
+              <div class="field-label">Transaction Hash</div>
+              <div class="field-value hash">${tx.hash}</div>
+            </div>
+            <div class="field">
+              <div class="field-label">Status</div>
+              <div class="field-value">${tx.status ? `<span class="tx-status ${tx.status}">${tx.status}</span>` : 'Pending'}</div>
+            </div>
+            <div class="grid-2">
+              <div class="field">
+                <div class="field-label">From</div>
+                <div class="field-value address">${tx.from}</div>
+              </div>
+              <div class="field">
+                <div class="field-label">To</div>
+                <div class="field-value address">${tx.to || 'Contract Creation'}</div>
+              </div>
+              <div class="field">
+                <div class="field-label">Value</div>
+                <div class="field-value number">${formatWei(tx.value)}</div>
+              </div>
+              <div class="field">
+                <div class="field-label">Gas Limit</div>
+                <div class="field-value number">${formatNumber(tx.gas)}</div>
+              </div>
+              <div class="field">
+                <div class="field-label">Gas Price</div>
+                <div class="field-value number">${formatGwei(tx.gasPrice)}</div>
+              </div>
+              <div class="field">
+                <div class="field-label">Nonce</div>
+                <div class="field-value number">${formatNumber(tx.nonce)}</div>
+              </div>
+              <div class="field">
+                <div class="field-label">Block Number</div>
+                <div class="field-value number">${formatNumber(tx.blockNumber)}</div>
+              </div>
+              <div class="field">
+                <div class="field-label">Transaction Index</div>
+                <div class="field-value number">${formatNumber(tx.transactionIndex)}</div>
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Input Data</div>
+              <div class="field-value hash" style="font-size: 0.75rem; word-break: break-all;">${tx.input || '0x'}</div>
+            </div>
+            <div class="field">
+              <button type="button" class="btn btn-secondary" onclick="window.fetchBlock('${tx.blockNumber}')">View Block</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    latestBtn.addEventListener('click', fetchLatest);
+    searchBtn.addEventListener('click', () => {
+      const input = blockInput.value.trim();
+      if (!input) {
+        showMessage('Please enter a block number or hash', 'error');
+        return;
+      }
+      fetchBlock(input);
+    });
+
+    blockInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        searchBtn.click();
+      }
+    });
+  </script>
+</body>
+</html>
