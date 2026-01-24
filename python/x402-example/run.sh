@@ -1,0 +1,58 @@
+#!/bin/bash
+
+# Crypto Payment Simulator - Run Script
+# This script sets up the virtual environment and runs the payment simulator
+
+set -e
+
+echo "🚀 Setting up Crypto Payment Simulator (Fermi 450ms Block Time)"
+echo "================================================================"
+
+# Check if Python 3 is available
+if ! command -v python3 &> /dev/null; then
+    echo "❌ Python 3 is required but not installed."
+    exit 1
+fi
+
+# Create virtual environment if it doesn't exist
+if [ ! -d "venv" ]; then
+    echo "📦 Creating virtual environment..."
+    python3 -m venv venv
+fi
+
+# Activate virtual environment
+echo "🔧 Activating virtual environment..."
+source venv/bin/activate
+
+# Install dependencies
+echo "📥 Installing dependencies..."
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# Check if .env file exists
+if [ ! -f ".env" ]; then
+    echo "⚠️  .env file not found. Creating from .env.example..."
+    cp .env.example .env
+    echo "⚠️  Please edit .env file and add your PRIVATE_KEY before running!"
+    exit 1
+fi
+
+# Load environment variables
+export $(cat .env | grep -v '^#' | xargs)
+
+# Check if PRIVATE_KEY is set
+if [ -z "$PRIVATE_KEY" ] || [ "$PRIVATE_KEY" == "0xYourPrivateKeyHere" ]; then
+    echo "❌ PRIVATE_KEY not set in .env file. Please configure it first."
+    exit 1
+fi
+
+# Run tests
+echo "🧪 Running tests..."
+python -m pytest test_payment_simulator.py -v
+
+# Start the server
+echo "✅ Starting payment simulator server..."
+echo "🌐 Frontend will be available at http://localhost:5000"
+echo "📊 MCP server is running..."
+echo ""
+python payment_simulator.py
