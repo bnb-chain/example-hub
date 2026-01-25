@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>State Growth Inspector - BNBChain Cookbook</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .info-pane {
+            width: 400px;
+            background: rgba(26, 26, 46, 0.95);
+            border-right: 2px solid #2d2d44;
+            padding: 30px;
+            overflow-y: auto;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .interaction-pane {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        h1 {
+            color: #4fc3f7;
+            margin-bottom: 10px;
+            font-size: 28px;
+            border-bottom: 2px solid #4fc3f7;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #81c784;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        h3 {
+            color: #ffb74d;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #b0b0b0;
+        }
+
+        .code-block {
+            background: #1e1e2e;
+            border: 1px solid #3d3d5c;
+            border-radius: 5px;
+            padding: 12px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #a5d6a7;
+            overflow-x: auto;
+        }
+
+        .highlight {
+            background: rgba(79, 195, 247, 0.2);
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #4fc3f7;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #81c784;
+            font-weight: 600;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #3d3d5c;
+            border-radius: 6px;
+            background: #1e1e2e;
+            color: #e0e0e0;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #4fc3f7;
+            box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.1);
+        }
+
+        button {
+            background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
+            border: none;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #29b6f6 0%, #0288d1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 195, 247, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: #3d3d5c;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .card {
+            background: rgba(30, 30, 46, 0.8);
+            border: 1px solid #3d3d5c;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .result-section {
+            margin-top: 30px;
+        }
+
+        .metric {
+            display: inline-block;
+            background: rgba(79, 195, 247, 0.1);
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin: 5px;
+            border-left: 3px solid #4fc3f7;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #b0b0b0;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #4fc3f7;
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 12px;
+            margin: 5px;
+        }
+
+        .risk-low {
+            background: rgba(129, 199, 132, 0.2);
+            color: #81c784;
+            border: 1px solid #81c784;
+        }
+
+        .risk-medium {
+            background: rgba(255, 183, 77, 0.2);
+            color: #ffb74d;
+            border: 1px solid #ffb74d;
+        }
+
+        .risk-high {
+            background: rgba(239, 83, 80, 0.2);
+            color: #ef5350;
+            border: 1px solid #ef5350;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #4fc3f7;
+        }
+
+        .error {
+            background: rgba(239, 83, 80, 0.1);
+            border: 1px solid #ef5350;
+            color: #ef5350;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 20px 0;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: #1e1e2e;
+            border: 1px solid #3d3d5c;
+            border-radius: 6px 6px 0 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: #2d2d44;
+            border-bottom: 2px solid #4fc3f7;
+            color: #4fc3f7;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: #b0b0b0;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .feature-list li:before {
+            content: "✓ ";
+            color: #81c784;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="info-pane">
+            <h1>State Growth Inspector</h1>
+            <p>
+                A powerful tool to analyze and monitor blockchain state growth on BNBChain (BSC). 
+                This inspector helps identify state bloat, track storage usage, and detect potential 
+                issues with contract state management.
+            </p>
+
+            <h2>What is State Growth?</h2>
+            <p>
+                Blockchain state refers to the storage data maintained by smart contracts. Each contract 
+                can store data in storage slots, and excessive growth of this state can lead to:
+            </p>
+            <ul>
+                <li>Increased node storage requirements</li>
+                <li>Higher gas costs for state operations</li>
+                <li>Network performance degradation</li>
+                <li>Potential state bloat issues</li>
+            </ul>
+
+            <h2>Features</h2>
+            <ul class="feature-list">
+                <li>Analyze contract storage slots</li>
+                <li>Track state growth over time</li>
+                <li>Detect rapid state expansion</li>
+                <li>Compare contract states</li>
+                <li>Visualize growth trends</li>
+                <li>Risk assessment</li>
+            </ul>
+
+            <h2>How It Works</h2>
+            <p>
+                The inspector reads storage slots from smart contracts and analyzes:
+            </p>
+            <ul>
+                <li><span class="highlight">Storage Density</span>: Percentage of non-empty slots</li>
+                <li><span class="highlight">Growth Rate</span>: Slots added per block</li>
+                <li><span class="highlight">Trend Analysis</span>: Increasing, decreasing, or stable</li>
+                <li><span class="highlight">Risk Assessment</span>: Low, medium, or high risk</li>
+            </ul>
+
+            <h2>Use Cases</h2>
+            <ul>
+                <li>Monitor DeFi protocol state growth</li>
+                <li>Detect potential state bloat in contracts</li>
+                <li>Optimize contract storage usage</li>
+                <li>Compare state efficiency between contracts</li>
+            </ul>
+
+            <h2>Example Contract</h2>
+            <div class="code-block">
+                0x10ED43C718714eb63d5aA57B78B54704E256024E
+            </div>
+            <p style="font-size: 12px; color: #888;">
+                PancakeSwap Router V2 on BSC
+            </p>
+        </div>
+
+        <div class="interaction-pane">
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('analyze')">Analyze State</div>
+                <div class="tab" onclick="switchTab('growth')">Growth Analysis</div>
+                <div class="tab" onclick="switchTab('compare')">Compare Contracts</div>
+            </div>
+
+            <!-- Analyze State Tab -->
+            <div id="analyze-tab" class="tab-content active">
+                <div class="card">
+                    <h2>Analyze Contract State</h2>
+                    <p>Get detailed information about a contract's current state, including storage slots and code size.</p>
+                    
+                    <div class="form-group">
+                        <label>Contract Address</label>
+                        <input type="text" id="analyze-address" placeholder="0x..." value="0x10ED43C718714eb63d5aA57B78B54704E256024E">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Max Slots to Check (default: 100)</label>
+                        <input type="number" id="analyze-max-slots" placeholder="100" value="100">
+                    </div>
+                    
+                    <button onclick="analyzeState()">Analyze State</button>
+                    
+                    <div id="analyze-result"></div>
+                </div>
+            </div>
+
+            <!-- Growth Analysis Tab -->
+            <div id="growth-tab" class="tab-content">
+                <div class="card">
+                    <h2>State Growth Analysis</h2>
+                    <p>Track how a contract's state changes over a range of blocks to identify growth patterns.</p>
+                    
+                    <div class="form-group">
+                        <label>Contract Address</label>
+                        <input type="text" id="growth-address" placeholder="0x..." value="0x10ED43C718714eb63d5aA57B78B54704E256024E">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Start Block</label>
+                        <input type="number" id="start-block" placeholder="e.g., 35000000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>End Block (leave empty for latest)</label>
+                        <input type="number" id="end-block" placeholder="Leave empty for latest">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Block Interval (default: 1000)</label>
+                        <input type="number" id="block-interval" placeholder="1000" value="1000">
+                    </div>
+                    
+                    <button onclick="analyzeGrowth()">Analyze Growth</button>
+                    
+                    <div id="growth-result"></div>
+                </div>
+            </div>
+
+            <!-- Compare Contracts Tab -->
+            <div id="compare-tab" class="tab-content">
+                <div class="card">
+                    <h2>Compare Contract States</h2>
+                    <p>Compare the state of two contracts side-by-side to identify differences in storage usage.</p>
+                    
+                    <div class="form-group">
+                        <label>Contract Address 1</label>
+                        <input type="text" id="compare-address1" placeholder="0x...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Contract Address 2</label>
+                        <input type="text" id="compare-address2" placeholder="0x...">
+                    </div>
+                    
+                    <button onclick="compareContracts()">Compare Contracts</button>
+                    
+                    <div id="compare-result"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            
+            // Show selected tab
+            event.target.classList.add('active');
+            document.getElementById(tabName + '-tab').classList.add('active');
+        }
+
+        async function analyzeState() {
+            const address = document.getElementById('analyze-address').value.trim();
+            const maxSlots = parseInt(document.getElementById('analyze-max-slots').value) || 100;
+            const resultDiv = document.getElementById('analyze-result');
+            
+            if (!address) {
+                resultDiv.innerHTML = '<div class="error">Please enter a contract address</div>';
+                return;
+            }
+            
+            resultDiv.innerHTML = '<div class="loading">Analyzing contract state...</div>';
+            
+            try {
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contractAddress: address, maxSlots })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="card">
+                            <h3>State Analysis Results</h3>
+                            <div class="metric">
+                                <div class="metric-label">Code Size</div>
+                                <div class="metric-value">${data.codeSize} bytes</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Non-empty Slots</div>
+                                <div class="metric-value">${data.nonEmptySlots} / ${data.totalSlotsChecked}</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Storage Density</div>
+                                <div class="metric-value">${data.storageDensity.toFixed(2)}%</div>
+                            </div>
+                            <p style="margin-top: 15px;"><strong>Address:</strong> <span class="code-block" style="display: inline; padding: 5px;">${data.address}</span></p>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">Error: ${data.error}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+
+        async function analyzeGrowth() {
+            const address = document.getElementById('growth-address').value.trim();
+            const startBlock = document.getElementById('start-block').value;
+            const endBlockInput = document.getElementById('end-block').value;
+            const interval = parseInt(document.getElementById('block-interval').value) || 1000;
+            const resultDiv = document.getElementById('growth-result');
+            
+            if (!address || !startBlock) {
+                resultDiv.innerHTML = '<div class="error">Please enter contract address and start block</div>';
+                return;
+            }
+            
+            resultDiv.innerHTML = '<div class="loading">Analyzing state growth...</div>';
+            
+            try {
+                // Get latest block if end block not provided
+                let endBlock = endBlockInput;
+                if (!endBlock) {
+                    // Fetch latest block from RPC
+                    const rpcResponse = await fetch('https://bsc-dataseed1.binance.org/', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            jsonrpc: '2.0',
+                            method: 'eth_blockNumber',
+                            params: [],
+                            id: 1
+                        })
+                    });
+                    const rpcData = await rpcResponse.json();
+                    endBlock = parseInt(rpcData.result, 16);
+                }
+                
+                const response = await fetch('/api/growth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        contractAddress: address, 
+                        startBlock: parseInt(startBlock),
+                        endBlock: parseInt(endBlock),
+                        interval 
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const riskClass = `risk-${data.riskLevel.toLowerCase()}`;
+                    let chartHtml = '';
+                    
+                    if (data.snapshots.length > 1) {
+                        chartHtml = '<div class="chart-container"><canvas id="growthChart"></canvas></div>';
+                    }
+                    
+                    resultDiv.innerHTML = `
+                        <div class="card">
+                            <h3>Growth Analysis Results</h3>
+                            <div class="metric">
+                                <div class="metric-label">Growth Rate</div>
+                                <div class="metric-value">${data.growthRate.toFixed(4)} slots/block</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Total Growth</div>
+                                <div class="metric-value">${data.totalGrowth} slots</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Trend</div>
+                                <div class="metric-value">${data.growthTrend}</div>
+                            </div>
+                            <div style="margin-top: 15px;">
+                                <span class="risk-badge ${riskClass}">${data.riskLevel} RISK</span>
+                            </div>
+                            <p style="margin-top: 15px;"><strong>Risk Assessment:</strong> ${data.riskReason}</p>
+                            <p><strong>Snapshots:</strong> ${data.snapshots.length}</p>
+                            ${chartHtml}
+                        </div>
+                    `;
+                    
+                    // Create chart after HTML is inserted
+                    if (data.snapshots.length > 1 && typeof Chart !== 'undefined') {
+                        const ctx = document.getElementById('growthChart');
+                        if (ctx) {
+                            new Chart(ctx.getContext('2d'), {
+                                type: 'line',
+                                data: {
+                                    labels: data.snapshots.map(s => s.blockNumber),
+                                    datasets: [{
+                                        label: 'Non-empty Slots',
+                                        data: data.snapshots.map(s => s.nonEmptySlots),
+                                        borderColor: '#4fc3f7',
+                                        backgroundColor: 'rgba(79, 195, 247, 0.1)',
+                                        tension: 0.4
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: {
+                                        legend: { labels: { color: '#e0e0e0' } }
+                                    },
+                                    scales: {
+                                        x: { ticks: { color: '#b0b0b0' }, grid: { color: '#3d3d5c' } },
+                                        y: { ticks: { color: '#b0b0b0' }, grid: { color: '#3d3d5c' } }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                } else {
+                    resultDiv.innerHTML = `<div class="error">Error: ${data.error}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+
+        async function compareContracts() {
+            const address1 = document.getElementById('compare-address1').value.trim();
+            const address2 = document.getElementById('compare-address2').value.trim();
+            const resultDiv = document.getElementById('compare-result');
+            
+            if (!address1 || !address2) {
+                resultDiv.innerHTML = '<div class="error">Please enter both contract addresses</div>';
+                return;
+            }
+            
+            resultDiv.innerHTML = '<div class="loading">Comparing contracts...</div>';
+            
+            try {
+                const response = await fetch('/api/compare', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contract1: address1, contract2: address2 })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="card">
+                            <h3>Comparison Results</h3>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                                <div>
+                                    <h4>Contract 1</h4>
+                                    <p><strong>Address:</strong> ${data.contract1.address}</p>
+                                    <p><strong>Code Size:</strong> ${data.contract1.codeSize} bytes</p>
+                                    <p><strong>Non-empty Slots:</strong> ${data.contract1.nonEmptySlots}</p>
+                                    <p><strong>Storage Density:</strong> ${data.contract1.storageDensity.toFixed(2)}%</p>
+                                </div>
+                                <div>
+                                    <h4>Contract 2</h4>
+                                    <p><strong>Address:</strong> ${data.contract2.address}</p>
+                                    <p><strong>Code Size:</strong> ${data.contract2.codeSize} bytes</p>
+                                    <p><strong>Non-empty Slots:</strong> ${data.contract2.nonEmptySlots}</p>
+                                    <p><strong>Storage Density:</strong> ${data.contract2.storageDensity.toFixed(2)}%</p>
+                                </div>
+                            </div>
+                            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #3d3d5c;">
+                                <h4>Differences</h4>
+                                <p><strong>Code Size Difference:</strong> ${data.difference.codeSizeDiff} bytes</p>
+                                <p><strong>Storage Difference:</strong> ${data.difference.storageDiff} slots</p>
+                                <p><strong>Density Difference:</strong> ${data.difference.densityDiff.toFixed(2)}%</p>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">Error: ${data.error}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+
+    </script>
+</body>
+</html>
+
