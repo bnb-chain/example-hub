@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gas Inefficiency Detector - BNBChain Cookbook</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(20, 25, 45, 0.95);
+            padding: 1.5rem 2rem;
+            border-bottom: 2px solid #2d3748;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            color: #4fd1c7;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #a0aec0;
+            font-size: 0.9rem;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            gap: 1.5rem;
+            padding: 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .info-pane {
+            flex: 0 0 400px;
+            background: rgba(26, 32, 58, 0.8);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid #2d3748;
+            backdrop-filter: blur(10px);
+            overflow-y: auto;
+            max-height: calc(100vh - 200px);
+        }
+
+        .interaction-pane {
+            flex: 1;
+            background: rgba(26, 32, 58, 0.8);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid #2d3748;
+            backdrop-filter: blur(10px);
+            overflow-y: auto;
+            max-height: calc(100vh - 200px);
+        }
+
+        .section-title {
+            color: #4fd1c7;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #2d3748;
+        }
+
+        .info-section {
+            margin-bottom: 2rem;
+        }
+
+        .info-section h3 {
+            color: #68d391;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .info-section p, .info-section li {
+            color: #cbd5e0;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-section ul {
+            list-style-position: inside;
+            padding-left: 1rem;
+        }
+
+        .info-section code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #fbb6ce;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin: 0.25rem;
+        }
+
+        .badge-low { background: #48bb78; color: white; }
+        .badge-medium { background: #ed8936; color: white; }
+        .badge-high { background: #f56565; color: white; }
+        .badge-critical { background: #c53030; color: white; }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            color: #68d391;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #2d3748;
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #4fd1c7;
+            box-shadow: 0 0 0 3px rgba(79, 209, 199, 0.1);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #4fd1c7 0%, #38b2ac 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 209, 199, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: #4fd1c7;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .results {
+            display: none;
+        }
+
+        .results.active {
+            display: block;
+        }
+
+        .efficiency-score {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .efficiency-score h3 {
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .score-value {
+            font-size: 3rem;
+            font-weight: bold;
+            color: white;
+            margin: 0.5rem 0;
+        }
+
+        .score-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .score-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #48bb78 0%, #ed8936 50%, #f56565 100%);
+            transition: width 0.5s;
+        }
+
+        .inefficiency-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+        }
+
+        .inefficiency-item.low { border-left-color: #48bb78; }
+        .inefficiency-item.medium { border-left-color: #ed8936; }
+        .inefficiency-item.high { border-left-color: #f56565; }
+        .inefficiency-item.critical { border-left-color: #c53030; }
+
+        .inefficiency-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .inefficiency-type {
+            color: #4fd1c7;
+            font-weight: 600;
+        }
+
+        .inefficiency-description {
+            color: #cbd5e0;
+            margin-bottom: 0.5rem;
+        }
+
+        .inefficiency-recommendation {
+            color: #68d391;
+            font-style: italic;
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid #2d3748;
+        }
+
+        .tx-info {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .tx-info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #2d3748;
+        }
+
+        .tx-info-item:last-child {
+            border-bottom: none;
+        }
+
+        .tx-info-label {
+            color: #a0aec0;
+        }
+
+        .tx-info-value {
+            color: #e0e0e0;
+            font-weight: 500;
+            word-break: break-all;
+        }
+
+        .error {
+            background: rgba(197, 48, 48, 0.2);
+            border: 1px solid #c53030;
+            color: #feb2b2;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .recommendations {
+            background: rgba(72, 187, 120, 0.1);
+            border: 1px solid #48bb78;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+        }
+
+        .recommendations h3 {
+            color: #68d391;
+            margin-bottom: 0.5rem;
+        }
+
+        .recommendations ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .recommendations li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .recommendations li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #68d391;
+            font-weight: bold;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .info-pane {
+                flex: 1;
+                max-height: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔍 Gas Inefficiency Detector</h1>
+        <p>Analyze BSC transactions to identify gas optimization opportunities</p>
+    </div>
+
+    <div class="container">
+        <div class="info-pane">
+            <div class="info-section">
+                <h2 class="section-title">About This Tool</h2>
+                <p>
+                    The Gas Inefficiency Detector analyzes smart contract transactions on BNB Smart Chain (BSC) 
+                    to identify potential gas optimization opportunities. It examines transaction patterns, gas usage, 
+                    and common inefficiency indicators to provide actionable recommendations.
+                </p>
+            </div>
+
+            <div class="info-section">
+                <h3>What It Detects</h3>
+                <ul>
+                    <li><strong>Storage Inefficiencies:</strong> Unnecessary state changes, excessive event emissions</li>
+                    <li><strong>Computation Issues:</strong> Redundant calculations, inefficient algorithms</li>
+                    <li><strong>Loop Problems:</strong> Unbounded iterations, inefficient loop patterns</li>
+                    <li><strong>External Calls:</strong> Multiple calls that could be batched</li>
+                    <li><strong>Memory Usage:</strong> Inefficient data structures and memory operations</li>
+                    <li><strong>Transaction Failures:</strong> Failed transactions wasting gas</li>
+                </ul>
+            </div>
+
+            <div class="info-section">
+                <h3>Severity Levels</h3>
+                <p>
+                    <span class="badge badge-low">LOW</span> Minor optimizations, small gas savings
+                </p>
+                <p>
+                    <span class="badge badge-medium">MEDIUM</span> Moderate issues, noticeable gas savings
+                </p>
+                <p>
+                    <span class="badge badge-high">HIGH</span> Significant inefficiencies, substantial savings
+                </p>
+                <p>
+                    <span class="badge badge-critical">CRITICAL</span> Critical issues, major gas waste
+                </p>
+            </div>
+
+            <div class="info-section">
+                <h3>How to Use</h3>
+                <ol>
+                    <li>Enter a BSC transaction hash in the input field</li>
+                    <li>Click "Analyze Transaction" to start the analysis</li>
+                    <li>Review the efficiency score and detected inefficiencies</li>
+                    <li>Follow the recommendations to optimize your contracts</li>
+                </ol>
+            </div>
+
+            <div class="info-section">
+                <h3>Example Transaction</h3>
+                <p>Try analyzing a recent transaction from BSCScan:</p>
+                <code>0x1234...5678</code>
+                <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #a0aec0;">
+                    Note: Use a valid BSC transaction hash for best results.
+                </p>
+            </div>
+        </div>
+
+        <div class="interaction-pane">
+            <h2 class="section-title">Transaction Analysis</h2>
+
+            <div class="input-group">
+                <label for="txHash">Transaction Hash</label>
+                <input 
+                    type="text" 
+                    id="txHash" 
+                    placeholder="0x..." 
+                    autocomplete="off"
+                />
+            </div>
+
+            <button class="btn" onclick="analyzeTransaction()">Analyze Transaction</button>
+            <button class="btn btn-secondary" onclick="clearResults()">Clear</button>
+
+            <div id="loading" class="loading">
+                <p>⏳ Analyzing transaction... This may take a few seconds.</p>
+            </div>
+
+            <div id="error" class="error" style="display: none;"></div>
+
+            <div id="results" class="results">
+                <div class="tx-info" id="txInfo"></div>
+                
+                <div class="efficiency-score" id="efficiencyScore"></div>
+
+                <h3 class="section-title">Detected Inefficiencies</h3>
+                <div id="inefficiencies"></div>
+
+                <div class="recommendations" id="recommendations"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function analyzeTransaction() {
+            const txHash = document.getElementById('txHash').value.trim();
+            
+            if (!txHash) {
+                showError('Please enter a transaction hash');
+                return;
+            }
+
+            if (!txHash.startsWith('0x') || txHash.length !== 66) {
+                showError('Invalid transaction hash format. Must start with 0x and be 66 characters long.');
+                return;
+            }
+
+            // Show loading, hide results and error
+            document.getElementById('loading').classList.add('active');
+            document.getElementById('results').classList.remove('active');
+            document.getElementById('error').style.display = 'none';
+
+            try {
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ txHash })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to analyze transaction');
+                }
+
+                displayResults(data);
+            } catch (error) {
+                showError(error.message || 'Failed to analyze transaction. Make sure the server is running.');
+            } finally {
+                document.getElementById('loading').classList.remove('active');
+            }
+        }
+
+        function displayResults(analysis) {
+            // Display transaction info
+            const txInfo = document.getElementById('txInfo');
+            txInfo.innerHTML = `
+                <div class="tx-info-item">
+                    <span class="tx-info-label">Transaction Hash:</span>
+                    <span class="tx-info-value">${analysis.txHash}</span>
+                </div>
+                <div class="tx-info-item">
+                    <span class="tx-info-label">Block Number:</span>
+                    <span class="tx-info-value">${analysis.blockNumber.toLocaleString()}</span>
+                </div>
+                <div class="tx-info-item">
+                    <span class="tx-info-label">From:</span>
+                    <span class="tx-info-value">${analysis.from}</span>
+                </div>
+                <div class="tx-info-item">
+                    <span class="tx-info-label">To:</span>
+                    <span class="tx-info-value">${analysis.to || 'Contract Creation'}</span>
+                </div>
+                <div class="tx-info-item">
+                    <span class="tx-info-label">Gas Used:</span>
+                    <span class="tx-info-value">${analysis.gasUsed.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</span>
+                </div>
+                <div class="tx-info-item">
+                    <span class="tx-info-label">Gas Price:</span>
+                    <span class="tx-info-value">${(Number(analysis.gasPrice) / 1e9).toFixed(2)} gwei</span>
+                </div>
+                <div class="tx-info-item">
+                    <span class="tx-info-label">Total Cost:</span>
+                    <span class="tx-info-value">${(Number(analysis.totalCost) / 1e18).toFixed(6)} BNB</span>
+                </div>
+            `;
+
+            // Display efficiency score
+            const efficiencyScore = document.getElementById('efficiencyScore');
+            const score = analysis.efficiencyScore;
+            const scoreColor = score >= 80 ? '#48bb78' : score >= 60 ? '#ed8936' : '#f56565';
+            
+            efficiencyScore.innerHTML = `
+                <h3>Efficiency Score</h3>
+                <div class="score-value" style="color: ${scoreColor}">${score.toFixed(1)}/100</div>
+                <div class="score-bar">
+                    <div class="score-fill" style="width: ${score}%; background: ${scoreColor}"></div>
+                </div>
+            `;
+
+            // Display inefficiencies
+            const inefficienciesDiv = document.getElementById('inefficiencies');
+            if (analysis.inefficiencies.length === 0) {
+                inefficienciesDiv.innerHTML = '<p style="color: #68d391;">✓ No inefficiencies detected! This transaction appears to be well-optimized.</p>';
+            } else {
+                inefficienciesDiv.innerHTML = analysis.inefficiencies.map((ineff, idx) => `
+                    <div class="inefficiency-item ${ineff.severity.toLowerCase()}">
+                        <div class="inefficiency-header">
+                            <span class="inefficiency-type">${ineff.type} - ${ineff.severity}</span>
+                            <span class="badge badge-${ineff.severity.toLowerCase()}">${ineff.severity}</span>
+                        </div>
+                        <div class="inefficiency-description">${ineff.description}</div>
+                        <div class="inefficiency-recommendation">
+                            <strong>Recommendation:</strong> ${ineff.recommendation}
+                        </div>
+                        ${ineff.estimatedGasSavings > 0 ? `
+                            <div style="color: #68d391; margin-top: 0.5rem; font-size: 0.9rem;">
+                                Estimated Gas Savings: ~${ineff.estimatedGasSavings.toLocaleString()} gas
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('');
+            }
+
+            // Display recommendations
+            const recommendationsDiv = document.getElementById('recommendations');
+            if (analysis.recommendations.length > 0) {
+                recommendationsDiv.innerHTML = `
+                    <h3>General Recommendations</h3>
+                    <ul>
+                        ${analysis.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                    </ul>
+                `;
+            } else {
+                recommendationsDiv.innerHTML = '';
+            }
+
+            // Show results
+            document.getElementById('results').classList.add('active');
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function clearResults() {
+            document.getElementById('txHash').value = '';
+            document.getElementById('results').classList.remove('active');
+            document.getElementById('error').style.display = 'none';
+        }
+
+        // Allow Enter key to trigger analysis
+        document.getElementById('txHash').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                analyzeTransaction();
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
