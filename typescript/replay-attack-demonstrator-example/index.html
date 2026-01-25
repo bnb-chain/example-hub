@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replay Attack Demonstrator - BNBChain Cookbook</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .info-pane {
+            flex: 0 0 400px;
+            background: rgba(26, 31, 58, 0.8);
+            border-radius: 16px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-y: auto;
+            max-height: calc(100vh - 40px);
+        }
+
+        .interaction-pane {
+            flex: 1;
+            background: rgba(26, 31, 58, 0.8);
+            border-radius: 16px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-y: auto;
+            max-height: calc(100vh - 40px);
+        }
+
+        h1 {
+            color: #4fc3f7;
+            margin-bottom: 20px;
+            font-size: 28px;
+            border-bottom: 2px solid rgba(79, 195, 247, 0.3);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #81c784;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        h3 {
+            color: #ffb74d;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        p, li {
+            line-height: 1.6;
+            margin-bottom: 12px;
+            color: #b0b0b0;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #e0e0e0;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(10, 14, 39, 0.6);
+            border: 1px solid rgba(79, 195, 247, 0.3);
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4fc3f7;
+            box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.1);
+        }
+
+        button {
+            background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 195, 247, 0.4);
+        }
+
+        button:disabled {
+            background: rgba(79, 195, 247, 0.3);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .example-addresses {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .example-btn {
+            background: rgba(79, 195, 247, 0.1);
+            border: 1px solid rgba(79, 195, 247, 0.3);
+            color: #4fc3f7;
+            padding: 10px 16px;
+            text-align: left;
+            font-size: 13px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .example-btn:hover {
+            background: rgba(79, 195, 247, 0.2);
+        }
+
+        .example-btn strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .example-btn span {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: #b0b0b0;
+        }
+
+        .spinner {
+            border: 3px solid rgba(79, 195, 247, 0.3);
+            border-top: 3px solid #4fc3f7;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results {
+            margin-top: 30px;
+        }
+
+        .result-card {
+            background: rgba(10, 14, 39, 0.6);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4fc3f7;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .replay-status {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .replay-safe {
+            background: rgba(76, 175, 80, 0.2);
+            color: #81c784;
+            border: 1px solid #81c784;
+        }
+
+        .replay-vulnerable {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+            border: 1px solid #f44336;
+        }
+
+        .transaction-details {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #b0b0b0;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #888;
+        }
+
+        .detail-value {
+            color: #4fc3f7;
+            word-break: break-all;
+            text-align: right;
+            flex: 1;
+            margin-left: 20px;
+        }
+
+        .error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid #f44336;
+            color: #f44336;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .warning-box {
+            background: rgba(255, 152, 0, 0.2);
+            border: 1px solid #ff9800;
+            color: #ff9800;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .success-box {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #81c784;
+            color: #81c784;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #4fc3f7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="info-pane">
+            <h1>🛡️ Replay Attack Demonstrator</h1>
+            
+            <h2>What is a Replay Attack?</h2>
+            <p>
+                A replay attack occurs when a transaction signed for one BSC network 
+                is maliciously or accidentally rebroadcast on another BSC network. This can happen 
+                when transactions lack proper chainId protection.
+            </p>
+
+            <h2>Why is this dangerous?</h2>
+            <p>
+                Without chainId protection, a transaction signed on one BSC network (e.g., BSC Testnet) 
+                could be replayed on another BSC network (e.g., BSC Mainnet), potentially causing:
+            </p>
+            <ul>
+                <li><strong>Unauthorized transfers</strong>: Funds moved without user consent</li>
+                <li><strong>Double spending</strong>: Same transaction executed twice</li>
+                <li><strong>Network confusion</strong>: Transactions on wrong networks</li>
+                <li><strong>Security breaches</strong>: Exploitation of unprotected transactions</li>
+            </ul>
+
+            <h2>How ChainId Protection Works</h2>
+            <p>
+                Modern BSC transactions include a <code>chainId</code> field that binds 
+                the transaction to a specific network. This prevents:
+            </p>
+            <ul>
+                <li>Replaying transactions across different BSC networks</li>
+                <li>Accidental execution on wrong BSC networks</li>
+                <li>Cross-network transaction confusion</li>
+            </ul>
+
+            <h2>Supported Networks</h2>
+            <ul>
+                <li><strong>BSC Mainnet</strong> (ChainId: 56)</li>
+                <li><strong>BSC Testnet</strong> (ChainId: 97)</li>
+            </ul>
+
+            <h2>How to Use</h2>
+            <ol>
+                <li>Enter sender and receiver addresses</li>
+                <li>Specify transaction value in BNB</li>
+                <li>Select original and target networks</li>
+                <li>Optionally provide a private key for signing</li>
+                <li>Click "Demonstrate Replay Attack" to analyze</li>
+            </ol>
+
+            <h3>Example BSC Addresses</h3>
+            <p>
+                Use the example addresses provided in the form to quickly test the tool 
+                with real BSC contract addresses.
+            </p>
+        </div>
+
+        <div class="interaction-pane">
+            <h1>Demonstrate Replay Attack</h1>
+            
+            <div class="input-group">
+                <label for="fromAddress">From Address</label>
+                <input 
+                    type="text" 
+                    id="fromAddress" 
+                    placeholder="0x..." 
+                    value=""
+                />
+            </div>
+
+            <div class="input-group">
+                <label for="toAddress">To Address</label>
+                <input 
+                    type="text" 
+                    id="toAddress" 
+                    placeholder="0x..." 
+                    value=""
+                />
+                <label style="margin-top: 12px; margin-bottom: 8px;">📋 Example BSC Addresses (Click to use)</label>
+                <div class="example-addresses">
+                    <button 
+                        type="button" 
+                        class="example-btn"
+                        onclick="useExampleAddress('toAddress', '0x10ED43C718714eb63d5aA57B78B54704E256024E', 'PancakeSwap Router V2')"
+                    >
+                        <strong>PancakeSwap Router V2</strong>
+                        <span>0x10ED43C718714eb63d5aA57B78B54704E256024E</span>
+                    </button>
+                    <button 
+                        type="button" 
+                        class="example-btn"
+                        onclick="useExampleAddress('toAddress', '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73', 'PancakeSwap Factory V2')"
+                    >
+                        <strong>PancakeSwap Factory V2</strong>
+                        <span>0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73</span>
+                    </button>
+                    <button 
+                        type="button" 
+                        class="example-btn"
+                        onclick="useExampleAddress('toAddress', '0x55d398326f99059fF775485246999027B3197955', 'USDT Token (BSC)')"
+                    >
+                        <strong>USDT Token (BSC)</strong>
+                        <span>0x55d398326f99059fF775485246999027B3197955</span>
+                    </button>
+                    <button 
+                        type="button" 
+                        class="example-btn"
+                        onclick="useExampleAddress('toAddress', '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', 'BUSD Token')"
+                    >
+                        <strong>BUSD Token</strong>
+                        <span>0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56</span>
+                    </button>
+                    <button 
+                        type="button" 
+                        class="example-btn"
+                        onclick="useExampleAddress('toAddress', '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', 'USDC Token (BSC)')"
+                    >
+                        <strong>USDC Token (BSC)</strong>
+                        <span>0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d</span>
+                    </button>
+                    <button 
+                        type="button" 
+                        class="example-btn"
+                        onclick="useExampleAddress('toAddress', '0x13f4EA83D0bd40E75C8222255bc855a974568Dd4', 'PancakeSwap Router V3')"
+                    >
+                        <strong>PancakeSwap Router V3</strong>
+                        <span>0x13f4EA83D0bd40E75C8222255bc855a974568Dd4</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="value">Value (BNB)</label>
+                <input 
+                    type="text" 
+                    id="value" 
+                    placeholder="0.1" 
+                    value="0.1"
+                />
+            </div>
+
+            <div class="input-group">
+                <label for="originalNetwork">Original Network</label>
+                <select id="originalNetwork">
+                    <option value="bsc-mainnet">BSC Mainnet (ChainId: 56)</option>
+                    <option value="bsc-testnet">BSC Testnet (ChainId: 97)</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="targetNetwork">Target Network (for replay attempt)</label>
+                <select id="targetNetwork">
+                    <option value="bsc-mainnet">BSC Mainnet (ChainId: 56)</option>
+                    <option value="bsc-testnet">BSC Testnet (ChainId: 97)</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="privateKey">Private Key (optional, leave empty for demo)</label>
+                <input 
+                    type="password" 
+                    id="privateKey" 
+                    placeholder="Leave empty for demonstration mode"
+                />
+            </div>
+
+            <button onclick="demonstrateReplay()" id="demonstrateBtn">Demonstrate Replay Attack</button>
+
+            <div id="loading" style="display: none;">
+                <div class="spinner"></div>
+            </div>
+
+            <div id="error" style="display: none;"></div>
+
+            <div id="results" class="results" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        function useExampleAddress(fieldId, address, name) {
+            document.getElementById(fieldId).value = address;
+            console.log(`Using ${name}: ${address}`);
+        }
+
+        async function demonstrateReplay() {
+            const fromAddress = document.getElementById('fromAddress').value.trim();
+            const toAddress = document.getElementById('toAddress').value.trim();
+            const value = document.getElementById('value').value.trim();
+            const originalNetwork = document.getElementById('originalNetwork').value;
+            const targetNetwork = document.getElementById('targetNetwork').value;
+            const privateKey = document.getElementById('privateKey').value.trim();
+
+            if (!fromAddress || !toAddress || !value) {
+                showError('Please fill in all required fields (From Address, To Address, Value)');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('demonstrateBtn').disabled = true;
+
+            try {
+                const response = await fetch('/api/demonstrate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        fromAddress,
+                        toAddress,
+                        value,
+                        originalNetwork,
+                        targetNetwork,
+                        privateKey: privateKey || undefined
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to demonstrate replay attack');
+                }
+
+                displayResults(data);
+            } catch (error) {
+                showError(error.message || 'An error occurred while demonstrating replay attack');
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('demonstrateBtn').disabled = false;
+            }
+        }
+
+        function displayResults(data) {
+            const resultsDiv = document.getElementById('results');
+            const isVulnerable = data.canReplay;
+            
+            resultsDiv.innerHTML = `
+                <div class="result-card">
+                    <div class="result-header">
+                        <h2>Replay Attack Analysis</h2>
+                        <span class="replay-status ${isVulnerable ? 'replay-vulnerable' : 'replay-safe'}">
+                            ${isVulnerable ? '⚠️ VULNERABLE' : '✅ PROTECTED'}
+                        </span>
+                    </div>
+                    
+                    <div class="transaction-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Original Network:</span>
+                            <span class="detail-value">${data.originalNetwork}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Target Network:</span>
+                            <span class="detail-value">${data.targetNetwork}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">To Address:</span>
+                            <span class="detail-value">${data.transaction.to}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Value:</span>
+                            <span class="detail-value">${data.transaction.value} BNB</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">ChainId:</span>
+                            <span class="detail-value">${data.transaction.chainId || 'None (Legacy)'}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Nonce:</span>
+                            <span class="detail-value">${data.transaction.nonce}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Gas Limit:</span>
+                            <span class="detail-value">${data.transaction.gasLimit}</span>
+                        </div>
+                    </div>
+
+                    <div class="${isVulnerable ? 'warning-box' : 'success-box'}" style="margin-top: 20px;">
+                        <strong>${isVulnerable ? '⚠️ Warning:' : '✅ Protection Status:'}</strong><br>
+                        ${data.replayReason}
+                    </div>
+
+                    ${isVulnerable ? `
+                        <div class="warning-box" style="margin-top: 15px;">
+                            <strong>Recommendation:</strong><br>
+                            Always include chainId protection in your transactions to prevent replay attacks across different networks.
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+
+            resultsDiv.style.display = 'block';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.innerHTML = `<div class="error">${message}</div>`;
+            errorDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
