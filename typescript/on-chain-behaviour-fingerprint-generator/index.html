@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>On-Chain Behavior Fingerprint Generator - BNBChain Cookbook</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .info-pane {
+            flex: 0 0 400px;
+            background: rgba(26, 31, 58, 0.8);
+            border-radius: 16px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-y: auto;
+            max-height: calc(100vh - 40px);
+        }
+
+        .interaction-pane {
+            flex: 1;
+            background: rgba(26, 31, 58, 0.8);
+            border-radius: 16px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-y: auto;
+            max-height: calc(100vh - 40px);
+        }
+
+        h1 {
+            color: #4fc3f7;
+            margin-bottom: 20px;
+            font-size: 28px;
+            border-bottom: 2px solid rgba(79, 195, 247, 0.3);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #81c784;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        h3 {
+            color: #ffb74d;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        p, li {
+            line-height: 1.6;
+            margin-bottom: 12px;
+            color: #b0b0b0;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .type-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+
+        .type-NORMAL {
+            background: rgba(76, 175, 80, 0.2);
+            color: #81c784;
+            border: 1px solid #81c784;
+        }
+
+        .type-DEX_TRADER {
+            background: rgba(79, 195, 247, 0.2);
+            color: #4fc3f7;
+            border: 1px solid #4fc3f7;
+        }
+
+        .type-WHALE {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffb74d;
+            border: 1px solid #ffb74d;
+        }
+
+        .type-BOT {
+            background: rgba(255, 152, 0, 0.2);
+            color: #ff9800;
+            border: 1px solid #ff9800;
+        }
+
+        .type-CONTRACT_INTERACTOR {
+            background: rgba(156, 39, 176, 0.2);
+            color: #ba68c8;
+            border: 1px solid #ba68c8;
+        }
+
+        .type-UNKNOWN {
+            background: rgba(158, 158, 158, 0.2);
+            color: #9e9e9e;
+            border: 1px solid #9e9e9e;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4fc3f7;
+            font-weight: 500;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(10, 14, 39, 0.6);
+            border: 2px solid rgba(79, 195, 247, 0.3);
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #4fc3f7;
+            box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.1);
+        }
+
+        button {
+            background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 195, 247, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: rgba(79, 195, 247, 0.3);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            color: #4fc3f7;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid rgba(79, 195, 247, 0.3);
+            border-top: 3px solid #4fc3f7;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results {
+            margin-top: 30px;
+        }
+
+        .fingerprint-card {
+            background: rgba(10, 14, 39, 0.6);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4fc3f7;
+        }
+
+        .fingerprint-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .fingerprint-hash {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #4fc3f7;
+            word-break: break-all;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .metric-item {
+            background: rgba(26, 31, 58, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .metric-value {
+            font-size: 18px;
+            color: #e0e0e0;
+            font-weight: 600;
+        }
+
+        .risk-score {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .risk-low {
+            background: rgba(76, 175, 80, 0.2);
+            color: #81c784;
+            border: 1px solid #81c784;
+        }
+
+        .risk-medium {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffb74d;
+            border: 1px solid #ffb74d;
+        }
+
+        .risk-high {
+            background: rgba(255, 152, 0, 0.2);
+            color: #ff9800;
+            border: 1px solid #ff9800;
+        }
+
+        .risk-critical {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+            border: 1px solid #f44336;
+        }
+
+        .signature-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #b0b0b0;
+            word-break: break-all;
+            border: 1px solid rgba(79, 195, 247, 0.2);
+        }
+
+        .error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid #f44336;
+            color: #f44336;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #4fc3f7;
+        }
+
+        .chart-container {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(10, 14, 39, 0.4);
+            border-radius: 8px;
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            height: 200px;
+            gap: 4px;
+            margin-top: 10px;
+        }
+
+        .bar {
+            flex: 1;
+            background: linear-gradient(to top, #4fc3f7, #29b6f6);
+            border-radius: 4px 4px 0 0;
+            min-height: 4px;
+            transition: all 0.3s;
+        }
+
+        .bar:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="info-pane">
+            <h1>🔐 On-Chain Behavior Fingerprint</h1>
+            
+            <h2>What is this?</h2>
+            <p>
+                This tool analyzes on-chain transaction patterns of addresses on BNB Smart Chain (BSC) 
+                to generate a unique behavioral fingerprint. The fingerprint captures transaction patterns, 
+                timing, and interaction types to create a unique signature for each address.
+            </p>
+
+            <h2>Why is this useful?</h2>
+            <p>
+                Behavioral fingerprints can help identify:
+            </p>
+            <ul>
+                <li><strong>Bot Activity</strong>: Automated trading bots often have distinct patterns</li>
+                <li><strong>DEX Traders</strong>: Frequent DEX interactions indicate active traders</li>
+                <li><strong>Whales</strong>: Large value transfers identify high-value addresses</li>
+                <li><strong>Contract Interactors</strong>: Addresses that frequently interact with smart contracts</li>
+                <li><strong>Risk Assessment</strong>: Unusual patterns may indicate suspicious activity</li>
+            </ul>
+
+            <h2>Behavior Types</h2>
+            <ul>
+                <li>
+                    <span class="type-badge type-NORMAL">NORMAL</span>
+                    Standard user behavior with typical transaction patterns
+                </li>
+                <li>
+                    <span class="type-badge type-DEX_TRADER">DEX_TRADER</span>
+                    High frequency of DEX router interactions
+                </li>
+                <li>
+                    <span class="type-badge type-WHALE">WHALE</span>
+                    Large value transactions indicating high-net-worth addresses
+                </li>
+                <li>
+                    <span class="type-badge type-BOT">BOT</span>
+                    High transaction frequency with low values, indicating automation
+                </li>
+                <li>
+                    <span class="type-badge type-CONTRACT_INTERACTOR">CONTRACT_INTERACTOR</span>
+                    Frequent interactions with various smart contracts
+                </li>
+                <li>
+                    <span class="type-badge type-UNKNOWN">UNKNOWN</span>
+                    Insufficient data to classify behavior
+                </li>
+            </ul>
+
+            <h2>How it works</h2>
+            <ol>
+                <li>Enter a BSC address to analyze</li>
+                <li>Optionally specify block range (default: 10,000 blocks)</li>
+                <li>Click "Generate Fingerprint" to analyze transactions</li>
+                <li>Review the unique fingerprint, behavior type, and metrics</li>
+            </ol>
+
+            <h2>Fingerprint Components</h2>
+            <p>
+                The fingerprint is a SHA-256 hash generated from:
+            </p>
+            <ul>
+                <li>Transaction count and frequency</li>
+                <li>Number of unique contracts and tokens</li>
+                <li>DEX interaction patterns</li>
+                <li>Active hours and days of activity</li>
+                <li>Behavior classification</li>
+            </ul>
+
+            <h3>Risk Score</h3>
+            <p>
+                The risk score (0-100) indicates potential suspicious activity based on:
+            </p>
+            <ul>
+                <li>Transaction frequency anomalies</li>
+                <li>Contract creation patterns</li>
+                <li>Gas price irregularities</li>
+                <li>Activity timing patterns</li>
+            </ul>
+        </div>
+
+        <div class="interaction-pane">
+            <h1>Generate Behavior Fingerprint</h1>
+            
+            <div class="input-group">
+                <label for="address">BSC Address</label>
+                <input 
+                    type="text" 
+                    id="address" 
+                    placeholder="0x..." 
+                    value=""
+                />
+            </div>
+
+            <div class="input-group" style="margin-top: 20px;">
+                <label style="margin-bottom: 12px;">📋 Example Addresses (Click to use)</label>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <button 
+                        type="button" 
+                        onclick="useExampleAddress('0x10ED43C718714eb63d5aA57B78B54704E256024E', 'PancakeSwap Router V2')"
+                        style="background: rgba(79, 195, 247, 0.1); border: 1px solid rgba(79, 195, 247, 0.3); color: #4fc3f7; padding: 10px 16px; text-align: left; font-size: 13px; cursor: pointer; border-radius: 6px;"
+                        onmouseover="this.style.background='rgba(79, 195, 247, 0.2)'"
+                        onmouseout="this.style.background='rgba(79, 195, 247, 0.1)'"
+                    >
+                        <strong>PancakeSwap Router V2</strong><br>
+                        <span style="font-family: monospace; font-size: 11px; color: #b0b0b0;">0x10ED43C718714eb63d5aA57B78B54704E256024E</span>
+                    </button>
+                    <button 
+                        type="button" 
+                        onclick="useExampleAddress('0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73', 'PancakeSwap Factory V2')"
+                        style="background: rgba(79, 195, 247, 0.1); border: 1px solid rgba(79, 195, 247, 0.3); color: #4fc3f7; padding: 10px 16px; text-align: left; font-size: 13px; cursor: pointer; border-radius: 6px;"
+                        onmouseover="this.style.background='rgba(79, 195, 247, 0.2)'"
+                        onmouseout="this.style.background='rgba(79, 195, 247, 0.1)'"
+                    >
+                        <strong>PancakeSwap Factory V2</strong><br>
+                        <span style="font-family: monospace; font-size: 11px; color: #b0b0b0;">0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73</span>
+                    </button>
+                    <button 
+                        type="button" 
+                        onclick="useExampleAddress('0x55d398326f99059fF775485246999027B3197955', 'USDT Token (BSC)')"
+                        style="background: rgba(79, 195, 247, 0.1); border: 1px solid rgba(79, 195, 247, 0.3); color: #4fc3f7; padding: 10px 16px; text-align: left; font-size: 13px; cursor: pointer; border-radius: 6px;"
+                        onmouseover="this.style.background='rgba(79, 195, 247, 0.2)'"
+                        onmouseout="this.style.background='rgba(79, 195, 247, 0.1)'"
+                    >
+                        <strong>USDT Token (BSC)</strong><br>
+                        <span style="font-family: monospace; font-size: 11px; color: #b0b0b0;">0x55d398326f99059fF775485246999027B3197955</span>
+                    </button>
+                    <button 
+                        type="button" 
+                        onclick="useExampleAddress('0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', 'BUSD Token')"
+                        style="background: rgba(79, 195, 247, 0.1); border: 1px solid rgba(79, 195, 247, 0.3); color: #4fc3f7; padding: 10px 16px; text-align: left; font-size: 13px; cursor: pointer; border-radius: 6px;"
+                        onmouseover="this.style.background='rgba(79, 195, 247, 0.2)'"
+                        onmouseout="this.style.background='rgba(79, 195, 247, 0.1)'"
+                    >
+                        <strong>BUSD Token</strong><br>
+                        <span style="font-family: monospace; font-size: 11px; color: #b0b0b0;">0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56</span>
+                    </button>
+                    <button 
+                        type="button" 
+                        onclick="useExampleAddress('0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', 'USDC Token (BSC)')"
+                        style="background: rgba(79, 195, 247, 0.1); border: 1px solid rgba(79, 195, 247, 0.3); color: #4fc3f7; padding: 10px 16px; text-align: left; font-size: 13px; cursor: pointer; border-radius: 6px;"
+                        onmouseover="this.style.background='rgba(79, 195, 247, 0.2)'"
+                        onmouseout="this.style.background='rgba(79, 195, 247, 0.1)'"
+                    >
+                        <strong>USDC Token (BSC)</strong><br>
+                        <span style="font-family: monospace; font-size: 11px; color: #b0b0b0;">0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d</span>
+                    </button>
+                    <button 
+                        type="button" 
+                        onclick="useExampleAddress('0x13f4EA83D0bd40E75C8222255bc855a974568Dd4', 'PancakeSwap Router V3')"
+                        style="background: rgba(79, 195, 247, 0.1); border: 1px solid rgba(79, 195, 247, 0.3); color: #4fc3f7; padding: 10px 16px; text-align: left; font-size: 13px; cursor: pointer; border-radius: 6px;"
+                        onmouseover="this.style.background='rgba(79, 195, 247, 0.2)'"
+                        onmouseout="this.style.background='rgba(79, 195, 247, 0.1)'"
+                    >
+                        <strong>PancakeSwap Router V3</strong><br>
+                        <span style="font-family: monospace; font-size: 11px; color: #b0b0b0;">0x13f4EA83D0bd40E75C8222255bc855a974568Dd4</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="blockRange">Block Range (optional, default: 10000)</label>
+                <input 
+                    type="number" 
+                    id="blockRange" 
+                    placeholder="10000" 
+                    value="10000"
+                    min="1000"
+                    max="50000"
+                />
+            </div>
+
+            <button onclick="generateFingerprint()" id="generateBtn">Generate Fingerprint</button>
+            <button onclick="clearResults()" id="clearBtn">Clear Results</button>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Analyzing on-chain behavior...</p>
+                <p style="font-size: 12px; margin-top: 10px;">This may take a moment depending on transaction history</p>
+            </div>
+
+            <div id="error" style="display: none;"></div>
+
+            <div id="results" class="results"></div>
+        </div>
+    </div>
+
+    <script>
+        window.generateFingerprint = async function() {
+            const addressInput = document.getElementById('address');
+            const blockRangeInput = document.getElementById('blockRange');
+            const address = addressInput.value.trim();
+            const blockRange = parseInt(blockRangeInput.value) || 10000;
+            
+            if (!address) {
+                showError('Please enter a BSC address');
+                return;
+            }
+
+            // Basic address validation
+            if (!/^0x[a-fA-F0-9]{40}$/.test(address)) {
+                showError('Invalid address format. Please enter a valid BSC address (0x followed by 40 hex characters)');
+                return;
+            }
+
+            try {
+                document.getElementById('loading').classList.add('active');
+                document.getElementById('error').style.display = 'none';
+                document.getElementById('generateBtn').disabled = true;
+                document.getElementById('results').innerHTML = '';
+
+                const response = await fetch('/api/fingerprint', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ address, blockRange }),
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to generate fingerprint');
+                }
+
+                const result = await response.json();
+                
+                // Convert arrays back to Sets and BigInt strings to numbers for display
+                const displayResult = {
+                    ...result,
+                    metrics: {
+                        ...result.metrics,
+                        uniqueContracts: new Set(result.metrics.uniqueContracts),
+                        uniqueTokens: new Set(result.metrics.uniqueTokens),
+                        activeHours: new Set(result.metrics.activeHours),
+                        activeDays: new Set(result.metrics.activeDays),
+                        // Convert string BigInts to numbers for display
+                        totalValueTransferred: BigInt(result.metrics.totalValueTransferred),
+                        averageGasUsed: BigInt(result.metrics.averageGasUsed),
+                        averageGasPrice: BigInt(result.metrics.averageGasPrice),
+                        averageTransactionValue: BigInt(result.metrics.averageTransactionValue),
+                    },
+                };
+
+                displayResults(displayResult);
+            } catch (error) {
+                showError('Error: ' + error.message);
+            } finally {
+                document.getElementById('loading').classList.remove('active');
+                document.getElementById('generateBtn').disabled = false;
+            }
+        };
+
+        function displayResults(result) {
+            const resultsDiv = document.getElementById('results');
+            
+            const riskClass = result.riskScore < 25 ? 'risk-low' : 
+                            result.riskScore < 50 ? 'risk-medium' :
+                            result.riskScore < 75 ? 'risk-high' : 'risk-critical';
+
+            // Convert BigInt to numbers for display
+            const avgGasPriceGwei = Number(result.metrics.averageGasPrice) / 1e9;
+            const avgValue = Number(result.metrics.averageTransactionValue) / 1e18;
+            const totalValue = Number(result.metrics.totalValueTransferred) / 1e18;
+
+            let html = `
+                <div class="fingerprint-card">
+                    <div class="fingerprint-header">
+                        <div>
+                            <h2>Behavior Fingerprint</h2>
+                            <div class="fingerprint-hash">${result.fingerprint}</div>
+                        </div>
+                        <div>
+                            <span class="type-badge type-${result.behaviorType}">${result.behaviorType}</span>
+                            <div class="risk-score ${riskClass}">Risk: ${result.riskScore}/100</div>
+                        </div>
+                    </div>
+
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <div class="metric-label">Total Transactions</div>
+                            <div class="metric-value">${result.metrics.totalTransactions}</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Transaction Frequency</div>
+                            <div class="metric-value">${result.metrics.transactionFrequency.toFixed(2)} tx/day</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Unique Contracts</div>
+                            <div class="metric-value">${result.metrics.uniqueContracts.size}</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Unique Tokens</div>
+                            <div class="metric-value">${result.metrics.uniqueTokens.size}</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">DEX Interactions</div>
+                            <div class="metric-value">${result.metrics.dexInteractions}</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Token Transfers</div>
+                            <div class="metric-value">${result.metrics.tokenTransfers}</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Contract Creations</div>
+                            <div class="metric-value">${result.metrics.contractCreations}</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Time Span</div>
+                            <div class="metric-value">${result.metrics.timeSpan.toFixed(2)} days</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Avg Gas Price</div>
+                            <div class="metric-value">${avgGasPriceGwei.toFixed(2)} Gwei</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Avg Transaction Value</div>
+                            <div class="metric-value">${avgValue.toFixed(4)} BNB</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Total Value Transferred</div>
+                            <div class="metric-value">${totalValue.toFixed(4)} BNB</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Active Hours (UTC)</div>
+                            <div class="metric-value">${Array.from(result.metrics.activeHours).sort().join(', ') || 'N/A'}</div>
+                        </div>
+                    </div>
+
+                    <div class="signature-box">
+                        <strong>Signature:</strong><br>
+                        ${result.signature}
+                    </div>
+                </div>
+            `;
+
+            resultsDiv.innerHTML = html;
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.innerHTML = `<div class="error">${message}</div>`;
+            errorDiv.style.display = 'block';
+        }
+
+        window.clearResults = function() {
+            document.getElementById('results').innerHTML = '';
+            document.getElementById('error').style.display = 'none';
+        };
+
+        // Allow Enter key to trigger generation
+        document.getElementById('address').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                generateFingerprint();
+            }
+        });
+
+        // Function to use example address
+        window.useExampleAddress = function(address, name) {
+            document.getElementById('address').value = address;
+            document.getElementById('address').focus();
+            // Optional: Show a brief notification
+            const notification = document.createElement('div');
+            notification.textContent = `Using ${name}`;
+            notification.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(79, 195, 247, 0.9); color: white; padding: 12px 20px; border-radius: 8px; z-index: 1000; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transition = 'opacity 0.3s';
+                setTimeout(() => notification.remove(), 300);
+            }, 2000);
+        };
+    </script>
+</body>
+</html>
+
+
+
