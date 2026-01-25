@@ -1,0 +1,67 @@
+{
+  "description": "Known BSC proxy contract addresses for testing and reference",
+  "proxies": [
+    {
+      "address": "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
+      "name": "PancakeSwap Factory V2",
+      "type": "EIP-1967",
+      "description": "PancakeSwap V2 Factory contract on BSC Mainnet"
+    },
+    {
+      "address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+      "name": "PancakeSwap Router V2",
+      "type": "EIP-1967",
+      "description": "PancakeSwap V2 Router contract on BSC Mainnet"
+    },
+    {
+      "address": "0x36bBb126e75351C0DfB651e39b38fe0BC436FFD2",
+      "name": "PancakeSwap Stableswap Factory",
+      "type": "EIP-1967",
+      "description": "PancakeSwap Stableswap Factory contract"
+    },
+    {
+      "address": "0xC6665d98Efd81f47B03801187eB46cbC63F328B0",
+      "name": "PancakeSwap Smart Router",
+      "type": "EIP-1967",
+      "description": "PancakeSwap Smart Router contract"
+    },
+    {
+      "address": "0xfEACb05b373f1A08E68235bA7FC92636b92ced01",
+      "name": "PancakeSwap MM Pool",
+      "type": "EIP-1967",
+      "description": "PancakeSwap Market Maker Pool contract"
+    },
+    {
+      "address": "0x55d398326f99059fF775485246999027B3197955",
+      "name": "Tether USD (USDT) BSC",
+      "type": "EIP-1967",
+      "description": "USDT token contract on BSC (may be proxy)"
+    },
+    {
+      "address": "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
+      "name": "Binance USD (BUSD)",
+      "type": "EIP-1967",
+      "description": "BUSD token contract on BSC (may be proxy)"
+    },
+    {
+      "address": "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+      "name": "USD Coin (USDC) BSC",
+      "type": "EIP-1967",
+      "description": "USDC token contract on BSC (may be proxy)"
+    }
+  ],
+  "testnet": [
+    {
+      "address": "0x6725F303b657a9451d8BA641348b6761A6CC7a17",
+      "name": "PancakeSwap Factory (Testnet)",
+      "type": "EIP-1967",
+      "description": "PancakeSwap V2 Factory on BSC Testnet"
+    },
+    {
+      "address": "0xD99D1c33F9fC3444f8101754aBC46c52416550D1",
+      "name": "PancakeSwap Router (Testnet)",
+      "type": "EIP-1967",
+      "description": "PancakeSwap V2 Router on BSC Testnet"
+    }
+  ]
+}

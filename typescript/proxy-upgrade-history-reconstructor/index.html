@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proxy Upgrade History Reconstructor - BNBChain Cookbook</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 20px;
+            height: calc(100vh - 40px);
+        }
+
+        .info-pane {
+            background: rgba(26, 31, 58, 0.8);
+            border-radius: 12px;
+            padding: 24px;
+            overflow-y: auto;
+            border: 1px solid rgba(100, 120, 200, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .info-pane h2 {
+            color: #64b5f6;
+            margin-bottom: 20px;
+            font-size: 24px;
+            border-bottom: 2px solid rgba(100, 181, 246, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .info-pane h3 {
+            color: #90caf9;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .info-pane p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #b0bec5;
+        }
+
+        .info-pane ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .info-pane li {
+            margin-bottom: 8px;
+            color: #b0bec5;
+            line-height: 1.5;
+        }
+
+        .info-pane code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #81c784;
+            font-size: 14px;
+        }
+
+        .interaction-pane {
+            background: rgba(26, 31, 58, 0.8);
+            border-radius: 12px;
+            padding: 24px;
+            overflow-y: auto;
+            border: 1px solid rgba(100, 120, 200, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #90caf9;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(100, 181, 246, 0.3);
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #64b5f6;
+            box-shadow: 0 0 0 3px rgba(100, 181, 246, 0.1);
+        }
+
+        button {
+            background: linear-gradient(135deg, #64b5f6 0%, #42a5f5 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(100, 181, 246, 0.3);
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #42a5f5 0%, #2196f3 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(100, 181, 246, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: rgba(100, 181, 246, 0.3);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #64b5f6;
+        }
+
+        .spinner {
+            border: 3px solid rgba(100, 181, 246, 0.3);
+            border-top: 3px solid #64b5f6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid rgba(244, 67, 54, 0.5);
+            color: #ffcdd2;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .results {
+            margin-top: 30px;
+        }
+
+        .proxy-info {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #64b5f6;
+        }
+
+        .proxy-info h3 {
+            color: #64b5f6;
+            margin-bottom: 15px;
+        }
+
+        .info-row {
+            display: flex;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(100, 181, 246, 0.1);
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #90caf9;
+            width: 200px;
+            flex-shrink: 0;
+        }
+
+        .info-value {
+            color: #e0e0e0;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .badge-eip1967 {
+            background: rgba(100, 181, 246, 0.2);
+            color: #64b5f6;
+        }
+
+        .badge-beacon {
+            background: rgba(156, 39, 176, 0.2);
+            color: #ba68c8;
+        }
+
+        .badge-unknown {
+            background: rgba(158, 158, 158, 0.2);
+            color: #bdbdbd;
+        }
+
+        .upgrade-events {
+            margin-top: 20px;
+        }
+
+        .upgrade-events h3 {
+            color: #64b5f6;
+            margin-bottom: 15px;
+        }
+
+        .event-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #81c784;
+            transition: transform 0.2s;
+        }
+
+        .event-card:hover {
+            transform: translateX(5px);
+        }
+
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .event-name {
+            color: #81c784;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .event-block {
+            color: #b0bec5;
+            font-size: 14px;
+        }
+
+        .event-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+        }
+
+        .event-detail {
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+
+        .event-detail-label {
+            color: #90caf9;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .event-detail-value {
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            word-break: break-all;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(100, 181, 246, 0.2);
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #64b5f6;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #b0bec5;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .info-pane {
+                max-height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="info-pane">
+            <h2>📚 About This Tool</h2>
+            <p>
+                The <strong>Proxy Upgrade History Reconstructor</strong> is a powerful tool for analyzing 
+                upgradeable smart contracts on BNB Smart Chain (BSC). It helps you track and visualize the 
+                complete upgrade history of proxy contracts.
+            </p>
+
+            <h3>🔍 What It Does</h3>
+            <ul>
+                <li>Detects proxy contract types (EIP-1967, Beacon, Custom)</li>
+                <li>Reconstructs complete upgrade history from blockchain events</li>
+                <li>Shows current implementation, admin, and beacon addresses</li>
+                <li>Displays all upgrade events with timestamps and transaction hashes</li>
+                <li>Provides detailed information about each upgrade</li>
+                <li>Scans multiple addresses to suggest which are proxies</li>
+                <li>Includes a list of known BSC proxy addresses for testing</li>
+                <li>Quick access to BSCScan's proxy checker tool</li>
+            </ul>
+
+            <h3>🔧 How It Works</h3>
+            <p>
+                The tool reads proxy storage slots (EIP-1967 standard) to detect the current implementation 
+                address. It then scans blockchain events to reconstruct the complete upgrade history, including:
+            </p>
+            <ul>
+                <li><code>Upgraded</code> events</li>
+                <li><code>ImplementationChanged</code> events</li>
+                <li><code>AdminChanged</code> events</li>
+                <li><code>BeaconUpgraded</code> events</li>
+            </ul>
+
+            <h3>💡 Use Cases</h3>
+            <ul>
+                <li>Security auditing of upgradeable contracts</li>
+                <li>Tracking contract evolution over time</li>
+                <li>Verifying upgrade transparency</li>
+                <li>Understanding proxy architecture</li>
+            </ul>
+
+            <h3>📝 Quick Links</h3>
+            <p>
+                <a href="https://bscscan.com/proxyContractChecker" target="_blank" style="color: #64b5f6; text-decoration: none;">
+                    🔗 BSCScan Proxy Checker
+                </a>
+            </p>
+            <p style="font-size: 12px; color: #81c784; font-family: monospace; margin-top: 10px;">
+                Use the "Load Known Proxies" button below to see a list of known BSC proxy contracts for testing.
+            </p>
+        </div>
+
+        <div class="interaction-pane">
+            <h2 style="color: #64b5f6; margin-bottom: 20px;">Proxy Upgrade History Reconstructor</h2>
+            
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="proxyAddress">Proxy Contract Address</label>
+                    <input 
+                        type="text" 
+                        id="proxyAddress" 
+                        placeholder="0x..." 
+                        value=""
+                    />
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="input-group">
+                        <label for="fromBlock">From Block (optional)</label>
+                        <input 
+                            type="number" 
+                            id="fromBlock" 
+                            placeholder="0"
+                        />
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="toBlock">To Block (optional, 'latest' for current)</label>
+                        <input 
+                            type="text" 
+                            id="toBlock" 
+                            placeholder="latest"
+                        />
+                    </div>
+                </div>
+
+                <button id="analyzeBtn" onclick="analyzeProxy()">🔍 Analyze Proxy</button>
+                <button id="bscscanBtn" onclick="openBSCScanChecker()" style="margin-top: 10px; background: linear-gradient(135deg, #f0b90b 0%, #d4a017 100%);">
+                    🔗 Open BSCScan Proxy Checker
+                </button>
+            </div>
+
+            <div style="margin-top: 30px; padding-top: 30px; border-top: 1px solid rgba(100, 181, 246, 0.2);">
+                <h3 style="color: #64b5f6; margin-bottom: 15px;">🔍 Scan & Suggest Proxy Addresses</h3>
+                <div class="input-group">
+                    <label for="addressesToScan">Enter addresses to scan (one per line, max 50)</label>
+                    <textarea 
+                        id="addressesToScan" 
+                        placeholder="0x...&#10;0x...&#10;0x..."
+                        style="width: 100%; min-height: 120px; padding: 12px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(100, 181, 246, 0.3); border-radius: 8px; color: #e0e0e0; font-size: 14px; font-family: 'Courier New', monospace; resize: vertical;"
+                    ></textarea>
+                </div>
+                <button onclick="scanProxies()" style="margin-bottom: 15px;">🔍 Scan Addresses</button>
+                <div id="scanResultsContainer"></div>
+            </div>
+
+            <div style="margin-top: 30px; padding-top: 30px; border-top: 1px solid rgba(100, 181, 246, 0.2);">
+                <h3 style="color: #64b5f6; margin-bottom: 15px;">📋 Known BSC Proxy Addresses</h3>
+                <button onclick="loadKnownProxies()" style="margin-bottom: 15px;">📥 Load Known Proxies</button>
+                <div id="knownProxiesContainer"></div>
+            </div>
+
+            <div id="errorContainer"></div>
+            <div id="loadingContainer"></div>
+            <div id="resultsContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // Use relative URL so it works with any port
+        const API_URL = '';
+
+        async function analyzeProxy() {
+            const proxyAddress = document.getElementById('proxyAddress').value.trim();
+            const fromBlock = document.getElementById('fromBlock').value.trim();
+            const toBlock = document.getElementById('toBlock').value.trim();
+
+            if (!proxyAddress) {
+                showError('Please enter a proxy contract address');
+                return;
+            }
+
+            // Validate address format
+            if (!/^0x[a-fA-F0-9]{40}$/.test(proxyAddress)) {
+                showError('Invalid address format. Please enter a valid BSC address (0x followed by 40 hex characters)');
+                return;
+            }
+
+            showLoading();
+            hideError();
+            hideResults();
+
+            try {
+                const params = new URLSearchParams({
+                    address: proxyAddress,
+                    ...(fromBlock && { fromBlock }),
+                    ...(toBlock && { toBlock })
+                });
+
+                const response = await fetch(`${API_URL}/api/reconstruct?${params}`);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to analyze proxy');
+                }
+
+                hideLoading();
+                showResults(data);
+            } catch (error) {
+                hideLoading();
+                showError(error.message || 'An error occurred while analyzing the proxy');
+            }
+        }
+
+        function showLoading() {
+            document.getElementById('loadingContainer').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Analyzing proxy contract and reconstructing upgrade history...</p>
+                </div>
+            `;
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingContainer').innerHTML = '';
+        }
+
+        function showError(message) {
+            document.getElementById('errorContainer').innerHTML = `
+                <div class="error">${message}</div>
+            `;
+        }
+
+        function hideError() {
+            document.getElementById('errorContainer').innerHTML = '';
+        }
+
+        function hideResults() {
+            document.getElementById('resultsContainer').innerHTML = '';
+        }
+
+        function showResults(data) {
+            const { proxyInfo, upgradeEvents, totalUpgrades, firstUpgradeBlock, lastUpgradeBlock } = data;
+
+            const badgeClass = `badge-${proxyInfo.proxyType.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+            const badgeText = proxyInfo.proxyType;
+
+            let html = `
+                <div class="results">
+                    <div class="stats">
+                        <div class="stat-card">
+                            <div class="stat-value">${totalUpgrades}</div>
+                            <div class="stat-label">Total Upgrades</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${proxyInfo.isProxy ? '✓' : '✗'}</div>
+                            <div class="stat-label">Is Proxy</div>
+                        </div>
+                        ${firstUpgradeBlock ? `
+                        <div class="stat-card">
+                            <div class="stat-value">#${firstUpgradeBlock}</div>
+                            <div class="stat-label">First Upgrade</div>
+                        </div>
+                        ` : ''}
+                        ${lastUpgradeBlock ? `
+                        <div class="stat-card">
+                            <div class="stat-value">#${lastUpgradeBlock}</div>
+                            <div class="stat-label">Last Upgrade</div>
+                        </div>
+                        ` : ''}
+                    </div>
+
+                    <div class="proxy-info">
+                        <h3>Proxy Information <span class="badge ${badgeClass}">${badgeText}</span></h3>
+                        <div class="info-row">
+                            <div class="info-label">Address:</div>
+                            <div class="info-value">${proxyInfo.proxyAddress}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Type:</div>
+                            <div class="info-value">${proxyInfo.proxyType}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Is Proxy:</div>
+                            <div class="info-value">${proxyInfo.isProxy ? 'Yes' : 'No'}</div>
+                        </div>
+                        ${proxyInfo.currentImplementation ? `
+                        <div class="info-row">
+                            <div class="info-label">Current Implementation:</div>
+                            <div class="info-value">${proxyInfo.currentImplementation}</div>
+                        </div>
+                        ` : ''}
+                        ${proxyInfo.currentAdmin ? `
+                        <div class="info-row">
+                            <div class="info-label">Current Admin:</div>
+                            <div class="info-value">${proxyInfo.currentAdmin}</div>
+                        </div>
+                        ` : ''}
+                        ${proxyInfo.currentBeacon ? `
+                        <div class="info-row">
+                            <div class="info-label">Current Beacon:</div>
+                            <div class="info-value">${proxyInfo.currentBeacon}</div>
+                        </div>
+                        ` : ''}
+                    </div>
+
+                    <div class="upgrade-events">
+                        <h3>Upgrade History (${upgradeEvents.length} events)</h3>
+            `;
+
+            if (upgradeEvents.length === 0) {
+                html += `
+                    <div style="text-align: center; padding: 40px; color: #b0bec5;">
+                        No upgrade events found for this contract.
+                    </div>
+                `;
+            } else {
+                upgradeEvents.forEach((event, index) => {
+                    const date = new Date(event.timestamp * 1000).toLocaleString();
+                    html += `
+                        <div class="event-card">
+                            <div class="event-header">
+                                <div class="event-name">${event.eventName}</div>
+                                <div class="event-block">Block #${event.blockNumber}</div>
+                            </div>
+                            <div class="event-details">
+                                <div class="event-detail">
+                                    <div class="event-detail-label">Timestamp</div>
+                                    <div class="event-detail-value">${date}</div>
+                                </div>
+                                <div class="event-detail">
+                                    <div class="event-detail-label">Transaction Hash</div>
+                                    <div class="event-detail-value">${event.transactionHash}</div>
+                                </div>
+                                ${event.oldImplementation ? `
+                                <div class="event-detail">
+                                    <div class="event-detail-label">Old Implementation</div>
+                                    <div class="event-detail-value">${event.oldImplementation}</div>
+                                </div>
+                                ` : ''}
+                                ${event.newImplementation ? `
+                                <div class="event-detail">
+                                    <div class="event-detail-label">New Implementation</div>
+                                    <div class="event-detail-value">${event.newImplementation}</div>
+                                </div>
+                                ` : ''}
+                                ${event.admin ? `
+                                <div class="event-detail">
+                                    <div class="event-detail-label">Admin</div>
+                                    <div class="event-detail-value">${event.admin}</div>
+                                </div>
+                                ` : ''}
+                                ${event.beacon ? `
+                                <div class="event-detail">
+                                    <div class="event-detail-label">Beacon</div>
+                                    <div class="event-detail-value">${event.beacon}</div>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            html += `
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('resultsContainer').innerHTML = html;
+        }
+
+        // Allow Enter key to trigger analysis
+        document.getElementById('proxyAddress').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                analyzeProxy();
+            }
+        });
+
+        function openBSCScanChecker() {
+            const proxyAddress = document.getElementById('proxyAddress').value.trim();
+            let url = 'https://bscscan.com/proxyContractChecker';
+            if (proxyAddress && /^0x[a-fA-F0-9]{40}$/.test(proxyAddress)) {
+                url += `?a=${proxyAddress}`;
+            }
+            window.open(url, '_blank');
+        }
+
+        async function scanProxies() {
+            const addressesText = document.getElementById('addressesToScan').value.trim();
+            if (!addressesText) {
+                showError('Please enter at least one address to scan');
+                return;
+            }
+
+            const addresses = addressesText
+                .split('\n')
+                .map(addr => addr.trim())
+                .filter(addr => addr.length > 0);
+
+            if (addresses.length === 0) {
+                showError('Please enter at least one valid address');
+                return;
+            }
+
+            if (addresses.length > 50) {
+                showError('Maximum 50 addresses allowed per scan');
+                return;
+            }
+
+            showLoading();
+            hideError();
+
+            try {
+                const response = await fetch(`${API_URL}/api/scan-proxies`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        addresses,
+                        includeKnownProxies: true
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to scan addresses');
+                }
+
+                hideLoading();
+                showScanResults(data);
+            } catch (error) {
+                hideLoading();
+                showError(error.message || 'An error occurred while scanning addresses');
+            }
+        }
+
+        function showScanResults(data) {
+            const { results, totalScanned, proxiesFound, knownProxiesFound } = data;
+
+            let html = `
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                        <div class="stat-card">
+                            <div class="stat-value">${totalScanned}</div>
+                            <div class="stat-label">Total Scanned</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${proxiesFound}</div>
+                            <div class="stat-label">Proxies Found</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${knownProxiesFound}</div>
+                            <div class="stat-label">Known Proxies</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            results.forEach(result => {
+                const badgeClass = result.proxyInfo.isProxy 
+                    ? `badge-${result.proxyInfo.proxyType.toLowerCase().replace(/[^a-z0-9]/g, '')}`
+                    : 'badge-unknown';
+                const badgeText = result.proxyInfo.isProxy ? result.proxyInfo.proxyType : 'Not a Proxy';
+                const knownBadge = result.isKnownProxy 
+                    ? '<span style="background: rgba(129, 199, 132, 0.2); color: #81c784; padding: 2px 8px; border-radius: 8px; font-size: 11px; margin-left: 8px;">Known</span>'
+                    : '';
+
+                html += `
+                    <div class="event-card" style="border-left-color: ${result.proxyInfo.isProxy ? '#81c784' : '#b0bec5'};">
+                        <div class="event-header">
+                            <div>
+                                <div class="event-name">${result.address}</div>
+                                ${result.knownProxyInfo ? `<div style="color: #90caf9; font-size: 12px; margin-top: 4px;">${result.knownProxyInfo.name} - ${result.knownProxyInfo.description}</div>` : ''}
+                            </div>
+                            <div>
+                                <span class="badge ${badgeClass}">${badgeText}</span>
+                                ${knownBadge}
+                            </div>
+                        </div>
+                        ${result.proxyInfo.isProxy ? `
+                            <div class="event-details" style="margin-top: 10px;">
+                                ${result.proxyInfo.currentImplementation ? `
+                                <div class="event-detail">
+                                    <div class="event-detail-label">Implementation</div>
+                                    <div class="event-detail-value">${result.proxyInfo.currentImplementation}</div>
+                                </div>
+                                ` : ''}
+                                ${result.proxyInfo.currentAdmin ? `
+                                <div class="event-detail">
+                                    <div class="event-detail-label">Admin</div>
+                                    <div class="event-detail-value">${result.proxyInfo.currentAdmin}</div>
+                                </div>
+                                ` : ''}
+                            </div>
+                            <button onclick="document.getElementById('proxyAddress').value='${result.address}'; analyzeProxy();" style="margin-top: 10px; padding: 8px 16px; font-size: 14px;">
+                                Analyze This Proxy
+                            </button>
+                        ` : ''}
+                        ${result.error ? `
+                            <div style="color: #f44336; margin-top: 10px; font-size: 12px;">Error: ${result.error}</div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+
+            document.getElementById('scanResultsContainer').innerHTML = html;
+        }
+
+        async function loadKnownProxies() {
+            showLoading();
+            try {
+                const response = await fetch(`${API_URL}/api/known-proxies`);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to load known proxies');
+                }
+
+                hideLoading();
+                showKnownProxies(data.proxies);
+            } catch (error) {
+                hideLoading();
+                showError(error.message || 'An error occurred while loading known proxies');
+            }
+        }
+
+        function showKnownProxies(proxies) {
+            if (proxies.length === 0) {
+                document.getElementById('knownProxiesContainer').innerHTML = `
+                    <div style="text-align: center; padding: 20px; color: #b0bec5;">
+                        No known proxies found.
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                    <div style="color: #90caf9; font-size: 14px; margin-bottom: 10px;">
+                        Found ${proxies.length} known proxy addresses
+                    </div>
+                </div>
+            `;
+
+            proxies.forEach(proxy => {
+                html += `
+                    <div class="event-card" style="cursor: pointer;" onclick="document.getElementById('proxyAddress').value='${proxy.address}'; analyzeProxy();">
+                        <div class="event-header">
+                            <div>
+                                <div class="event-name">${proxy.name}</div>
+                                <div style="color: #b0bec5; font-size: 12px; margin-top: 4px; font-family: monospace;">${proxy.address}</div>
+                            </div>
+                            <span class="badge badge-eip1967">${proxy.type}</span>
+                        </div>
+                        <div style="color: #b0bec5; font-size: 13px; margin-top: 10px;">
+                            ${proxy.description}
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('knownProxiesContainer').innerHTML = html;
+        }
+    </script>
+</body>
+</html>
+
+
+
