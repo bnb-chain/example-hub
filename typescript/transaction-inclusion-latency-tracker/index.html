@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Inclusion Latency Tracker - BNBChain Cookbook</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        .info-pane {
+            width: 35%;
+            background: rgba(20, 25, 45, 0.8);
+            padding: 2rem;
+            border-right: 1px solid rgba(100, 150, 255, 0.2);
+            overflow-y: auto;
+        }
+
+        .interaction-pane {
+            width: 65%;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        h1 {
+            color: #64b5f6;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            border-bottom: 2px solid rgba(100, 181, 246, 0.3);
+            padding-bottom: 0.5rem;
+        }
+
+        h2 {
+            color: #90caf9;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .info-section {
+            margin-bottom: 2rem;
+        }
+
+        .info-section p {
+            line-height: 1.8;
+            color: #b0b0b0;
+            margin-bottom: 1rem;
+        }
+
+        .info-section ul {
+            margin-left: 1.5rem;
+            color: #b0b0b0;
+            line-height: 2;
+        }
+
+        .info-section li {
+            margin-bottom: 0.5rem;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 5px;
+            border-left: 3px solid #64b5f6;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #90caf9;
+            font-weight: 500;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(100, 181, 246, 0.3);
+            border-radius: 5px;
+            color: #e0e0e0;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #64b5f6;
+        }
+
+        button {
+            background: linear-gradient(135deg, #64b5f6 0%, #42a5f5 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 500;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(100, 181, 246, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: rgba(100, 181, 246, 0.3);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-card {
+            background: rgba(20, 25, 45, 0.6);
+            border: 1px solid rgba(100, 181, 246, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(100, 181, 246, 0.1);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: #90caf9;
+            font-weight: 500;
+        }
+
+        .result-value {
+            color: #e0e0e0;
+            word-break: break-all;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+
+        .status-confirmed {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+
+        .status-failed {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 5px;
+            border-left: 3px solid #64b5f6;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #64b5f6;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #b0b0b0;
+            margin-top: 0.5rem;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(100, 181, 246, 0.3);
+            border-radius: 50%;
+            border-top-color: #64b5f6;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: rgba(244, 67, 54, 0.1);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            color: #f44336;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-top: 1rem;
+        }
+
+        .success-message {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            color: #4caf50;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-top: 1rem;
+        }
+
+        .history-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid #64b5f6;
+        }
+
+        .history-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .history-hash {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #90caf9;
+        }
+
+        .history-latency {
+            font-weight: bold;
+            color: #64b5f6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="info-pane">
+            <h1>Transaction Inclusion Latency Tracker</h1>
+            
+            <div class="info-section">
+                <h2>What is this?</h2>
+                <p>
+                    This tool tracks the time it takes for a transaction to be included in a block on the BNB Smart Chain (BSC). 
+                    Transaction inclusion latency is a critical metric for understanding network performance and user experience.
+                </p>
+            </div>
+
+            <div class="info-section">
+                <h2>How it works</h2>
+                <ul>
+                    <li>Submit a transaction hash to monitor</li>
+                    <li>The tool tracks when the transaction was submitted</li>
+                    <li>It waits for the transaction to be included in a block</li>
+                    <li>Calculates the latency (time difference)</li>
+                    <li>Displays detailed statistics and results</li>
+                </ul>
+            </div>
+
+            <div class="info-section">
+                <h2>Key Metrics</h2>
+                <ul>
+                    <li><strong>Latency:</strong> Time from submission to block inclusion</li>
+                    <li><strong>Block Number:</strong> The block where the transaction was included</li>
+                    <li><strong>Status:</strong> Confirmed, Pending, or Failed</li>
+                    <li><strong>Statistics:</strong> Average, min, and max latency across multiple transactions</li>
+                </ul>
+            </div>
+
+            <div class="info-section">
+                <h2>Use Cases</h2>
+                <ul>
+                    <li>Monitor network performance</li>
+                    <li>Analyze transaction confirmation times</li>
+                    <li>Compare latency across different periods</li>
+                    <li>Debug transaction issues</li>
+                    <li>Optimize gas price strategies</li>
+                </ul>
+            </div>
+
+            <div class="info-section">
+                <h2>BSC Network Info</h2>
+                <div class="code-block">
+                    Network: BNB Smart Chain (BSC)<br>
+                    Average Block Time: ~3 seconds<br>
+                    Chain ID: 56<br>
+                    RPC: https://bsc-dataseed1.binance.org/
+                </div>
+            </div>
+        </div>
+
+        <div class="interaction-pane">
+            <h1>Track Transaction Latency</h1>
+            
+            <div class="input-group">
+                <label for="txHash">Transaction Hash</label>
+                <input 
+                    type="text" 
+                    id="txHash" 
+                    placeholder="0x..." 
+                    autocomplete="off"
+                />
+            </div>
+
+            <button id="trackBtn" onclick="trackTransaction()">Track Transaction</button>
+
+            <div id="resultContainer"></div>
+            <div id="statsContainer"></div>
+            <div id="historyContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        let transactionHistory = [];
+
+        async function trackTransaction() {
+            const txHash = document.getElementById('txHash').value.trim();
+            const trackBtn = document.getElementById('trackBtn');
+            const resultContainer = document.getElementById('resultContainer');
+            const statsContainer = document.getElementById('statsContainer');
+
+            if (!txHash) {
+                resultContainer.innerHTML = '<div class="error-message">Please enter a transaction hash</div>';
+                return;
+            }
+
+            if (!txHash.startsWith('0x') || txHash.length !== 66) {
+                resultContainer.innerHTML = '<div class="error-message">Invalid transaction hash format</div>';
+                return;
+            }
+
+            trackBtn.disabled = true;
+            trackBtn.innerHTML = '<span class="loading"></span> Tracking...';
+            resultContainer.innerHTML = '<div class="result-card"><p>Tracking transaction...</p></div>';
+
+            try {
+                const response = await fetch('/api/monitor', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ txHash })
+                });
+
+                const result = await response.json();
+
+                if (result.error) {
+                    resultContainer.innerHTML = `<div class="error-message">Error: ${result.error}</div>`;
+                } else {
+                    displayResult(result);
+                    transactionHistory.push(result);
+                    updateHistory();
+                    updateStats();
+                }
+            } catch (error) {
+                resultContainer.innerHTML = `<div class="error-message">Error: ${error.message}</div>`;
+            } finally {
+                trackBtn.disabled = false;
+                trackBtn.innerHTML = 'Track Transaction';
+            }
+        }
+
+        function displayResult(result) {
+            const resultContainer = document.getElementById('resultContainer');
+            
+            const statusClass = `status-${result.status}`;
+            const latencyText = result.latencyMs !== null 
+                ? `${result.latencyMs}ms (${(result.latencyMs / 1000).toFixed(2)}s)`
+                : 'N/A';
+
+            const html = `
+                <div class="result-card">
+                    <div class="result-item">
+                        <span class="result-label">Transaction Hash:</span>
+                        <span class="result-value">${result.txHash}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Status:</span>
+                        <span class="status-badge ${statusClass}">${result.status.toUpperCase()}</span>
+                    </div>
+                    ${result.latencyMs !== null ? `
+                    <div class="result-item">
+                        <span class="result-label">Latency:</span>
+                        <span class="result-value">${latencyText}</span>
+                    </div>
+                    ` : ''}
+                    ${result.blockNumber ? `
+                    <div class="result-item">
+                        <span class="result-label">Block Number:</span>
+                        <span class="result-value">${result.blockNumber}</span>
+                    </div>
+                    ` : ''}
+                    ${result.submittedAt ? `
+                    <div class="result-item">
+                        <span class="result-label">Submitted At:</span>
+                        <span class="result-value">${new Date(result.submittedAt).toLocaleString()}</span>
+                    </div>
+                    ` : ''}
+                    ${result.includedAt ? `
+                    <div class="result-item">
+                        <span class="result-label">Included At:</span>
+                        <span class="result-value">${new Date(result.includedAt).toLocaleString()}</span>
+                    </div>
+                    ` : ''}
+                    ${result.error ? `
+                    <div class="result-item">
+                        <span class="result-label">Error:</span>
+                        <span class="result-value" style="color: #f44336;">${result.error}</span>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+
+            resultContainer.innerHTML = html;
+        }
+
+        function updateStats() {
+            const statsContainer = document.getElementById('statsContainer');
+            const confirmed = transactionHistory.filter(r => r.status === 'confirmed' && r.latencyMs !== null);
+            
+            if (confirmed.length === 0) {
+                statsContainer.innerHTML = '';
+                return;
+            }
+
+            const latencies = confirmed.map(r => r.latencyMs);
+            const avg = latencies.reduce((a, b) => a + b, 0) / latencies.length;
+            const min = Math.min(...latencies);
+            const max = Math.max(...latencies);
+
+            statsContainer.innerHTML = `
+                <h2 style="margin-top: 2rem;">Statistics</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">${confirmed.length}</div>
+                        <div class="stat-label">Confirmed Transactions</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${Math.round(avg)}ms</div>
+                        <div class="stat-label">Average Latency</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${min}ms</div>
+                        <div class="stat-label">Min Latency</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${max}ms</div>
+                        <div class="stat-label">Max Latency</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateHistory() {
+            const historyContainer = document.getElementById('historyContainer');
+            
+            if (transactionHistory.length === 0) {
+                historyContainer.innerHTML = '';
+                return;
+            }
+
+            const recentHistory = transactionHistory.slice(-5).reverse();
+            
+            historyContainer.innerHTML = `
+                <h2 style="margin-top: 2rem;">Recent History</h2>
+                ${recentHistory.map(result => {
+                    const latencyText = result.latencyMs !== null 
+                        ? `${result.latencyMs}ms`
+                        : 'N/A';
+                    const statusClass = `status-${result.status}`;
+                    
+                    return `
+                        <div class="history-item">
+                            <div class="history-item-header">
+                                <span class="history-hash">${result.txHash.substring(0, 20)}...</span>
+                                <span class="status-badge ${statusClass}">${result.status.toUpperCase()}</span>
+                            </div>
+                            <div style="color: #b0b0b0; font-size: 0.9rem;">
+                                Latency: <span class="history-latency">${latencyText}</span>
+                                ${result.blockNumber ? ` | Block: ${result.blockNumber}` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            `;
+        }
+
+        // Allow Enter key to submit
+        document.getElementById('txHash').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                trackTransaction();
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
