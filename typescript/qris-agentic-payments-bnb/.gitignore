@@ -1,0 +1,11 @@
+node_modules/
+package-lock.json
+artifacts/
+cache/
+typechain/
+typechain-types/
+dist/
+.env
+qris-output.json
+coverage/
+coverage.json

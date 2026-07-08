@@ -41,6 +41,7 @@ language, description, and tags to help you find what you need quickly.
 | [typescript/bnbchain-mcp](./typescript/bnbchain-mcp)   | TypeScript | AI-powered blockchain assistant using Claude | AI, BSC, MCP        |
 | [typescript/eliza-chatbot](./typescript/eliza-chatbot) | TypeScript | A chatbot example using Eliza plugin-bnb     | AI, BSC, opBNB      |
 | [typescript/ai-trading-assistant](./typescript/ai-trading-assistant) | Typescript | AI-powered trading assistant for BNB Chain ecosystem with real USDT→BNB swaps via PancakeSwap, technical analysis, and natural language interface | BNBChain, trading, analysis, PancakeSwap, AI, MCP |
+| [typescript/qris-agentic-payments-bnb](./typescript/qris-agentic-payments-bnb) | TypeScript | Web2.5 agentic payments: an agent that parses a QRIS payment code, converts IDR→BUSD (18-decimal BNB Chain native stablecoin), and settles on BNB Chain via direct ERC20 transfer or x402/MPP machine-payment protocol | BNBChain, BSC, agentic-payments, QRIS, BUSD, x402, MPP, stablecoin, Indonesia |
 More examples are coming soon—stay tuned for updates!
 
 ## How to Add a New Example
