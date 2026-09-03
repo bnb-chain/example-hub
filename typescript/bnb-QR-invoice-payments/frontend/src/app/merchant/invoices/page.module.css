@@ -1,0 +1,126 @@
+.page {
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #020409, #020104 70%);
+  font-family: var(--font-geist-sans);
+  padding: 2rem;
+  color: #f8fafc;
+}
+
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.hero {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 2.75rem);
+}
+
+.hero p {
+  margin: 0;
+  color: #cdd5ff;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  border-radius: 1rem;
+  border: 1px solid rgba(240, 185, 11, 0.2);
+  background: rgba(6, 8, 15, 0.9);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table thead {
+  background: rgba(240, 185, 11, 0.15);
+}
+
+.table th,
+.table td {
+  padding: 0.85rem;
+  font-size: 0.9rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.statusBadge {
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.statusPending {
+  background: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+}
+
+.statusSettled {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+}
+
+.actionButton {
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.6rem;
+  border: 1px solid rgba(240, 185, 11, 0.4);
+  color: #f0b90b;
+  background: transparent;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.summaryCard {
+  flex: 1;
+  min-width: 200px;
+  border-radius: 1rem;
+  border: 1px solid rgba(240, 185, 11, 0.2);
+  background: rgba(6, 8, 15, 0.9);
+  padding: 1rem;
+}
+
+.summaryCard span {
+  display: block;
+  color: #cbd5ff;
+  font-size: 0.85rem;
+}
+
+.summaryCard strong {
+  font-size: 1.4rem;
+  color: #f0b90b;
+}
+
+.muted {
+  color: #cdd5ff;
+  text-align: center;
+  padding: 1rem;
+}
+
+.error,
+.emptyState {
+  text-align: center;
+  color: #f87171;
+}
+
+.emptyState {
+  color: #cdd5ff;
+}

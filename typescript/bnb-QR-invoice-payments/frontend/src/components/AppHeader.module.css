@@ -1,0 +1,71 @@
+.header {
+  width: 100%;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem clamp(1rem, 4vw, 3rem);
+  background: rgba(1, 2, 6, 0.9);
+  border-bottom: 1px solid rgba(240, 185, 11, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(18px);
+}
+
+.logo {
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #f0b90b;
+  text-transform: uppercase;
+}
+
+.nav {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.link {
+  color: #f8fafc;
+  font-weight: 500;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.link:hover {
+  background: rgba(240, 185, 11, 0.2);
+  color: #f0b90b;
+}
+
+.faucetWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  min-width: 160px;
+}
+
+.faucetButton {
+  background: linear-gradient(120deg, #f0b90b, #f8de75);
+  color: #05070f;
+  border: none;
+  border-radius: 999px;
+  padding: 0.35rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.faucetButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.faucetStatus {
+  font-size: 0.75rem;
+  color: #cbd5ff;
+  max-width: 220px;
+  text-align: right;
+}

@@ -1,0 +1,77 @@
+.page {
+  min-height: 100vh;
+  padding: 3rem clamp(1rem, 5vw, 4rem);
+  background: radial-gradient(circle at top, #0b1220, #05070f 60%);
+  color: #f8fafc;
+  font-family: var(--font-geist-sans);
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.hero {
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.hero h1 {
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  margin: 0;
+}
+
+.hero p {
+  margin: 0;
+  color: #cdd5ff;
+}
+
+.pill {
+  display: inline-flex;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(240, 185, 11, 0.2);
+  color: #f0b90b;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  background: rgba(15, 23, 42, 0.65);
+  border-radius: 1.5rem;
+  padding: 1.75rem;
+  border: 1px solid rgba(240, 185, 11, 0.2);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card h2 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.card p {
+  margin: 0;
+  color: #d0d8ff;
+}
+
+.card span {
+  font-weight: 600;
+  color: #f0b90b;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 50px rgba(240, 185, 11, 0.25);
+}
