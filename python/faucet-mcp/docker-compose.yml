@@ -1,0 +1,58 @@
+services:
+  verification-service:
+    build:
+      context: ./verification_service
+      dockerfile: Dockerfile
+    container_name: tbnb-verification-service
+    ports:
+      - "8080:8080"
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+      - DB_PATH=/app/data/payouts.db
+    volumes:
+      # Persist database across container restarts
+      - verification_db:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    networks:
+      - tbnb-network
+
+  mcp-server:
+    build:
+      context: ./mcp_server
+      dockerfile: Dockerfile
+    container_name: tbnb-mcp-server
+    ports:
+      - "8090:8090"
+    environment:
+      - BSC_RPC_URL=${BSC_RPC_URL}
+      - TREASURY_PRIVATE_KEY=${TREASURY_PRIVATE_KEY}
+      - DEFAULT_PAYOUT_AMOUNT=${DEFAULT_PAYOUT_AMOUNT:-0.3}
+      - PAYOUT_GAS_LIMIT=${PAYOUT_GAS_LIMIT:-21000}
+      - VERIFICATION_SERVICE_URL=http://verification-service:8080/verify
+    depends_on:
+      verification-service:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8090/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    networks:
+      - tbnb-network
+
+volumes:
+  verification_db:
+    driver: local
+
+networks:
+  tbnb-network:
+    driver: bridge
+
