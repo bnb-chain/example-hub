@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Entropy Analyzer - Spam Detection | BNBChain Cookbook</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #f0b90b 0%, #f8d33a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            gap: 1.5rem;
+            padding: 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .info-pane {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            overflow-y: auto;
+            max-height: calc(100vh - 200px);
+        }
+
+        .interaction-pane {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            overflow-y: auto;
+            max-height: calc(100vh - 200px);
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: #f0b90b;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(135deg, #f0b90b 0%, #f8d33a 100%);
+            border-radius: 2px;
+        }
+
+        .info-content {
+            line-height: 1.8;
+        }
+
+        .info-content p {
+            margin-bottom: 1rem;
+            color: #c0c0c0;
+        }
+
+        .info-content h3 {
+            color: #f0b90b;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .info-content ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-content li {
+            margin-bottom: 0.5rem;
+            color: #c0c0c0;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+            border-left: 3px solid #f0b90b;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #f0b90b;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: #e0e0e0;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #f0b90b;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-group input::placeholder {
+            color: #888;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #f0b90b 0%, #f8d33a 100%);
+            color: #0a0e27;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(240, 185, 11, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results {
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .result-card h3 {
+            color: #f0b90b;
+            margin-bottom: 1rem;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .metric:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            color: #c0c0c0;
+        }
+
+        .metric-value {
+            color: #e0e0e0;
+            font-weight: 600;
+        }
+
+        .spam-level {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .spam-level.LOW {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+
+        .spam-level.MEDIUM {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+
+        .spam-level.HIGH {
+            background: rgba(255, 152, 0, 0.2);
+            color: #ff9800;
+        }
+
+        .spam-level.CRITICAL {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+
+        .recommendations {
+            margin-top: 1.5rem;
+        }
+
+        .recommendations h4 {
+            color: #f0b90b;
+            margin-bottom: 0.75rem;
+        }
+
+        .recommendation-item {
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid #f0b90b;
+            color: #c0c0c0;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: #f0b90b;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #f0b90b;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: rgba(244, 67, 54, 0.1);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            color: #f44336;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .info-badge {
+            display: inline-block;
+            background: rgba(240, 185, 11, 0.1);
+            color: #f0b90b;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-left: 0.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔍 Event Entropy Analyzer - Spam Detection</h1>
+    </div>
+
+    <div class="container">
+        <div class="info-pane">
+            <h2 class="section-title">About This Tool</h2>
+            <div class="info-content">
+                <p>
+                    The Event Entropy Analyzer is a powerful tool for detecting spam patterns in blockchain events 
+                    on the BNB Smart Chain (BSC). By analyzing the entropy (randomness/diversity) of event data, 
+                    we can identify suspicious patterns that indicate automated spam activity.
+                </p>
+
+                <h3>What is Entropy?</h3>
+                <p>
+                    Entropy measures the randomness or diversity in a dataset. In blockchain event analysis:
+                </p>
+                <ul>
+                    <li><strong>High Entropy</strong>: Diverse addresses and values → Legitimate activity</li>
+                    <li><strong>Low Entropy</strong>: Repetitive patterns → Potential spam</li>
+                </ul>
+
+                <h3>How It Works</h3>
+                <p>
+                    The analyzer examines Transfer or Approval events from a smart contract and calculates:
+                </p>
+                <ul>
+                    <li><strong>Shannon Entropy</strong>: Measures diversity in addresses and values</li>
+                    <li><strong>Pattern Detection</strong>: Identifies repeated addresses, values, and sequential blocks</li>
+                    <li><strong>Spam Score</strong>: Combines entropy and patterns into a 0-100 spam likelihood score</li>
+                </ul>
+
+                <h3>Spam Indicators</h3>
+                <ul>
+                    <li>Many events from the same address (bot activity)</li>
+                    <li>Many events to the same address (airdrop spam)</li>
+                    <li>Identical values across many events</li>
+                    <li>Events occurring in sequential blocks</li>
+                    <li>Low unique address ratio</li>
+                </ul>
+
+                <h3>Use Cases</h3>
+                <ul>
+                    <li>Detect spam token transfers</li>
+                    <li>Identify bot-driven activity</li>
+                    <li>Monitor contract health</li>
+                    <li>Security analysis and auditing</li>
+                </ul>
+
+                <div class="code-block">
+                    <strong>Example:</strong><br>
+                    Contract: 0x55d398326f99059fF775485246999027B3197955 (USDT)<br>
+                    Event Type: Transfer<br>
+                    Block Range: Last 1000 blocks
+                </div>
+            </div>
+        </div>
+
+        <div class="interaction-pane">
+            <h2 class="section-title">Analyze Events</h2>
+            
+            <form id="analysisForm">
+                <div class="form-group">
+                    <label>
+                        Contract Address
+                        <span class="info-badge">BSC</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="contractAddress" 
+                        placeholder="0x..." 
+                        required
+                        pattern="^0x[a-fA-F0-9]{40}$"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Event Type</label>
+                    <select id="eventType">
+                        <option value="Transfer">Transfer</option>
+                        <option value="Approval">Approval</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>From Block</label>
+                    <input 
+                        type="number" 
+                        id="fromBlock" 
+                        placeholder="e.g., 35000000" 
+                        required
+                        min="0"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>To Block (leave empty for latest)</label>
+                    <input 
+                        type="number" 
+                        id="toBlock" 
+                        placeholder="Leave empty for latest block"
+                        min="0"
+                    >
+                </div>
+
+                <button type="submit" class="btn" id="analyzeBtn">
+                    🔍 Analyze Events
+                </button>
+            </form>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Analyzing events... This may take a moment.</p>
+            </div>
+
+            <div class="error" id="error"></div>
+
+            <div class="results" id="results">
+                <div class="result-card">
+                    <h3>📊 Analysis Summary</h3>
+                    <div class="metric">
+                        <span class="metric-label">Total Events</span>
+                        <span class="metric-value" id="totalEvents">-</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Unique Addresses</span>
+                        <span class="metric-value" id="uniqueAddresses">-</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Entropy</span>
+                        <span class="metric-value" id="entropy">-</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Spam Score</span>
+                        <span class="metric-value" id="spamScore">-</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Spam Level</span>
+                        <span class="metric-value">
+                            <span class="spam-level" id="spamLevel">-</span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="result-card">
+                    <h3>🔍 Pattern Analysis</h3>
+                    <div class="metric">
+                        <span class="metric-label">Max Repeated From Address</span>
+                        <span class="metric-value" id="repeatedFrom">-</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Max Repeated To Address</span>
+                        <span class="metric-value" id="repeatedTo">-</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Max Repeated Value</span>
+                        <span class="metric-value" id="repeatedValue">-</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Sequential Blocks</span>
+                        <span class="metric-value" id="sequentialBlocks">-</span>
+                    </div>
+                </div>
+
+                <div class="result-card">
+                    <div class="recommendations">
+                        <h4>💡 Recommendations</h4>
+                        <div id="recommendations"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Note: In a real implementation, you would need a backend API or use ethers.js directly
+        // For this demo, we'll simulate the analysis or use a proxy
+        
+        const form = document.getElementById('analysisForm');
+        const loading = document.getElementById('loading');
+        const results = document.getElementById('results');
+        const error = document.getElementById('error');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const contractAddress = document.getElementById('contractAddress').value.trim();
+            const eventType = document.getElementById('eventType').value;
+            const fromBlock = parseInt(document.getElementById('fromBlock').value);
+            const toBlockInput = document.getElementById('toBlock').value.trim();
+            const toBlock = toBlockInput ? parseInt(toBlockInput) : null;
+
+            // Validate contract address
+            if (!/^0x[a-fA-F0-9]{40}$/.test(contractAddress)) {
+                showError('Invalid contract address. Must be a valid Ethereum/BSC address (0x followed by 40 hex characters).');
+                return;
+            }
+
+            // Show loading, hide results and error
+            loading.classList.add('show');
+            results.classList.remove('show');
+            error.classList.remove('show');
+            analyzeBtn.disabled = true;
+
+            try {
+                // Call the backend API
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        contractAddress, 
+                        eventType, 
+                        fromBlock, 
+                        toBlock: toBlock || 'latest' 
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                displayResults(data);
+
+            } catch (err) {
+                showError(`Error: ${err.message}`);
+            } finally {
+                loading.classList.remove('show');
+                analyzeBtn.disabled = false;
+            }
+        });
+
+        function displayResults(data) {
+            const analysis = data.analysis;
+            
+            document.getElementById('totalEvents').textContent = analysis.totalEvents.toLocaleString();
+            document.getElementById('uniqueAddresses').textContent = analysis.uniqueAddresses.toLocaleString();
+            document.getElementById('entropy').textContent = analysis.entropy.toFixed(4);
+            document.getElementById('spamScore').textContent = `${analysis.spamScore.toFixed(2)}/100`;
+            
+            const spamLevelEl = document.getElementById('spamLevel');
+            spamLevelEl.textContent = analysis.spamLevel;
+            spamLevelEl.className = `spam-level ${analysis.spamLevel}`;
+            
+            document.getElementById('repeatedFrom').textContent = analysis.patterns.repeatedFrom;
+            document.getElementById('repeatedTo').textContent = analysis.patterns.repeatedTo;
+            document.getElementById('repeatedValue').textContent = analysis.patterns.repeatedValue;
+            document.getElementById('sequentialBlocks').textContent = analysis.patterns.sequentialBlocks;
+            
+            const recommendationsEl = document.getElementById('recommendations');
+            recommendationsEl.innerHTML = analysis.recommendations
+                .map(rec => `<div class="recommendation-item">${rec}</div>`)
+                .join('');
+            
+            results.classList.add('show');
+        }
+
+        function showError(message) {
+            error.textContent = message;
+            error.classList.add('show');
+        }
+
+        // Pre-fill with example values for testing
+        document.getElementById('contractAddress').value = '0x55d398326f99059fF775485246999027B3197955';
+        document.getElementById('fromBlock').value = '35000000';
+    </script>
+</body>
+</html>
+
