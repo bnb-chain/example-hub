@@ -1,0 +1,14 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+solc_version = "0.8.13"
+
+# Mainnet fork configuration for BSC
+[rpc_endpoints]
+bsc = "${BSC_RPC_URL}"
+
+# Fork testing
+[profile.fork]
+eth_rpc_url = "${BSC_RPC_URL}"
+fork_block_number = 44000000
