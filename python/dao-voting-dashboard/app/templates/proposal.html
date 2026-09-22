@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ proposal.title }} - DAO Voting</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+        
+        .back-btn {
+            color: #667eea;
+            text-decoration: none;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+        
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .status.active {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .status.passed {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .status.rejected {
+            background: #f44336;
+            color: white;
+        }
+        
+        .meta {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .results {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .result-box {
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .result-box.for {
+            background: #e8f5e9;
+            border: 2px solid #4CAF50;
+        }
+        
+        .result-box.against {
+            background: #ffebee;
+            border: 2px solid #f44336;
+        }
+        
+        .result-box.abstain {
+            background: #f5f5f5;
+            border: 2px solid #9e9e9e;
+        }
+        
+        .result-box h3 {
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+        
+        .result-box p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .vote-form {
+            margin-top: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-success {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+        }
+        
+        .vote-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .vote-item {
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .vote-item .address {
+            font-family: monospace;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .vote-item .choice {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .vote-item .choice.for {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .vote-item .choice.against {
+            background: #f44336;
+            color: white;
+        }
+        
+        .vote-item .choice.abstain {
+            background: #9e9e9e;
+            color: white;
+        }
+        
+        .progress-bar {
+            background: #f0f0f0;
+            border-radius: 10px;
+            height: 30px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="/" class="back-btn">← Back to Dashboard</a>
+            <h1>{{ proposal.title }}</h1>
+        </header>
+        
+        <div class="card">
+            <span class="status {{ proposal.status }}">{{ proposal.status.upper() }}</span>
+            <div class="meta">
+                <strong>Creator:</strong> {{ proposal.creator }}<br>
+                <strong>Created:</strong> {{ proposal.created_at }}<br>
+                <strong>Voting Ends:</strong> {{ proposal.end_time }}<br>
+                {% if proposal.on_chain_synced %}
+                <strong>On-Chain ID:</strong> #{{ proposal.on_chain_id }}
+                {% endif %}
+            </div>
+            
+            <h2>Description</h2>
+            <p style="margin-top: 10px; color: #666;">{{ proposal.description }}</p>
+        </div>
+        
+        <div class="card">
+            <h2>Voting Results</h2>
+            <div class="results">
+                <div class="result-box for">
+                    <h3>{{ results.for_votes }}</h3>
+                    <p>FOR</p>
+                </div>
+                <div class="result-box against">
+                    <h3>{{ results.against_votes }}</h3>
+                    <p>AGAINST</p>
+                </div>
+                <div class="result-box abstain">
+                    <h3>{{ results.abstain_votes }}</h3>
+                    <p>ABSTAIN</p>
+                </div>
+            </div>
+            
+            <div>
+                <strong>Total Votes:</strong> {{ results.total_votes }}
+            </div>
+            
+            {% if results.quorum_reached %}
+            <div style="margin-top: 10px; padding: 10px; background: #e8f5e9; border-radius: 5px;">
+                ✅ Quorum Reached ({{ results.participation_rate }}%)
+            </div>
+            {% else %}
+            <div style="margin-top: 10px; padding: 10px; background: #fff3e0; border-radius: 5px;">
+                ⚠️ Quorum Not Reached ({{ results.participation_rate }}% / {{ results.quorum_required }}% required)
+            </div>
+            {% endif %}
+            
+            {% if results.vote_passed %}
+            <div style="margin-top: 10px; padding: 10px; background: #e3f2fd; border-radius: 5px;">
+                ✅ Proposal Passed ({{ results.approval_rate }}% approval)
+            </div>
+            {% else %}
+            <div style="margin-top: 10px; padding: 10px; background: #ffebee; border-radius: 5px;">
+                ❌ Proposal Rejected ({{ results.approval_rate }}% approval / {{ results.pass_threshold }}% required)
+            </div>
+            {% endif %}
+        </div>
+        
+        {% if proposal.status == 'active' %}
+        <div class="card">
+            <h2>Cast Your Vote</h2>
+            <form id="voteForm" class="vote-form">
+                <div class="form-group">
+                    <label for="voter_address">Your Address</label>
+                    <input type="text" id="voter_address" name="voter_address" placeholder="0x..." required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="private_key">Private Key (for signing)</label>
+                    <input type="password" id="private_key" name="private_key" placeholder="0x..." required>
+                    <small style="color: #999;">⚠️ For demo only. In production, use wallet integration.</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="vote_choice">Your Vote</label>
+                    <select id="vote_choice" name="vote_choice" required>
+                        <option value="">Select...</option>
+                        <option value="for">✅ FOR</option>
+                        <option value="against">❌ AGAINST</option>
+                        <option value="abstain">⚪ ABSTAIN</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Submit Vote</button>
+            </form>
+        </div>
+        {% endif %}
+        
+        <div class="card">
+            <h2>Vote History ({{ votes|length }} votes)</h2>
+            <div class="vote-list">
+                {% if votes %}
+                    {% for vote in votes %}
+                    <div class="vote-item">
+                        <span class="address">{{ vote.voter_address[:10] }}...{{ vote.voter_address[-8:] }}</span>
+                        <span class="choice {{ vote.vote_choice }}">{{ vote.vote_choice.upper() }}</span>
+                        <div style="margin-top: 5px; font-size: 12px; color: #999;">
+                            {{ vote.created_at }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="text-align: center; color: #999;">No votes yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('voteForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                proposal_id: {{ proposal.id }},
+                voter_address: document.getElementById('voter_address').value,
+                vote_choice: document.getElementById('vote_choice').value,
+                private_key: document.getElementById('private_key').value
+            };
+            
+            try {
+                const response = await fetch('/api/votes', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    alert('Vote cast successfully!');
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + (result.detail || 'Failed to cast vote'));
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>

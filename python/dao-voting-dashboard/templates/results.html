@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results - {{ proposal.title }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .results-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #667eea;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        
+        .outcome-banner {
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .outcome-passed {
+            background: #d1fae5;
+            color: #065f46;
+            border: 3px solid #10b981;
+        }
+        
+        .outcome-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 3px solid #ef4444;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .progress-bar-container {
+            margin-bottom: 30px;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill-for {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+        
+        .progress-fill-against {
+            height: 100%;
+            background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+        
+        .governance-info {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .governance-info h3 {
+            color: #92400e;
+            margin-bottom: 15px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #fbbf24;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            color: #78350f;
+            font-weight: 600;
+        }
+        
+        .info-value {
+            color: #92400e;
+            font-weight: 700;
+        }
+        
+        .checkmark {
+            color: #10b981;
+            font-size: 1.5rem;
+        }
+        
+        .crossmark {
+            color: #ef4444;
+            font-size: 1.5rem;
+        }
+        
+        .detail-section {
+            margin-bottom: 20px;
+        }
+        
+        .detail-section h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .detail-text {
+            color: #666;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← Back to Dashboard</a>
+        
+        <div class="results-card">
+            <h1>📊 Voting Results</h1>
+            
+            <div class="outcome-banner outcome-{{ outcome.status }}">
+                {% if outcome.status == 'passed' %}
+                    ✓ PROPOSAL PASSED
+                {% else %}
+                    ✗ PROPOSAL REJECTED
+                {% endif %}
+            </div>
+            
+            <div class="detail-section">
+                <h3>{{ proposal.title }}</h3>
+                <p class="detail-text">{{ proposal.description }}</p>
+            </div>
+            
+            <div class="progress-bar-container">
+                <div class="progress-label">
+                    <span>For: {{ outcome.votes_for }}</span>
+                    <span>Against: {{ outcome.votes_against }}</span>
+                </div>
+                <div class="progress-bar">
+                    {% if outcome.total_votes > 0 %}
+                        <div class="progress-fill-for" style="width: {{ (outcome.votes_for / outcome.total_votes * 100) }}%">
+                            {{ "%.1f"|format(outcome.votes_for / outcome.total_votes * 100) }}%
+                        </div>
+                    {% else %}
+                        <div style="text-align: center; line-height: 30px; color: #999;">No votes yet</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Votes</div>
+                    <div class="stat-value">{{ outcome.total_votes }}</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-label">Approval Rate</div>
+                    <div class="stat-value">{{ "%.1f"|format(outcome.approval_rate) }}%</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-label">Votes For</div>
+                    <div class="stat-value" style="color: #10b981;">{{ outcome.votes_for }}</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-label">Votes Against</div>
+                    <div class="stat-value" style="color: #ef4444;">{{ outcome.votes_against }}</div>
+                </div>
+            </div>
+            
+            <div class="governance-info">
+                <h3>⚙️ Governance Rules</h3>
+                
+                <div class="info-row">
+                    <span class="info-label">Quorum Requirement</span>
+                    <span class="info-value">
+                        {{ outcome.required_quorum }} votes ({{ outcome.total_votes }}/{{ outcome.required_quorum }})
+                        {% if outcome.quorum_met %}
+                            <span class="checkmark">✓</span>
+                        {% else %}
+                            <span class="crossmark">✗</span>
+                        {% endif %}
+                    </span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Approval Threshold</span>
+                    <span class="info-value">
+                        {{ outcome.required_approval }}% ({{ "%.1f"|format(outcome.approval_rate) }}%)
+                        {% if outcome.approval_met %}
+                            <span class="checkmark">✓</span>
+                        {% else %}
+                            <span class="crossmark">✗</span>
+                        {% endif %}
+                    </span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Final Status</span>
+                    <span class="info-value">{{ outcome.status.upper() }}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Reason</span>
+                    <span class="info-value">{{ outcome.reason }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

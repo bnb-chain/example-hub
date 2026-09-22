@@ -1,0 +1,1 @@
+"""DAO Voting Dashboard Application."""
