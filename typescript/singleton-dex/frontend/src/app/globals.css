@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 15, 15, 20;
+  --background-end-rgb: 0, 0, 0; 
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: radial-gradient(circle at 50% 0%, #1a1b23 0%, #000000 100%);
+  min-height: 100vh;
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl;
+  }
+  
+  .input-field {
+    @apply w-full bg-black/20 border border-white/5 rounded-xl p-4 text-white focus:outline-none focus:border-[#F0B90B]/50 transition-colors;
+  }
+
+  .primary-button {
+    @apply w-full bg-[#F0B90B] hover:bg-[#D9A505] text-black font-bold py-4 rounded-xl transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(240,185,11,0.2)];
+  }
+}

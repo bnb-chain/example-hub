@@ -1,0 +1,26 @@
+{
+    "name": "bnbswap-order-bot",
+    "version": "1.0.0",
+    "description": "Order execution bot for BNBSwap limit orders",
+    "main": "bot.js",
+    "scripts": {
+        "start": "node bot.js",
+        "dev": "nodemon bot.js"
+    },
+    "keywords": [
+        "defi",
+        "dex",
+        "bnb",
+        "limit-orders",
+        "bot"
+    ],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "ethers": "^6.9.0",
+        "dotenv": "^16.3.1"
+    },
+    "devDependencies": {
+        "nodemon": "^3.0.2"
+    }
+}
