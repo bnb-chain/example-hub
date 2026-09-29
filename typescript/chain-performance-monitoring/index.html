@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BSC Chain Performance Monitoring</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0d1117;
+      --bg-panel: #161b22;
+      --bg-card: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+      --accent-dim: #388bfd66;
+      --success: #3fb950;
+      --warn: #d29922;
+      --danger: #f85149;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Outfit", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      min-height: 100vh;
+    }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+    .info-pane {
+      background: var(--bg-panel);
+      border-right: 1px solid var(--border);
+      padding: 1.5rem;
+      overflow-y: auto;
+    }
+    .info-pane h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+    }
+    .info-pane .subtitle {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+    .info-pane h2 {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin: 1rem 0 0.5rem;
+    }
+    .info-pane p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+    .info-pane ul {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      padding-left: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    .info-pane li { margin-bottom: 0.25rem; }
+    .interaction-pane {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .btn:hover {
+      background: var(--border);
+      border-color: var(--accent-dim);
+    }
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg);
+    }
+    .btn-primary:hover {
+      filter: brightness(1.1);
+    }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .metric-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+    }
+    .metric-card .label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+    .metric-card .value {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .metric-card .value.accent { color: var(--accent); }
+    .metric-card .value.success { color: var(--success); }
+    .metric-card .value.warn { color: var(--warn); }
+    .status {
+      font-size: 0.875rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+    }
+    .status.loading { color: var(--warn); }
+    .status.error { color: var(--danger); background: #f8514922; border-color: var(--danger); }
+    .status.ok { color: var(--success); }
+    .mono { font-family: "JetBrains Mono", monospace; }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="info-pane">
+      <h1>BSC Chain Performance Monitoring</h1>
+      <p class="subtitle">Live metrics from BNB Smart Chain (BSC) via JSON‑RPC</p>
+
+      <h2>What this demo does</h2>
+      <p>
+        This app queries a public BSC RPC endpoint to compute real-time performance metrics:
+        block height, average block time, gas price, transactions per second (TPS), and RPC latency.
+      </p>
+
+      <h2>Metrics explained</h2>
+      <ul>
+        <li><strong>Block #</strong> — Latest block number on BSC mainnet.</li>
+        <li><strong>Block time</strong> — Time between the last two blocks (seconds). BSC targets ~3s.</li>
+        <li><strong>Gas price</strong> — Current gas price in Gwei (1 Gwei = 10⁹ wei).</li>
+        <li><strong>TPS</strong> — Transactions per second over the last few blocks.</li>
+        <li><strong>RPC latency</strong> — Round-trip time for RPC requests (ms).</li>
+        <li><strong>Gas used %</strong> — Share of block gas limit used in the latest block.</li>
+      </ul>
+
+      <h2>Why it matters</h2>
+      <p>
+        Monitoring these metrics helps you gauge network load, finality speed, and costs before
+        building or running apps on BSC.
+      </p>
+    </aside>
+
+    <main class="interaction-pane">
+      <div class="toolbar">
+        <button type="button" class="btn btn-primary" id="refresh">Refresh metrics</button>
+        <button type="button" class="btn" id="auto">Toggle auto-refresh (10s)</button>
+        <span class="status" id="status">Idle</span>
+      </div>
+
+      <div class="metrics-grid" id="metrics">
+        <div class="metric-card"><span class="label">Block #</span><div class="value mono" id="m-block">—</div></div>
+        <div class="metric-card"><span class="label">Block time (s)</span><div class="value mono" id="m-blocktime">—</div></div>
+        <div class="metric-card"><span class="label">Gas price (Gwei)</span><div class="value mono accent" id="m-gas">—</div></div>
+        <div class="metric-card"><span class="label">TPS</span><div class="value mono" id="m-tps">—</div></div>
+        <div class="metric-card"><span class="label">RPC latency (ms)</span><div class="value mono" id="m-latency">—</div></div>
+        <div class="metric-card"><span class="label">Gas used %</span><div class="value mono" id="m-gasused">—</div></div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    const statusEl = document.getElementById("status");
+    const refreshBtn = document.getElementById("refresh");
+    const autoBtn = document.getElementById("auto");
+    const ids = ["m-block", "m-blocktime", "m-gas", "m-tps", "m-latency", "m-gasused"];
+
+    function setStatus(msg, kind = "ok") {
+      statusEl.textContent = msg;
+      statusEl.className = "status " + kind;
+    }
+
+    function render(metrics) {
+      document.getElementById("m-block").textContent = metrics.blockNumber.toLocaleString();
+      document.getElementById("m-blocktime").textContent = metrics.blockTimeSeconds.toFixed(2);
+      document.getElementById("m-gas").textContent = metrics.gasPriceGwei.toFixed(2);
+      document.getElementById("m-tps").textContent = metrics.tps.toFixed(2);
+      document.getElementById("m-latency").textContent = Math.round(metrics.rpcLatencyMs).toString();
+      document.getElementById("m-gasused").textContent = metrics.gasUsedPercent.toFixed(1) + "%";
+    }
+
+    async function fetchMetrics() {
+      setStatus("Loading…", "loading");
+      try {
+        const r = await fetch("/api/metrics");
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.error || "Request failed");
+        render(data);
+        setStatus("Updated just now");
+      } catch (e) {
+        setStatus("Error: " + (e.message || "Unknown"), "error");
+        ids.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = "—";
+        });
+      }
+    }
+
+    refreshBtn.addEventListener("click", fetchMetrics);
+    let interval = null;
+    autoBtn.addEventListener("click", () => {
+      if (interval) {
+        clearInterval(interval);
+        interval = null;
+        autoBtn.textContent = "Toggle auto-refresh (10s)";
+        return;
+      }
+      interval = setInterval(fetchMetrics, 10_000);
+      autoBtn.textContent = "Stop auto-refresh";
+      fetchMetrics();
+    });
+
+    fetchMetrics();
+  </script>
+</body>
+</html>
