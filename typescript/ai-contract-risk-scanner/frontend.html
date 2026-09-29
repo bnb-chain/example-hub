@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Contract Risk Scanner — BSC</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0d0f14;
+      --surface: #151922;
+      --surface2: #1c212c;
+      --border: #2a3142;
+      --text: #e4e8f0;
+      --textDim: #8b95a8;
+      --accent: #00d4aa;
+      --accentDim: #00a884;
+      --danger: #ff6b6b;
+      --warn: #ffc857;
+      --ok: #00d4aa;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Outfit', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(280px, 380px) 1fr;
+      min-height: 100vh;
+    }
+    @media (max-width: 820px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+    .info {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 1.75rem 1.5rem;
+      overflow-y: auto;
+    }
+    .info h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+    }
+    .info .tag {
+      font-size: 0.75rem;
+      color: var(--textDim);
+      margin-bottom: 1.25rem;
+    }
+    .info p {
+      font-size: 0.9rem;
+      color: var(--textDim);
+      margin-bottom: 1rem;
+    }
+    .info h2 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-top: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    .info ul {
+      font-size: 0.85rem;
+      color: var(--textDim);
+      padding-left: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .info li { margin-bottom: 0.35rem; }
+    .main {
+      padding: 1.75rem 2rem;
+      overflow-y: auto;
+    }
+    .main h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+    .input-row {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .input-row input {
+      flex: 1;
+      min-width: 200px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      padding: 0.75rem 1rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+    }
+    .input-row input::placeholder { color: var(--textDim); }
+    .input-row input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(0,212,170,0.15);
+    }
+    .btn {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.1s, background 0.2s;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+    }
+    .btn-primary:hover { background: var(--accentDim); }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .message {
+      font-size: 0.9rem;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+    .message.error {
+      background: rgba(255,107,107,0.12);
+      border: 1px solid rgba(255,107,107,0.35);
+      color: var(--danger);
+    }
+    .message.loading {
+      background: rgba(0,212,170,0.08);
+      border: 1px solid rgba(0,212,170,0.25);
+      color: var(--accent);
+    }
+    .result {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-top: 1rem;
+    }
+    .result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 1.25rem 1.5rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .result-title {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .result-meta { font-size: 0.85rem; color: var(--textDim); }
+    .score-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      font-size: 1.25rem;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+    }
+    .score-low { background: rgba(0,212,170,0.2); color: var(--ok); }
+    .score-medium { background: rgba(255,200,87,0.2); color: var(--warn); }
+    .score-high { background: rgba(255,107,107,0.2); color: var(--danger); }
+    .score-critical { background: rgba(255,107,107,0.3); color: #ff4444; }
+    .findings {
+      padding: 1rem 1.5rem;
+    }
+    .finding {
+      display: flex;
+      gap: 1rem;
+      padding: 0.9rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    .finding:last-child { border-bottom: none; }
+    .finding-level {
+      flex-shrink: 0;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+    }
+    .finding-level.low { background: rgba(0,212,170,0.2); color: var(--ok); }
+    .finding-level.medium { background: rgba(255,200,87,0.2); color: var(--warn); }
+    .finding-level.high { background: rgba(255,107,107,0.2); color: var(--danger); }
+    .finding-level.critical { background: rgba(255,68,68,0.25); color: #ff4444; }
+    .finding-body { flex: 1; }
+    .finding-body strong { display: block; margin-bottom: 0.25rem; color: var(--text); }
+    .finding-body span { color: var(--textDim); }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="info">
+      <h1>AI Contract Risk Scanner</h1>
+      <p class="tag">BSC · Heuristic risk analysis</p>
+      <p>
+        This demo scans <strong>BNB Smart Chain (BSC)</strong> contracts using the <strong>BSCTrace API (MegaNode)</strong>.
+        It runs bytecode-based heuristic checks to surface common risk patterns (delegatecall, self-destruct, CREATE/CREATE2, size).
+      </p>
+      <h2>What it checks</h2>
+      <ul>
+        <li><strong>Bytecode</strong> — Contract code retrieved via BSCTrace API.</li>
+        <li><strong>Delegatecall / proxy</strong> — DELEGATECALL opcode; upgradeability risk.</li>
+        <li><strong>Self-destruct</strong> — SELFDESTRUCT opcode; contract can destroy itself.</li>
+        <li><strong>Contract deployment</strong> — CREATE/CREATE2; factory-style logic.</li>
+        <li><strong>Size</strong> — Large bytecode complexity.</li>
+      </ul>
+      <h2>How to use</h2>
+      <p>
+        Enter a BSC contract address (e.g. a token or DeFi contract), then click <strong>Scan</strong>.
+        Results show a risk score (0–100) and individual findings. This is not a substitute for a professional audit.
+      </p>
+      <h2>API key</h2>
+      <p>
+        You need a <a href="https://dashboard.nodereal.io/" target="_blank" rel="noopener" style="color: var(--accent);">MegaNode (BSCTrace) API key</a>.
+        Set <code>BSCTRACE_API_KEY</code> in <code>.env</code> before running the app.
+      </p>
+    </aside>
+    <main class="main">
+      <h2>Scan a contract</h2>
+      <div class="input-row">
+        <input
+          type="text"
+          id="address"
+          placeholder="0x..."
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button type="button" class="btn btn-primary" id="scan">Scan</button>
+      </div>
+      <div id="message" class="message" style="display: none;"></div>
+      <div id="result" class="result" style="display: none;"></div>
+    </main>
+  </div>
+  <script>
+    (function () {
+      const addressEl = document.getElementById('address');
+      const scanBtn = document.getElementById('scan');
+      const messageEl = document.getElementById('message');
+      const resultEl = document.getElementById('result');
+
+      function showMessage(text, type) {
+        messageEl.textContent = text;
+        messageEl.className = 'message ' + (type || '');
+        messageEl.style.display = 'block';
+        resultEl.style.display = 'none';
+      }
+
+      function hideMessage() {
+        messageEl.style.display = 'none';
+      }
+
+      function showResult(data) {
+        hideMessage();
+        const scoreClass = data.score >= 80 ? 'score-low' : data.score >= 60 ? 'score-medium' : data.score >= 40 ? 'score-high' : 'score-critical';
+        const name = data.contractName || 'Unknown';
+        let html = `
+          <div class="result-header">
+            <div>
+              <div class="result-title">${escapeHtml(name)}</div>
+              <div class="result-meta">${escapeHtml(data.address)}</div>
+            </div>
+            <div class="score-badge ${scoreClass}">${data.score} — ${escapeHtml(data.scoreLabel)}</div>
+          </div>
+          <div class="findings">
+        `;
+        for (const f of data.findings) {
+          html += `
+            <div class="finding">
+              <span class="finding-level ${escapeHtml(f.level)}">${escapeHtml(f.level)}</span>
+              <div class="finding-body">
+                <strong>${escapeHtml(f.label)}</strong>
+                <span>${escapeHtml(f.description)}</span>
+              </div>
+            </div>
+          `;
+        }
+        html += '</div>';
+        resultEl.innerHTML = html;
+        resultEl.style.display = 'block';
+      }
+
+      function escapeHtml(s) {
+        const div = document.createElement('div');
+        div.textContent = s;
+        return div.innerHTML;
+      }
+
+      scanBtn.addEventListener('click', async function () {
+        const address = (addressEl.value || '').trim();
+        if (!address) {
+          showMessage('Enter a contract address.', 'error');
+          return;
+        }
+        if (!/^0x[a-fA-F0-9]{40}$/.test(address)) {
+          showMessage('Invalid address. Use a 0x-prefixed 40-character hex string.', 'error');
+          return;
+        }
+        scanBtn.disabled = true;
+        showMessage('Scanning…', 'loading');
+        try {
+          const res = await fetch('/api/scan?address=' + encodeURIComponent(address));
+          const data = await res.json();
+          if (!res.ok) {
+            showMessage(data.error || 'Scan failed.', 'error');
+            return;
+          }
+          showResult(data);
+        } catch (e) {
+          showMessage('Network error. Is the server running?', 'error');
+        } finally {
+          scanBtn.disabled = false;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

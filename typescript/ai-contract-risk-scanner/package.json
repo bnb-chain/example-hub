@@ -1,0 +1,27 @@
+{
+  "name": "ai-contract-risk-scanner",
+  "version": "1.0.0",
+  "description": "BSC AI Contract Risk Scanner — heuristic risk analysis for BNB Smart Chain contracts",
+  "type": "module",
+  "main": "dist/app.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node -r dotenv/config dist/app.js",
+    "test": "vitest run",
+    "dev": "tsx watch app.ts"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.9.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.4"
+  }
+}
