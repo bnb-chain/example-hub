@@ -1,0 +1,26 @@
+{
+  "name": "rpc-health-failover-system",
+  "version": "1.0.0",
+  "description": "BSC RPC Health Failover System — monitor and automatically failover between multiple BSC RPC endpoints",
+  "type": "module",
+  "main": "dist/app.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/app.js",
+    "test": "vitest run",
+    "dev": "tsx watch app.ts"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.19.7",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.4"
+  }
+}
