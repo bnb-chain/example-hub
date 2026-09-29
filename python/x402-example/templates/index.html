@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>x402 Payment Protocol - Sign-to-Pay</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .info-banner {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .info-banner h3 {
+            color: #f5576c;
+            margin-bottom: 10px;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card h2 {
+            color: #f5576c;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #f5576c;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #f5576c;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .payment-item {
+            background: #f5f5f5;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #f5576c;
+        }
+        
+        .payment-item .payment-id {
+            font-family: monospace;
+            font-size: 0.9em;
+            color: #f5576c;
+            margin-bottom: 5px;
+        }
+        
+        .payment-item .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+        
+        .status.pending {
+            background: #ffeb3b;
+            color: #333;
+        }
+        
+        .status.verified {
+            background: #2196f3;
+            color: white;
+        }
+        
+        .status.completed {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .signature-box {
+            background: #f9f9f9;
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 0.85em;
+            word-break: break-all;
+        }
+        
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #f5576c;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💳 x402 Payment Protocol</h1>
+            <p>HTTP 402 Payment Required - Sign-to-Pay on BNB Chain</p>
+        </div>
+        
+        <div class="info-banner">
+            <h3>About x402</h3>
+            <p>x402 is an internet-native payment standard that uses HTTP 402 status code for payment requests. 
+            It enables sign-to-pay functionality using EIP-712 signatures, eliminating the need for API keys, 
+            registrations, or KYC requirements.</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="card">
+                <h2>Create Payment Request</h2>
+                <div id="message"></div>
+                <form id="paymentRequestForm">
+                    <div class="form-group">
+                        <label for="resource">Resource/Service</label>
+                        <input type="text" id="resource" placeholder="API Access / Service Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Amount</label>
+                        <input type="number" id="amount" step="0.01" min="0.01" placeholder="10.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="currency">Currency</label>
+                        <input type="text" id="currency" value="USDC" placeholder="USDC">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" rows="3" placeholder="Payment description..."></textarea>
+                    </div>
+                    <button type="submit" class="btn" id="createBtn">Create Payment Request</button>
+                </form>
+                
+                <div id="paymentRequestResult" style="display: none; margin-top: 20px;">
+                    <h3>Payment Request Created</h3>
+                    <div class="signature-box" id="paymentRequestDetails"></div>
+                    <div id="verifySection" style="margin-top: 20px;">
+                        <h4>Verify Payment (Payer)</h4>
+                        <div class="form-group">
+                            <label for="payerAddress">Your Address</label>
+                            <input type="text" id="payerAddress" placeholder="0x...">
+                        </div>
+                        <div class="form-group">
+                            <label for="payerSignature">Your Signature</label>
+                            <input type="text" id="payerSignature" placeholder="0x...">
+                        </div>
+                        <button type="button" class="btn" id="verifyBtn">Verify Signature</button>
+                        <button type="button" class="btn" id="executeBtn" style="margin-top: 10px; background: #4caf50;">Execute Payment</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>Payment Requests</h2>
+                <div id="payments">
+                    <div class="loading">Loading payment requests...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentPaymentId = null;
+        
+        // Load payment requests
+        async function loadPayments() {
+            try {
+                const res = await fetch('/api/payments');
+                const data = await res.json();
+                
+                const paymentsDiv = document.getElementById('payments');
+                
+                if (data.success && data.payment_requests.length > 0) {
+                    paymentsDiv.innerHTML = data.payment_requests.map(payment => `
+                        <div class="payment-item">
+                            <div class="payment-id">${payment.payment_id}</div>
+                            <div><strong>Resource:</strong> ${payment.resource}</div>
+                            <div><strong>Amount:</strong> ${payment.amount} ${payment.currency}</div>
+                            ${payment.description ? `<div><strong>Description:</strong> ${payment.description}</div>` : ''}
+                            <div><strong>Merchant:</strong> ${payment.merchant.substring(0, 10)}...</div>
+                            <div class="status ${payment.status}">${payment.status.toUpperCase()}</div>
+                            ${payment.tx_hash ? `<div style="margin-top: 5px; font-size: 0.85em; color: #666;">TX: ${payment.tx_hash.substring(0, 20)}...</div>` : ''}
+                        </div>
+                    `).join('');
+                } else {
+                    paymentsDiv.innerHTML = '<div class="loading">No payment requests yet</div>';
+                }
+            } catch (error) {
+                console.error('Error loading payments:', error);
+                document.getElementById('payments').innerHTML = '<div class="error">Error loading payments</div>';
+            }
+        }
+        
+        // Handle payment request form
+        document.getElementById('paymentRequestForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const createBtn = document.getElementById('createBtn');
+            const messageDiv = document.getElementById('message');
+            
+            createBtn.disabled = true;
+            createBtn.textContent = 'Creating...';
+            messageDiv.innerHTML = '<div class="loading">Creating payment request...</div>';
+            
+            const resource = document.getElementById('resource').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+            const currency = document.getElementById('currency').value;
+            const description = document.getElementById('description').value;
+            
+            try {
+                const res = await fetch('/api/payment_request', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        resource: resource,
+                        amount: amount,
+                        currency: currency,
+                        description: description
+                    })
+                });
+                
+                const result = await res.json();
+                
+                if (result.success) {
+                    messageDiv.innerHTML = '<div class="success">Payment request created successfully!</div>';
+                    
+                    currentPaymentId = result.payment_id;
+                    
+                    // Show payment request details
+                    document.getElementById('paymentRequestResult').style.display = 'block';
+                    document.getElementById('paymentRequestDetails').innerHTML = `
+                        <strong>Payment ID:</strong> ${result.payment_id}<br>
+                        <strong>Status:</strong> HTTP 402 Payment Required<br>
+                        <strong>Signature:</strong> ${result.payment_request.signature.substring(0, 50)}...<br>
+                        <strong>Nonce:</strong> ${result.payment_request.nonce}
+                    `;
+                    
+                    // Reset form
+                    document.getElementById('paymentRequestForm').reset();
+                    
+                    // Reload payments
+                    loadPayments();
+                } else {
+                    messageDiv.innerHTML = `<div class="error">Error: ${result.error}</div>`;
+                }
+            } catch (error) {
+                messageDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            } finally {
+                createBtn.disabled = false;
+                createBtn.textContent = 'Create Payment Request';
+            }
+        });
+        
+        // Handle verify button
+        document.getElementById('verifyBtn').addEventListener('click', async () => {
+            if (!currentPaymentId) {
+                alert('Please create a payment request first');
+                return;
+            }
+            
+            const payerAddress = document.getElementById('payerAddress').value;
+            const payerSignature = document.getElementById('payerSignature').value;
+            
+            if (!payerAddress || !payerSignature) {
+                alert('Please enter payer address and signature');
+                return;
+            }
+            
+            try {
+                const res = await fetch(`/api/payment/${currentPaymentId}/verify`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        payer_address: payerAddress,
+                        payer_signature: payerSignature
+                    })
+                });
+                
+                const result = await res.json();
+                
+                if (result.success) {
+                    document.getElementById('message').innerHTML = '<div class="success">Payment signature verified!</div>';
+                    loadPayments();
+                } else {
+                    document.getElementById('message').innerHTML = `<div class="error">Error: ${result.error}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('message').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        });
+        
+        // Handle execute button
+        document.getElementById('executeBtn').addEventListener('click', async () => {
+            if (!currentPaymentId) {
+                alert('Please create a payment request first');
+                return;
+            }
+            
+            const payerAddress = document.getElementById('payerAddress').value;
+            
+            if (!payerAddress) {
+                alert('Please enter payer address');
+                return;
+            }
+            
+            try {
+                const res = await fetch(`/api/payment/${currentPaymentId}/execute`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        payer_address: payerAddress
+                    })
+                });
+                
+                const result = await res.json();
+                
+                if (result.success) {
+                    document.getElementById('message').innerHTML = `
+                        <div class="success">
+                            Payment executed successfully!<br>
+                            Transaction: ${result.transaction_hash.substring(0, 20)}...<br>
+                            Block: ${result.block_number}
+                        </div>
+                    `;
+                    loadPayments();
+                } else {
+                    document.getElementById('message').innerHTML = `<div class="error">Error: ${result.error}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('message').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        });
+        
+        // Initial load
+        loadPayments();
+        
+        // Refresh every 5 seconds
+        setInterval(loadPayments, 5000);
+    </script>
+</body>
+</html>
