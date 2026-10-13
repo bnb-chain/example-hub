@@ -1,0 +1,40 @@
+{
+  "name": "qris-agent-bnb",
+  "version": "1.0.0",
+  "description": "BNB Chain cookbook: an agent that scans & parses a QRIS payment code, converts IDR to BUSD (18-decimal BNB Chain native stablecoin), and settles on BNB Chain (with x402/MPP + PSP off-ramp seams).",
+  "keywords": [
+    "BNBChain",
+    "BSC",
+    "QRIS",
+    "agentic-payments",
+    "x402",
+    "MPP",
+    "stablecoin",
+    "Indonesia"
+  ],
+  "license": "GPL-3.0",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "demo": "hardhat run scripts/run-agent.ts",
+    "format": "prettier --write \"**/*.{ts,sol,md,json}\""
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@nomicfoundation/hardhat-viem": "^2.0.0",
+    "@types/chai": "^4.3.16",
+    "@types/mocha": "^10.0.7",
+    "@types/node": "^22.5.0",
+    "chai": "^4.3.10",
+    "hardhat": "^2.28.6",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2"
+  },
+  "dependencies": {
+    "@bnb-chain/mpp": "^0.2.0",
+    "@openzeppelin/contracts": "^5.0.2",
+    "dotenv": "^16.4.5",
+    "mppx": "^0.6.31",
+    "viem": "^2.51.0"
+  }
+}

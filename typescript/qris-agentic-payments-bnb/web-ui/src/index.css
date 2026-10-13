@@ -1,0 +1,313 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #0f0c1d;
+  --bg-elevated: #171333;
+  --surface: rgba(255, 255, 255, 0.03);
+  --surface-hover: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-active: rgba(99, 103, 255, 0.4);
+  --indigo: #6366f1;
+  --indigo-bright: #818cf8;
+  --indigo-deep: #4338ca;
+  --amber: #f59e0b;
+  --amber-bright: #fbbf24;
+  --amber-glow: rgba(245, 158, 11, 0.15);
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+}
+
+* {
+  font-family: "Inter", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+  min-height: 100vh;
+  /* Radial gradient mesh — subtle depth */
+  background-image:
+    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 50% at 80% 100%, rgba(245, 158, 11, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(67, 56, 202, 0.03) 0%, transparent 60%);
+  background-attachment: fixed;
+}
+
+/* ---- Surfaces ---- */
+.surface {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  backdrop-filter: blur(20px);
+}
+
+.surface-hover {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.surface-hover:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-active);
+  transform: translateY(-1px);
+}
+
+/* ---- Step nodes ---- */
+.step-node {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.step-node.pending {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--text-dim);
+}
+.step-node.active {
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  color: var(--indigo-bright);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+}
+.step-node.done {
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  color: var(--indigo);
+}
+
+/* ---- Connector lines ---- */
+.step-line {
+  height: 2px;
+  border-radius: 1px;
+  transition: background 0.3s;
+}
+
+/* ---- Buttons ---- */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+.btn-primary {
+  background: var(--indigo);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25);
+}
+.btn-primary:hover {
+  background: var(--indigo-bright);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+  transform: translateY(-1px);
+}
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-amber {
+  background: var(--amber);
+  color: #1a1206;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.2);
+}
+.btn-amber:hover {
+  background: var(--amber-bright);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.btn-ghost:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-active);
+}
+
+/* ---- Merchant cards ---- */
+.merchant-card {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  border-radius: 12px;
+}
+.merchant-card:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-active);
+  transform: translateY(-1px);
+}
+.merchant-card.selected {
+  background: rgba(99, 102, 241, 0.08);
+  border-color: var(--indigo);
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.2), 0 8px 24px rgba(99, 102, 241, 0.1);
+}
+
+/* ---- Input ---- */
+.input-field {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: var(--text);
+  outline: none;
+  transition: all 0.2s;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+}
+.input-field:focus {
+  border-color: var(--indigo);
+  background: rgba(99, 102, 241, 0.04);
+}
+
+/* ---- Scanner frame illusion ---- */
+.scanner-frame {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+}
+.scanner-frame::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--indigo), transparent);
+  animation: scan 2s ease-in-out infinite;
+}
+@keyframes scan {
+  0%, 100% { top: 0; opacity: 0.8; }
+  50% { top: calc(100% - 2px); opacity: 0.4; }
+}
+
+/* ---- Flow dash animation ---- */
+@keyframes flowDash {
+  0% { background-position: 0 0; }
+  100% { background-position: 20px 0; }
+}
+.flow-line {
+  height: 2px;
+  background: repeating-linear-gradient(90deg, var(--indigo) 0, var(--indigo) 4px, transparent 4px, transparent 12px);
+  background-size: 20px 100%;
+  animation: flowDash 0.6s linear infinite;
+}
+.flow-line-amber {
+  background: repeating-linear-gradient(90deg, var(--amber) 0, var(--amber) 4px, transparent 4px, transparent 12px);
+  background-size: 20px 100%;
+}
+
+/* ---- Pulse ring ---- */
+@keyframes pulseRing {
+  0% { transform: scale(0.95); opacity: 0.6; }
+  50% { opacity: 0.2; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+.pulse-ring {
+  animation: pulseRing 2s ease-out infinite;
+}
+.pulse-ring-delay {
+  animation: pulseRing 2s ease-out infinite 1s;
+}
+
+/* ---- Tunnel entrance illusion ---- */
+.tunnel {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 3px solid rgba(99, 102, 241, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+.tunnel::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  border: 3px solid rgba(99, 102, 241, 0.3);
+}
+.tunnel::after {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border-radius: 50%;
+  border: 3px solid var(--indigo);
+  animation: tunnelSpin 1.5s linear infinite;
+  border-top-color: transparent;
+  border-right-color: transparent;
+}
+@keyframes tunnelSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ---- Confetti ---- */
+@keyframes fadeUp {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(-400px) rotate(720deg); opacity: 0; }
+}
+.confetti-piece {
+  position: absolute;
+  width: 6px;
+  height: 12px;
+  pointer-events: none;
+}
+
+/* ---- Fade in ---- */
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.35s ease-out;
+}
+
+/* ---- QRIS monospace text ---- */
+.qris-text {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  line-height: 1.4;
+  color: var(--text-muted);
+  word-break: break-all;
+}
+
+/* ---- Tag pills ---- */
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  font-weight: 500;
+}
+.tag-indigo {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--indigo-bright);
+}
+.tag-amber {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--amber-bright);
+}
+
+/* ---- Scrollbar ---- */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.2); border-radius: 3px; }
