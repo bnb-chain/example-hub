@@ -1,0 +1,17 @@
+{
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node index.ts",
+    "quote:testnet": "ts-node index.ts --amount 0.01 --slippage 0.5",
+    "swap:testnet": "ts-node index.ts --amount 0.01 --slippage 0.5 --execute true"
+  },
+  "devDependencies": {
+    "@types/node": "^24.5.1",
+    "@types/yargs": "^17.0.33"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.2",
+    "ethers": "^6.15.0"
+  }
+}

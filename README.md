@@ -41,6 +41,7 @@ language, description, and tags to help you find what you need quickly.
 | [typescript/bnbchain-mcp](./typescript/bnbchain-mcp)   | TypeScript | AI-powered blockchain assistant using Claude | AI, BSC, MCP        |
 | [typescript/eliza-chatbot](./typescript/eliza-chatbot) | TypeScript | A chatbot example using Eliza plugin-bnb     | AI, BSC, opBNB      |
 | [typescript/ai-trading-assistant](./typescript/ai-trading-assistant) | Typescript | AI-powered trading assistant for BNB Chain ecosystem with real USDT→BNB swaps via PancakeSwap, technical analysis, and natural language interface | BNBChain, trading, analysis, PancakeSwap, AI, MCP |
+| [typescript/quick-test-swap](./typescript/quick-test-swap) | Typescript | A simple example demonstrating a token swap on BNB Chain. | BSC, opBNB, swap, DeFi, BNBChain |
 More examples are coming soon—stay tuned for updates!
 
 ## How to Add a New Example
