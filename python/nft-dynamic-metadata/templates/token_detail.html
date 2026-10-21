@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Token #{{ token.token_id }} - Dynamic NFT</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        padding: 40px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      .back-link {
+        display: inline-block;
+        color: #667eea;
+        text-decoration: none;
+        margin-bottom: 20px;
+        font-size: 1.1em;
+      }
+
+      .back-link:hover {
+        text-decoration: underline;
+      }
+
+      h1 {
+        color: #2d3748;
+        margin-bottom: 30px;
+      }
+
+      .token-display {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        margin-bottom: 40px;
+      }
+
+      .token-image {
+        width: 100%;
+        aspect-ratio: 1;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 8em;
+      }
+
+      .token-info {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .info-group {
+        background: #f7fafc;
+        padding: 20px;
+        border-radius: 10px;
+      }
+
+      .info-label {
+        color: #718096;
+        font-size: 0.9em;
+        margin-bottom: 5px;
+      }
+
+      .info-value {
+        color: #2d3748;
+        font-size: 1.1em;
+        font-weight: 500;
+        word-break: break-all;
+      }
+
+      .state-badge {
+        display: inline-block;
+        padding: 8px 16px;
+        background: #667eea;
+        color: white;
+        border-radius: 20px;
+        font-size: 1em;
+      }
+
+      .metadata-section {
+        margin-top: 40px;
+      }
+
+      .section-title {
+        color: #2d3748;
+        font-size: 1.5em;
+        margin-bottom: 20px;
+      }
+
+      .metadata-box {
+        background: #f7fafc;
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+      }
+
+      pre {
+        background: #2d3748;
+        color: #48bb78;
+        padding: 20px;
+        border-radius: 8px;
+        overflow-x: auto;
+        font-size: 0.9em;
+        line-height: 1.5;
+      }
+
+      .attributes {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .attribute {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+      }
+
+      .attribute-type {
+        color: #718096;
+        font-size: 0.85em;
+        margin-bottom: 5px;
+      }
+
+      .attribute-value {
+        color: #2d3748;
+        font-size: 1.1em;
+        font-weight: 600;
+      }
+
+      @media (max-width: 768px) {
+        .token-display {
+          grid-template-columns: 1fr;
+        }
+
+        .token-image {
+          font-size: 6em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="/" class="back-link">← Back to Collection</a>
+
+      <h1>Token #{{ token.token_id }}</h1>
+
+      <div class="token-display">
+        <div class="token-image">
+          {% if token.current_state == 'sunny' %}☀️ {% elif token.current_state
+          == 'rainy' %}🌧️ {% elif token.current_state == 'cloudy' %}☁️ {% elif
+          token.current_state == 'stormy' %}⛈️ {% elif token.current_state ==
+          'snowy' %}❄️ {% elif token.current_state == 'bullish' %}📈 {% elif
+          token.current_state == 'bearish' %}📉 {% elif token.current_state ==
+          'neutral' %}➡️ {% elif token.current_state == 'win' %}🏆 {% elif
+          token.current_state == 'loss' %}😔 {% elif token.current_state ==
+          'draw' %}🤝 {% else %}❓ {% endif %}
+        </div>
+
+        <div class="token-info">
+          <div class="info-group">
+            <div class="info-label">Current State</div>
+            <div class="info-value">
+              <span class="state-badge"
+                >{{ token.current_state|capitalize }}</span
+              >
+            </div>
+          </div>
+
+          <div class="info-group">
+            <div class="info-label">Description</div>
+            <div class="info-value">{{ token.state_description }}</div>
+          </div>
+
+          <div class="info-group">
+            <div class="info-label">Owner</div>
+            <div class="info-value">{{ token.owner }}</div>
+          </div>
+
+          <div class="info-group">
+            <div class="info-label">Minted</div>
+            <div class="info-value">{{ token.created_at[:10] }}</div>
+          </div>
+
+          <div class="info-group">
+            <div class="info-label">Last Updated</div>
+            <div class="info-value">{{ token.updated_at[:10] }}</div>
+          </div>
+
+          <div class="info-group">
+            <div class="info-label">Update Count</div>
+            <div class="info-value">{{ token.update_count }} times</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="metadata-section">
+        <h2 class="section-title">Attributes</h2>
+        <div class="attributes">
+          {% for attr in token.metadata.attributes %}
+          <div class="attribute">
+            <div class="attribute-type">{{ attr.trait_type }}</div>
+            <div class="attribute-value">{{ attr.value }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="metadata-section">
+        <h2 class="section-title">Full Metadata (ERC-721 Compatible)</h2>
+        <div class="metadata-box">
+          <pre>{{ token.metadata|tojson(indent=2) }}</pre>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

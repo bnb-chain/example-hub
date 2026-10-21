@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dynamic NFT Collection</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      h1 {
+        color: #667eea;
+        font-size: 2.5em;
+        margin-bottom: 10px;
+      }
+
+      .subtitle {
+        color: #666;
+        font-size: 1.1em;
+      }
+
+      .actions {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 12px 30px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1em;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background: #667eea;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #5568d3;
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background: #48bb78;
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background: #38a169;
+        transform: translateY(-2px);
+      }
+
+      .token-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 25px;
+        margin-top: 30px;
+      }
+
+      .token-card {
+        background: white;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 20px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .token-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        border-color: #667eea;
+      }
+
+      .token-image {
+        width: 100%;
+        height: 200px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 3em;
+        margin-bottom: 15px;
+      }
+
+      .token-id {
+        font-size: 1.3em;
+        font-weight: bold;
+        color: #2d3748;
+        margin-bottom: 8px;
+      }
+
+      .token-state {
+        display: inline-block;
+        padding: 6px 12px;
+        background: #667eea;
+        color: white;
+        border-radius: 20px;
+        font-size: 0.9em;
+        margin-bottom: 10px;
+      }
+
+      .token-description {
+        color: #718096;
+        font-size: 0.95em;
+        margin-bottom: 12px;
+      }
+
+      .token-owner {
+        color: #a0aec0;
+        font-size: 0.85em;
+        word-break: break-all;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #718096;
+      }
+
+      .empty-state h2 {
+        color: #2d3748;
+        margin-bottom: 15px;
+      }
+
+      .stats {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin-bottom: 30px;
+        padding: 20px;
+        background: #f7fafc;
+        border-radius: 10px;
+      }
+
+      .stat {
+        text-align: center;
+      }
+
+      .stat-value {
+        font-size: 2em;
+        font-weight: bold;
+        color: #667eea;
+      }
+
+      .stat-label {
+        color: #718096;
+        margin-top: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>🎨 Dynamic NFT Collection</h1>
+        <p class="subtitle">NFTs that change based on real-world oracle data</p>
+      </header>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-value">{{ tokens|length }}</div>
+          <div class="stat-label">Total Tokens</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" onclick="mintToken()">
+          🎯 Mint New Token
+        </button>
+        <a href="/oracle" class="btn btn-secondary">🔄 Update Oracle</a>
+      </div>
+
+      {% if tokens %}
+      <div class="token-grid">
+        {% for token in tokens %}
+        <div
+          class="token-card"
+          onclick="window.location.href='/token/{{ token.token_id }}'"
+        >
+          <div class="token-image">
+            {% if token.current_state == 'sunny' %}☀️ {% elif
+            token.current_state == 'rainy' %}🌧️ {% elif token.current_state ==
+            'cloudy' %}☁️ {% elif token.current_state == 'stormy' %}⛈️ {% elif
+            token.current_state == 'snowy' %}❄️ {% elif token.current_state ==
+            'bullish' %}📈 {% elif token.current_state == 'bearish' %}📉 {% elif
+            token.current_state == 'neutral' %}➡️ {% elif token.current_state ==
+            'win' %}🏆 {% elif token.current_state == 'loss' %}😔 {% elif
+            token.current_state == 'draw' %}🤝 {% else %}❓ {% endif %}
+          </div>
+          <div class="token-id">Token #{{ token.token_id }}</div>
+          <span class="token-state">{{ token.current_state|capitalize }}</span>
+          <div class="token-description">{{ token.state_description }}</div>
+          <div class="token-owner">
+            Owner: {{ token.owner[:10] }}...{{ token.owner[-8:] }}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty-state">
+        <h2>No tokens minted yet</h2>
+        <p>Click "Mint New Token" to create your first dynamic NFT!</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <script>
+      async function mintToken() {
+        const owner = prompt(
+          "Enter owner address:",
+          "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+        );
+        if (!owner) return;
+
+        try {
+          const response = await fetch("/api/mint", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              owner: owner,
+              initial_state: "sunny",
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            alert(`Success! Token #${data.token.token_id} minted!`);
+            location.reload();
+          } else {
+            alert("Failed to mint token");
+          }
+        } catch (error) {
+          alert("Error: " + error.message);
+        }
+      }
+    </script>
+  </body>
+</html>
