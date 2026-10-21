@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Environment
+.env
+
+# Database
+*.db
+data/
+
+# QR Codes
+qr_codes/
+static/qr_codes/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
