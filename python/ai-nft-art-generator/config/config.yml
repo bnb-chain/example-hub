@@ -1,0 +1,38 @@
+# Stable Diffusion settings
+stable_diffusion:
+  model_id: "runwayml/stable-diffusion-v1-5"
+  prompt_prefix: "high quality, detailed, digital art"
+  negative_prompt: "blurry, low quality, distorted"
+  num_inference_steps: 75
+  guidance_scale: 8.5
+  image_size: 512
+
+# NFT Collection settings
+collection:
+  name: "AI Generated Art Collection"
+  symbol: "AIGEN"
+  description: "Unique AI-generated artwork collection"
+  external_url: ""
+  seller_fee_basis_points: 500  # 5%
+  fee_recipient: ""
+
+# Blockchain settings
+blockchain:
+  network: "testnet"  # or "mainnet"
+  testnet:
+    rpc_url: "https://data-seed-prebsc-1-s1.bnbchain.org:8545"
+    chain_id: 97
+  mainnet:
+    rpc_url: "https://bsc-dataseed.bnbchain.org"
+    chain_id: 56
+  gas_price_multiplier: 1.1  # Multiply estimated gas price by this factor
+  ipfs:
+    gateway: "https://ipfs.io/ipfs/"
+    api_url: "http://localhost:5001"  # Local IPFS node (optional)
+  confirmation_blocks: 2  # Number of blocks to wait for confirmation
+
+# Output settings
+output:
+  image_format: "png"
+  metadata_format: "json"
+  base_path: "./output/collection_1"
