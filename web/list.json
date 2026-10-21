@@ -2,11 +2,7 @@
   {
     "caseTitle": "BNB Chain Eliza AgentKit",
     "caseDesc": "Create an AI Agent using the BNB Chain Plugin for Eliza AI",
-    "tags": [
-      "BSC",
-      "opBNB",
-      "AI"
-    ],
+    "tags": ["BSC", "opBNB", "AI"],
     "github": "https://github.com/bnb-chain/example-hub/tree/main/typescript/eliza-chatbot",
     "replit": "https://replit.com/@BNBChainDev/BNBChain-Eliza-AgentKit-TypeScript?embed=true#README.md",
     "video": {},
@@ -17,11 +13,7 @@
   {
     "caseTitle": "BNB Chain LangChain AgentKit",
     "caseDesc": "Create an AI Agent using the BNB Chain Plugin for LangChain AI",
-    "tags": [
-      "BSC",
-      "opBNB",
-      "AI"
-    ],
+    "tags": ["BSC", "opBNB", "AI"],
     "github": "https://github.com/bnb-chain/example-hub/tree/main/python/langchain-chatbot",
     "replit": "https://replit.com/@BNBChainDev/BNBChain-LangChain-AgentKit-Python-Version?embed=true#chatbot.py",
     "video": {},
@@ -32,9 +24,7 @@
   {
     "caseTitle": "EIP 7702 - Demo",
     "caseDesc": "This project demonstrates the implementation of EIP7702 (Account Abstraction via Authorized Operations) on BNB Smart Chain (BSC)",
-    "tags": [
-      "BSC"
-    ],
+    "tags": ["BSC"],
     "github": "https://github.com/bnb-chain/example-hub/tree/main/go/eip7702-demo",
     "replit": "https://replit.com/@BNBChainDev/EIP-7702-Demo?embed=true",
     "video": {},
@@ -83,13 +73,7 @@
   {
     "caseTitle": "BNBChain MCP - AI-Powered Blockchain Assistant",
     "caseDesc": "A ready-to-use template that combines BNB Chain’s MCP with Claude AI, enabling natural language interaction with BNB Smart Chain and Greenfield.",
-    "tags": [
-      "BSC",
-      "Greenfield",
-      "AI",
-      "MCP",
-      "Typescript"
-    ],
+    "tags": ["BSC", "Greenfield", "AI", "MCP", "Typescript"],
     "github": "https://github.com/bnb-chain/example-hub/tree/main/typescript/bnbchain-mcp",
     "replit": "https://replit.com/@BNBChainDev/BNBChain-MCP-With-Anthropic??embed=true",
     "video": {},
@@ -100,12 +84,7 @@
   {
     "caseTitle": "Chainsub – Minimal Smart Contract Event Listener (CLI & Go Package)",
     "caseDesc": "Chainsub is a lightweight and easy-to-use CLI and Go library designed to subscribe and monitor smart contract events on any EVM-compatible blockchain such as BNB Chain, Ethereum, Polygon, Avalanche, and more.",
-    "tags": [
-      "BSC",
-      "Smart Contract Event Listener",
-      "CLI",
-      "GO"
-    ],
+    "tags": ["BSC", "Smart Contract Event Listener", "CLI", "GO"],
     "github": "https://github.com/bnb-chain/example-hub/tree/main/go/event-listener",
     "replit": "",
     "video": {},
@@ -116,13 +95,7 @@
   {
     "caseTitle": "BNB Chain Chatbot with UI (Python)",
     "caseDesc": "This project demonstrates how to create a web interface for the BNB Chain LangChain AgentKit Python chatbot, showcasing how to integrate AI agents into decentralized applications (dApps) through API wrappers.",
-    "tags": [
-      "BSC",
-      "opBNB",
-      "AI",
-      "ChatBot",
-      "Python"
-    ],
+    "tags": ["BSC", "opBNB", "AI", "ChatBot", "Python"],
     "github": "https://github.com/bnb-chain/example-hub/tree/main/python/chatbot-with-ui",
     "replit": "",
     "video": {},
@@ -133,12 +106,7 @@
   {
     "caseTitle": "AI-Powered Reputation NFT Badges on BNB Chain",
     "caseDesc": "Forge unique, soulbound ERC-721 NFT reputation badges on the BNB Chain using data analysis and generative AI. This project analyzes wallet activity, generates insightful explanations via LLMs, and mints NFTs with off-chain metadata stored on IPFS.",
-    "tags": [
-      "BSC",
-      "AI",
-      "NFT",
-      "Python"
-    ],
+    "tags": ["BSC", "AI", "NFT", "Python"],
     "github": "https://github.com/bnb-chain/example-hub/tree/main/python/ai-wallet-reputation-nft",
     "replit": "",
     "video": {},
@@ -149,15 +117,22 @@
   {
     "caseTitle": "4EVERLAND Hosting MCP - AI-Powered Hosting Assistant",
     "caseDesc": "You can deploy your dApp to decentralized networks like Greenfield, IPFS and Arweave with simple AI Chat interface and instantly get an accessible domain.",
-    "tags": [
-      "Greenfield",
-      "AI",
-      "TypeScript"
-    ],
+    "tags": ["Greenfield", "AI", "TypeScript"],
     "github": "https://github.com/bnb-chain/example-hub/tree/main/typescript/4everland-hosting-mcp",
     "replit": "",
     "video": {},
     "guide": "https://github.com/bnb-chain/example-hub/tree/main/typescript/4everland-hosting-mcp",
+    "otherLink": "",
+    "imgUrl": "https://cms-static.bnbchain.org/dcms/static/303d0c6a-af8f-4098-a2d0-a5b96ef964ba.png"
+  },
+  {
+    "caseTitle": "Token Tax Calculator",
+    "caseDesc": "Calculates estimated tax implications of token swaps (for education only).",
+    "tags": ["Compliance", "DeFi", "Accounting"],
+    "github": "https://github.com/flashtxh/example-hub/tree/main/typescript/token-tax-calculator",
+    "replit": "",
+    "video": {},
+    "guide": "https://github.com/flashtxh/example-hub/blob/main/typescript/token-tax-calculator/README.md",
     "otherLink": "",
     "imgUrl": "https://cms-static.bnbchain.org/dcms/static/303d0c6a-af8f-4098-a2d0-a5b96ef964ba.png"
   }
